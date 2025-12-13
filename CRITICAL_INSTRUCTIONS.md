@@ -64,7 +64,7 @@ Purpose
 8) Memory and knowledge management
 - If a memory tool is available (e.g., Supermemory MCP), use it to persist reusable knowledge; keep entries short and atomic.
 - Retrieval (read path): at the start of each new user request (before planning), search using 3–6 task keywords; pull at most 3–5 memories; treat results as hints to validate against the repo/user.
-- Capture (write path): when you learn a stable, reusable fact (preferences, workflow constraints, build/test commands, recurring pitfalls, root-cause lessons), store it immediately.
+- Capture (write path): when you learn a stable, reusable fact (preferences, workflow constraints, build/test commands, recurring pitfalls, root-cause lessons), promptly search first; if not already present, store it.
 - Consent boundary: only write to external memory if the user has enabled a memory tool; treat its availability as consent for storing non-sensitive items per the safety rule below.
 - De-duplication: search before writing; if already present, avoid re-storing; otherwise add a short “Supersedes:”/“Correction:” entry when updating.
 - Format: one statement per memory; prefix with `Preference:`, `Workflow:`, `Build:`, `Pitfall:`, `Lesson:`; include date and an optional project/repo identifier when relevant.
