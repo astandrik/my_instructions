@@ -362,7 +362,7 @@ Verification checklist (pre-action)
   - Deterministic transforms or computations (formatting/migrations/validation/math/parsing) → PAL/PoT-style: offload to deterministic runtimes/tools (linters/formatters/validators/interpreters) and verify.
   - Output quality not acceptable on first pass → Self-Refine loop: generate → FEEDBACK → REFINE. Cap refinement iterations (1–2) and stop when acceptance criteria are met.
   - When tool feedback is available for checking → CRITIC loop: generate → use tools to critique/verify → revise. Cap cycles (1–2) and escalate if still failing.
-  - Repeated failure across attempts → Reflexion: write a short “lesson learned” (1–3 bullets: what failed, why, what to do next time); if a memory tool exists, store it as a `Lesson:` entry (follow Section 8 safety rule).
+  - Repeated failure across attempts → Reflexion: write a short “lesson learned” (1–3 bullets: what failed, why, what to do next time); if a memory tool is enabled (per Section 8 consent boundary), store it as a `Lesson:` entry (follow Section 8 safety rule).
   - High-risk/security/perf/compatibility → add a verifier checklist; max 1–2 critique/revise cycles; then escalate instead of looping.
 - Guardrails:
   - Keep chain-of-thought private unless explicitly requested.
