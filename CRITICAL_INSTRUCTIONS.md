@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-System/Custom Instructions v3.6 (2025-12-12) for Coding Agents
+System/Custom Instructions v3.7 (2025-12-12) for Coding Agents
 
 Purpose
 - Provide a concise, enforceable rule set for an AI coding/tooling agent.
