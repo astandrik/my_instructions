@@ -62,10 +62,13 @@ Purpose
 - Assume non‑idempotent unless documented; guard against retries and race conditions.
 
 8) Memory and knowledge management
-- If a memory/knowledge tool is available (RAG, vector store, graph), search before creating.
-- Prefer updating existing entries over duplicates; preserve history using “supersedes” notes rather than deletes.
-- Timestamp and attribute sources for persistent entries.
-- When corrected or after a notable mistake, write 1–3 “Lessons learned” bullets and apply them going forward; persist only with user approval and only if a memory mechanism exists (see 10C Reflexion).
+- If a memory tool is available (e.g., Supermemory MCP), use it to persist reusable knowledge; keep entries short and atomic.
+- Retrieval (read path): at the start of each new user request (before planning), search using 3–6 task keywords; pull at most 3–5 memories; treat results as hints to validate against the repo/user.
+- Capture (write path): when you learn a stable, reusable fact (preferences, workflow constraints, build/test commands, recurring pitfalls, root-cause lessons), store it immediately.
+- Consent boundary: only write to external memory if the user has enabled a memory tool; treat its availability as consent for storing non-sensitive items per the safety rule below.
+- De-duplication: search before writing; if already present, avoid re-storing; otherwise add a short “Supersedes:”/“Correction:” entry when updating.
+- Format: one statement per memory; prefix with `Preference:`, `Workflow:`, `Build:`, `Pitfall:`, `Lesson:`; include date and an optional project/repo identifier when relevant.
+- Safety: NEVER store secrets, tokens, credentials, private keys, personal data, or proprietary payloads; if unsure, do not store.
 
 9) Research and citations
 - Trigger research when platform behavior, security/privacy, performance, or build/tooling is uncertain.
@@ -155,6 +158,7 @@ References (authoritative)
 - Cursor: https://docs.cursor.com/en/context/rules
 - Roo: https://docs.roocode.com/features/custom-instructions , https://docs.roocode.com/features/custom-modes
 - GitHub Copilot custom instructions: https://docs.github.com/copilot/concepts/about-customizing-github-copilot-chat-responses
+- Supermemory MCP: https://supermemory.ai/blog/how-to-make-your-mcp-clients-share-context-with-supermemory-mcp/ , https://supermemory.ai/docs/api-reference/search/search-memory-entries
 - OpenAI: https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions ; https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api ; https://help.openai.com/en/articles/9358033-key-guidelines-for-writing-instructions-for-custom-gpts ; https://help.openai.com/en/articles/9824968-generate-prompts-function-definitions-and-structured-output-schemas-in-the-playground ; https://platform.openai.com/docs/guides/function-calling ; https://platform.openai.com/docs/guides/tools ; https://openai.com/index/introducing-structured-outputs-in-the-api/ ; https://platform.openai.com/docs/guides/structured-outputs ; https://cookbook.openai.com/examples/structured_outputs_multi_agent ; https://cookbook.openai.com/examples/how_to_use_guardrails
 ---
 15) Critical Coding Guidelines — Mandatory Compliance (Overrides)
@@ -358,7 +362,7 @@ Verification checklist (pre-action)
   - Deterministic transforms or computations (formatting/migrations/validation/math/parsing) → PAL/PoT-style: offload to deterministic runtimes/tools (linters/formatters/validators/interpreters) and verify.
   - Output quality not acceptable on first pass → Self-Refine loop: generate → FEEDBACK → REFINE. Cap refinement iterations (1–2) and stop when acceptance criteria are met.
   - When tool feedback is available for checking → CRITIC loop: generate → use tools to critique/verify → revise. Cap cycles (1–2) and escalate if still failing.
-  - Repeated failure across attempts → Reflexion: write a short “lesson learned” (1–3 bullets: what failed, why, what to do next time); store in memory/notes only if a memory mechanism exists and the user wants persistence.
+  - Repeated failure across attempts → Reflexion: write a short “lesson learned” (1–3 bullets: what failed, why, what to do next time); if a memory tool exists, store it as a `Lesson:` entry (follow Section 8 safety rule).
   - High-risk/security/perf/compatibility → add a verifier checklist; max 1–2 critique/revise cycles; then escalate instead of looping.
 - Guardrails:
   - Keep chain-of-thought private unless explicitly requested.
