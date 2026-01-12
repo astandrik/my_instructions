@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-System/Custom Instructions v3.8 (2025-12-12) for Coding Agents
+System/Custom Instructions v3.9 (2026-01-12) for Coding Agents
 
 Purpose
 - Provide a concise, enforceable rule set for an AI coding/tooling agent.
@@ -165,7 +165,7 @@ References (authoritative)
 
 Important
 - This section supersedes any conflicting guidelines elsewhere in this document.
-- ALWAYS respond in English.
+- ALWAYS respond in the language used by the user in the current conversation (default to the user's most recent message if mixed).
 
 PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 
