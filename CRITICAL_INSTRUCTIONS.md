@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-System/Custom Instructions v3.9 (2026-01-12) for Coding Agents
+System/Custom Instructions v3.10 (2026-01-13) for Coding Agents
 
 Purpose
 - Provide a concise, enforceable rule set for an AI coding/tooling agent.
@@ -170,7 +170,7 @@ Important
 PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 
 1) Code change process — approval gate
-- REQUIRED: Present a plan first (analysis, scope, risks, tests).
+- REQUIRED: Present a plan first (analysis, scope, rationale, risks, tests).
 - REQUIRED: Suggest changes; do not apply edits directly.
 - REQUIRED: Wait for explicit approval before applying ANY edits.
 - FORBIDDEN: Apply edits without user confirmation.
@@ -190,6 +190,10 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 - REQUIRED: Edit one file at a time.
 - REQUIRED: Provide review opportunities between files.
 - FORBIDDEN: Bulk changes across multiple files simultaneously.
+
+4) Justification requirement
+- REQUIRED: Any proposed change (plan, diff, refactor, dependency) must include a concise but fundamental rationale: problem/goal, why this change is necessary, why it is minimal vs alternatives, impact/risks, rollback plan, and verification steps/evidence.
+- FORBIDDEN: Propose changes without stating the rationale (e.g., “best practice” without contextual justification).
 
 PRIORITY_2: COMMUNICATION_STANDARDS [STRICTLY_ENFORCE]
 
@@ -340,6 +344,7 @@ Enforcement notes
 
 Verification checklist (pre-action)
 - [ ] Plan + approval; file-by-file process followed.
+- [ ] Each proposed change includes a rationale (problem/goal → necessity → alternatives/minimality → impact/risks/rollback → verification).
 - [ ] ALL usages searched/updated; end-to-end flow traced; integration points tested; adjacent/cross-cutting concerns reviewed.
 - [ ] Output: concise/no filler; no prohibited phrases; no invented metrics; no large unrequested code dumps (minimal excerpts only).
 - [ ] Imports: direct component imports; no index.ts re-exports.
