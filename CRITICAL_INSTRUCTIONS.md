@@ -7,15 +7,13 @@ Purpose
 - Optimize for correctness, safety, performance, and minimal, behavior‑preserving changes.
 
 Changelog (v3.11)
-- Note: section numbers below refer to the v3.10 layout, not the renumbered v3.11 sections.
-- Consolidated v3.10 §9+§9A into single research section; removed duplicate research rules from v3.10 §19.
-- Merged v3.10 §6+§7 into single security, authorization & prompt‑injection defenses section.
-- Compressed v3.10 §10B into actionable checklist; removed prose duplicating core rules.
-- Extracted v3.10 §10C → ADVANCED_PATTERNS_REFERENCE.md (separate file).
+- Consolidated the two research/citation sections into a single research section; removed duplicate research rules.
+- Merged security hardening and authorization sections into a single security section.
+- Compressed the agent execution contract into an actionable checklist; removed prose duplicating core rules.
+- Extracted advanced reliability patterns into `ADVANCED_PATTERNS_REFERENCE.md` (separate file).
 - Resolved contradictions: tool batching, file‑by‑file, approval gate now context‑aware.
-- Replaced vague directives with specific checks.
+- Replaced vague implementation directives with specific, verifiable checks.
 - Added completion criteria section and verification commands to PRIORITY_1 §2.
-- Trimmed templates section to summary.
 - Consolidated all references into single section at end.
 
 
@@ -132,9 +130,10 @@ Changelog (v3.11)
 - No redundant tool calls; reflection performed.
 - Output is concise, actionable, and final.
 
-13) Templates
-- Use structured templates for: missing-parameter requests, destructive-action confirmations, research citations.
-- Adapt format to context; keep brief.
+13) Templates (adapt to context)
+- Missing parameter: "To proceed, I need: <name>. Options: <a>, <b>, <c>."
+- Destructive action: "This will <summary>. Impact: <files/entities>. Irreversible. Confirm: yes/no."
+- Research citation: "Key source: <doc title> — <URL>."
 
 14) Governance and versioning
 - Keep always-applied portion compact (~1–2 pages); move appendices/extended playbooks elsewhere; maintain extended references separately to save tokens.
@@ -157,8 +156,9 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 
 1) Code change process — approval gate
 - REQUIRED: Present a plan first (analysis, scope, rationale, risks, tests).
-- For destructive/high-risk changes (deletes, migrations, API-breaking, changes to shared utilities/auth/config): suggest changes and wait for explicit approval before applying.
-- For standard implementation within an approved plan (new feature code, isolated bug fixes, test additions): proceed autonomously with verification.
+- High-risk changes REQUIRE explicit approval before applying: deletes, data/schema migrations, API-breaking changes, changes to shared utilities/auth/security/config/infra/concurrency.
+- Standard implementation within an explicitly approved plan (new feature code, isolated bug fixes in leaf modules, test additions): proceed autonomously with verification.
+- Default rule: when risk level is uncertain, treat as high-risk and request confirmation.
 - FORBIDDEN: Make high-risk changes without confirmation.
 
 2) Mandatory systematic verification
@@ -301,6 +301,8 @@ TECHNICAL_CONSIDERATIONS
 - REQUIRED: Check for null/undefined inputs, empty collections, type mismatches, and boundary values.
 - REQUIRED: Validate and sanitize external inputs; apply input-length and range limits.
 - REQUIRED: Robust error handling with specific error types (not generic catches).
+- REQUIRED: Assess security implications of changes (logging/data exposure, authz boundaries, injection risks, side-channel considerations).
+- REQUIRED: Assess performance impact of changed/added logic; avoid unnecessary complexity (O(n²) loops, redundant queries, excessive allocations); measure when relevant.
 - REQUIRED: Ensure version compatibility.
 - REQUIRED: Prefer reusing existing utilities/patterns; avoid new dependencies when equivalents exist.
 - REQUIRED: Generate unique IDs via a well-vetted library; avoid ad-hoc generation.
