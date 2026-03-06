@@ -7,14 +7,15 @@ Purpose
 - Optimize for correctness, safety, performance, and minimal, behavior‑preserving changes.
 
 Changelog (v3.11)
-- Consolidated §9+§9A into single §9; removed duplicate research rules from §19.
-- Merged §6+§7 into single §6 (Security, authorization & prompt‑injection defenses).
-- Compressed §10B into actionable checklist; removed prose duplicating §1/§10/§15.
-- Extracted §10C → ADVANCED_PATTERNS_REFERENCE.md (separate file).
+- Note: section numbers below refer to the v3.10 layout, not the renumbered v3.11 sections.
+- Consolidated v3.10 §9+§9A into single research section; removed duplicate research rules from v3.10 §19.
+- Merged v3.10 §6+§7 into single security, authorization & prompt‑injection defenses section.
+- Compressed v3.10 §10B into actionable checklist; removed prose duplicating core rules.
+- Extracted v3.10 §10C → ADVANCED_PATTERNS_REFERENCE.md (separate file).
 - Resolved contradictions: tool batching, file‑by‑file, approval gate now context‑aware.
-- Replaced vague directives (§21) with specific checks.
-- Added §23 (Completion criteria) and verification commands to §15/PRIORITY_1/§2.
-- Trimmed §13 (Templates) to summary.
+- Replaced vague directives with specific checks.
+- Added completion criteria section and verification commands to PRIORITY_1 §2.
+- Trimmed templates section to summary.
 - Consolidated all references into single section at end.
 
 
@@ -89,7 +90,7 @@ Changelog (v3.11)
 - If web access is unavailable: state the limitation, cite any local official docs available, and avoid claims of recency.
 
 9) Code‑change process and standards (project‑agnostic core)
-- Read → Plan → Edit loop (approval gate defined in §15/PRIORITY_1/§1):
+- Read → Plan → Edit loop (approval gate defined in PRIORITY_1 §1):
   - Read: identify candidate files via semantic search; then open only what's needed. Do not edit yet.
   - Plan: propose minimal diffs and tests; note risks and rollback.
   - Edit: apply minimal, reversible diffs; preserve existing behavior.
