@@ -48,7 +48,7 @@ Changelog (v3.11)
 - Structured outputs
   - When machine‑readable output is required, use JSON Schema + strict conformance.
   - Disable parallel tool calls while strict schemas are enforced.
-  - Validate; on failure retry with a brief "fix to schema" hint + exponential backoff.
+  - Validate; on schema validation failure, retry once with a brief "fix to schema" hint (no backoff).
   - Keep schemas minimal; true optionals optional; prefer enums.
 - Tools/function calling
   - Describe purpose/parameters; validate inputs before execution.
@@ -157,8 +157,8 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 
 1) Code change process — approval gate
 - REQUIRED: Present a plan first (analysis, scope, rationale, risks, tests).
-- For destructive/high-risk changes (deletes, migrations, API-breaking): suggest changes and wait for explicit approval before applying.
-- For standard implementation within an approved plan: proceed autonomously with verification.
+- For destructive/high-risk changes (deletes, migrations, API-breaking, changes to shared utilities/auth/config): suggest changes and wait for explicit approval before applying.
+- For standard implementation within an approved plan (new feature code, isolated bug fixes, test additions): proceed autonomously with verification.
 - FORBIDDEN: Make high-risk changes without confirmation.
 
 2) Mandatory systematic verification
@@ -175,8 +175,9 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 3) File-by-file changes
 - REQUIRED: Apply changes file-by-file in logical order.
 - In interactive mode: provide review opportunities between files.
-- In autonomous mode: verify each file change (lint/typecheck) before proceeding to the next.
-- FORBIDDEN: Bulk changes across multiple files without per-file verification.
+- In autonomous mode: after each file change, run at least lint/typecheck for the touched scope before proceeding to the next file.
+- REQUIRED: After the final file in a logical batch, run the full verification chain from PRIORITY_1 §2 (lint → typecheck → test) and record concrete evidence.
+- FORBIDDEN: Bulk changes across multiple files without the required per-file lint/typecheck gating and post-batch full verification chain.
 
 4) Justification requirement
 - REQUIRED: Any proposed change must include: problem/goal, why this change is necessary, why it is minimal vs alternatives, impact/risks, rollback plan, and verification steps/evidence.
@@ -348,5 +349,5 @@ References (authoritative)
 - GitHub Copilot custom instructions: https://docs.github.com/copilot/concepts/about-customizing-github-copilot-chat-responses
 - Supermemory MCP: https://supermemory.ai/blog/how-to-make-your-mcp-clients-share-context-with-supermemory-mcp/ , https://supermemory.ai/docs/api-reference/search/search-memory-entries
 - OpenAI: https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions ; https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api ; https://help.openai.com/en/articles/9358033-key-guidelines-for-writing-instructions-for-custom-gpts ; https://platform.openai.com/docs/guides/function-calling ; https://platform.openai.com/docs/guides/structured-outputs ; https://cookbook.openai.com/examples/structured_outputs_multi_agent ; https://cookbook.openai.com/examples/how_to_use_guardrails
-- Research: arxiv:2602.17046 (ITR — dynamic instruction retrieval); arxiv:2511.14342 (instruction conflict detection); arxiv:2602.07338 (multi-turn degradation)
+- Research: https://arxiv.org/abs/2602.17046 (ITR — dynamic instruction retrieval); https://arxiv.org/abs/2511.14342 (instruction conflict detection); https://arxiv.org/abs/2602.07338 (multi-turn degradation)
 - AGENTS.md standard: https://agents.md/ ; https://developers.openai.com/codex/guides/agents-md
