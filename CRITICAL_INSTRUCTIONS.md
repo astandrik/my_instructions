@@ -43,6 +43,7 @@ Changelog (v3.11)
 - Prompting
   - Put core rules first; separate instructions/context using `"""` or `###`.
   - Be explicit about objective, constraints, and output format.
+  - Start with the smallest prompt/ruleset that passes evals; add instruction blocks only when they fix a measured failure mode.
 - Structured outputs
   - When machine‑readable output is required, use JSON Schema + strict conformance.
   - Disable parallel tool calls while strict schemas are enforced.
@@ -142,6 +143,7 @@ Changelog (v3.11)
 
 15) Advanced reliability patterns
 - Extracted to separate file: `ADVANCED_PATTERNS_REFERENCE.md`.
+- Treat it as an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it.
 - Use ONLY when needed; prefer the simplest workflow that meets acceptance criteria.
 - Guardrails: keep chain-of-thought private unless explicitly requested; stop when acceptance criteria are met; do not iterate blindly.
 

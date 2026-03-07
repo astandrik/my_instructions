@@ -2,6 +2,8 @@
 
 Advanced Reliability Patterns — Reference (extracted from CRITICAL_INSTRUCTIONS.md v3.11)
 
+This is an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it.
+
 Use ONLY when needed; prefer the simplest workflow that meets acceptance criteria.
 
 ## Selector (pick the minimal set that fits)
@@ -14,7 +16,7 @@ Use ONLY when needed; prefer the simplest workflow that meets acceptance criteri
 - Deterministic transforms or computations (formatting/migrations/validation/math/parsing) → PAL/PoT-style: offload to deterministic runtimes/tools (linters/formatters/validators/interpreters) and verify.
 - Output quality not acceptable on first pass → Self-Refine loop: generate → FEEDBACK → REFINE. Cap refinement iterations (1–2) and stop when acceptance criteria are met.
 - When tool feedback is available for checking → CRITIC loop: generate → use tools to critique/verify → revise. Cap cycles (1–2) and escalate if still failing.
-- Repeated failure across attempts → Reflexion: write a short "lesson learned" (1–3 bullets: what failed, why, what to do next time); if a memory tool is enabled (per CRITICAL_INSTRUCTIONS.md §7 consent boundary), store it as a `Lesson:` entry.
+- Repeated failure across attempts → Reflexion: write a short "lesson learned" (1–3 bullets: what failed, why, what to do next time); if a memory tool is enabled (per CRITICAL_INSTRUCTIONS.md §7 consent boundary), store it as a `Lesson:` entry (apply CRITICAL_INSTRUCTIONS.md §7 safety rule: no secrets/tokens/PII).
 - High-risk/security/perf/compatibility → add a verifier checklist; max 1–2 critique/revise cycles; then escalate instead of looping.
 
 ## Guardrails
@@ -29,7 +31,6 @@ Use ONLY when needed; prefer the simplest workflow that meets acceptance criteri
 - Cursor rules best practices (keep rules focused; ≤500 lines): https://docs.cursor.com/zh-Hant/context/rules
 - ReAct (paper): https://arxiv.org/abs/2210.03629
 - Self-Consistency (paper): https://arxiv.org/abs/2203.11171
-- Tree of Thoughts (paper): https://arxiv.org/abs/2305.10601
 - Chain-of-Verification (paper): https://arxiv.org/abs/2309.11495
 - CRITIC (paper): https://arxiv.org/abs/2305.11738
 - Reflexion (paper): https://arxiv.org/abs/2303.11366
