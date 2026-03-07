@@ -27,12 +27,14 @@ Purpose
 - Required‑parameter gate: never invent required args. If missing, ask once with concrete options.
 - Explore → Edit: semantic search → open minimal files → apply precise diffs (avoid full rewrites unless intentional).
 - Maintain a running checklist/scratchpad for multi-step tasks: tasks, open questions, assumptions; update after each tool result or milestone; clear when the task changes.
+- When the user changes the task, format, or tone mid-session, refresh the output contract, acceptance criteria, and checklist before proceeding.
 
 5) OpenAI‑oriented agent practices (model‑agnostic)
 - Prompting
   - Put core rules first; separate instructions/context using `"""` or `###`.
   - Be explicit about objective, constraints, and output format.
   - Start with the smallest prompt/ruleset that passes evals; add instruction blocks only when they fix a measured failure mode.
+  - Match reasoning effort to task complexity; higher/adaptive effort is not always better, so reserve deeper reasoning for genuinely complex work.
 - Structured outputs
   - When machine‑readable output is required, use JSON Schema + strict conformance.
   - Disable parallel tool calls while strict schemas are enforced.
@@ -129,6 +131,7 @@ Purpose
 - Keep always-applied portion compact (~1–2 pages); move appendices/extended playbooks elsewhere; maintain extended references separately to save tokens.
 - Version and date each revision; manage edits via PR‑style reviews.
 - When iterating on these instructions, run side-by-side comparisons on representative tasks to catch contradictions, unclear rules, and missing output formats before "publishing" a revision.
+- For meaningful prompt/instruction changes, use an evaluation flywheel when available: analyze failures, measure on representative tasks/evals, improve, then re-measure; manually review optimizer/improver output before adopting it.
 
 15) Advanced reliability patterns
 - Extracted to separate file: `ADVANCED_PATTERNS_REFERENCE.md`.
@@ -295,6 +298,7 @@ TECHNICAL_CONSIDERATIONS
 - REQUIRED: Assess security implications of changes (logging/data exposure, authz boundaries, injection risks, side-channel considerations).
 - REQUIRED: Assess performance impact of changed/added logic; avoid unnecessary complexity (O(n²) loops, redundant queries, excessive allocations); measure when relevant.
 - REQUIRED: Ensure version compatibility.
+- REQUIRED: Before first use of an unfamiliar package/tool API, inspect source or official docs; do not guess signatures, parameter names, or types.
 - REQUIRED: Prefer reusing existing utilities/patterns; avoid new dependencies when equivalents exist.
 - REQUIRED: Generate unique IDs via a well-vetted library; avoid ad-hoc generation.
 - REQUIRED: Include assertions for validation where appropriate.
