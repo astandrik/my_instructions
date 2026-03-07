@@ -150,8 +150,8 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 
 1) Code change process — approval gate
 - REQUIRED: Present a plan first (analysis, scope, rationale, risks, tests).
-- High-risk changes REQUIRE explicit approval before applying: deletes, data/schema migrations, API-breaking changes, changes to shared utilities/auth/security/config/infra/concurrency.
-- Standard implementation within an explicitly approved plan (new feature code, isolated bug fixes in leaf modules, test additions): proceed autonomously with verification.
+- High-risk changes REQUIRE explicit approval before applying: deletes, bulk refactors, data/schema migrations, API-breaking changes, changes to shared utilities/auth/security/config/infra/concurrency.
+- Standard implementation within an explicitly approved plan (new feature code, isolated bug fixes in leaf modules, test additions): proceed autonomously, performing verification as specified in PRIORITY_1 §3.
 - Default rule: when risk level is uncertain, treat as high-risk and request confirmation.
 - FORBIDDEN: Make high-risk changes without confirmation.
 

@@ -19,7 +19,7 @@ Use ONLY when needed; prefer the simplest workflow that meets acceptance criteri
 - Deterministic transforms or computations (formatting/migrations/validation/math/parsing) → PAL/PoT-style: offload to deterministic runtimes/tools (linters/formatters/validators/interpreters) and verify.
 - Output quality not acceptable on first pass → Self-Refine loop: generate → FEEDBACK → REFINE. Cap refinement iterations (1–2) and stop when acceptance criteria are met.
 - When tool feedback is available for checking → CRITIC loop: generate → use tools to critique/verify → revise. Cap cycles (1–2) and escalate if still failing.
-- Repeated failure across attempts → Reflexion: write a short "lesson learned" (1–3 bullets: what failed, why, what to do next time); if a memory tool is enabled (per CRITICAL_INSTRUCTIONS.md §7 consent boundary), store it as a `Lesson:` entry (apply CRITICAL_INSTRUCTIONS.md §7 safety rule: no secrets/tokens/PII).
+- Repeated failure across attempts → Reflexion: write a short "lesson learned" (1–3 bullets: what failed, why, what to do next time); if a memory tool is enabled (per CRITICAL_INSTRUCTIONS.md §7 "Memory and knowledge management" consent boundary), store it as a `Lesson:` entry (apply CRITICAL_INSTRUCTIONS.md §7 "Memory and knowledge management" safety rule: no secrets/tokens/PII).
 - High-risk/security/perf/compatibility → add a verifier checklist; max 1–2 critique/revise cycles; then escalate instead of looping.
 
 ## Guardrails
