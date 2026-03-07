@@ -1,5 +1,8 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
+Version: 1.0 — 2026-03-07
+Compatible with CRITICAL_INSTRUCTIONS.md v3.11
+
 Advanced Reliability Patterns — Reference (extracted from CRITICAL_INSTRUCTIONS.md v3.11)
 
 This is an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it.

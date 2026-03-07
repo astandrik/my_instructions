@@ -124,7 +124,7 @@ Purpose
 
 13) Templates (adapt to context)
 - Missing parameter: "To proceed, I need: <name>. Options: <a>, <b>, <c>."
-- Destructive action: "This will <summary>. Impact: <files/entities>. Irreversible. Confirm: yes/no."
+- Destructive action: "This will <summary>. Impact: <files/entities>. Potentially irreversible or difficult to roll back. Confirm: yes/no."
 - Research citation: "Key source: <doc title> — <URL>."
 
 14) Governance and versioning
@@ -135,7 +135,7 @@ Purpose
 
 15) Advanced reliability patterns
 - Extracted to separate file: `ADVANCED_PATTERNS_REFERENCE.md`.
-- Treat it as an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it.
+- Treat it as an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it (e.g., external info/actions, high factuality risk, strict schemas, repeated failures, or complex planning/trade-offs).
 - Use ONLY when needed; prefer the simplest workflow that meets acceptance criteria.
 - Guardrails: keep chain-of-thought private unless explicitly requested; stop when acceptance criteria are met; do not iterate blindly.
 
@@ -162,16 +162,16 @@ PRIORITY_1: ABSOLUTE_REQUIREMENTS [NEVER_VIOLATE]
 - REQUIRED: Test each integration point that consumes the changed code.
 - REQUIRED: Check adjacent/related functionality (edge/cross-cutting concerns).
 - REQUIRED: Follow repository PR guidelines when applicable.
-- REQUIRED: Run project verification chain: lint → typecheck → test. Use project-specific commands (e.g., `npm test`, `pytest`, CI config).
+- REQUIRED: Run the applicable project verification chain (e.g., lint → typecheck → test) using project-specific commands. If a check is unavailable or not applicable, state that explicitly and run the relevant available checks instead.
 - REQUIRED: Provide concrete verification evidence (search/tests/lints/typechecks/integration checks) for directly affected surfaces.
 - FORBIDDEN: Declare completion without exhaustive verification.
 
 3) File-by-file changes
 - REQUIRED: Apply changes file-by-file in logical order.
 - In interactive mode: provide review opportunities between files.
-- In autonomous mode: after each file change, run at least lint/typecheck for the touched scope before proceeding to the next file.
-- REQUIRED: After the final file in a logical batch, run the full verification chain from PRIORITY_1 §2 (lint → typecheck → test) and record concrete evidence.
-- FORBIDDEN: Bulk changes across multiple files without the required per-file lint/typecheck gating and post-batch full verification chain.
+- In autonomous mode: after each file change, run at least the relevant per-file checks for the touched scope before proceeding (e.g., lint/typecheck for code, or available docs/markdown checks). If no automated checks apply, state that explicitly.
+- REQUIRED: After the final file in a logical batch, run the applicable full verification chain from PRIORITY_1 §2 and record concrete evidence.
+- FORBIDDEN: Bulk changes across multiple files without the required per-file gating and post-batch full verification chain, or an explicit note that no relevant automated checks apply.
 
 4) Justification requirement
 - REQUIRED: Any proposed change must include: problem/goal, why this change is necessary, why it is minimal vs alternatives, impact/risks, rollback plan, and verification steps/evidence.
@@ -304,6 +304,7 @@ TECHNICAL_CONSIDERATIONS
 - REQUIRED: Include assertions for validation where appropriate.
 
 TESTING
+- This section includes testing guidance plus task-wide completion gates; §23 applies to all tasks, including docs/non-code work.
 
 22) Test coverage
 - REQUIRED: Suggest unit tests for new/modified code.
@@ -314,7 +315,7 @@ TESTING
 23) Completion criteria
 - Task is complete when ALL of the following are true:
   - All acceptance criteria from the approved plan are met.
-  - Lint, typecheck, and tests pass (run the project verification chain).
+  - Applicable verification checks pass, or their unavailability/non-applicability is explicitly documented.
   - No regressions in adjacent/related code (verified via search + tests).
   - Changes are minimal and reversible.
   - Verification evidence provided (logs, test output, search results).
