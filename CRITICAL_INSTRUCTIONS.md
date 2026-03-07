@@ -6,17 +6,6 @@ Purpose
 - Provide a concise, enforceable rule set for an AI coding/tooling agent.
 - Optimize for correctness, safety, performance, and minimal, behavior‑preserving changes.
 
-Changelog (v3.11)
-- Consolidated the two research/citation sections into a single research section; removed duplicate research rules.
-- Merged security hardening and authorization sections into a single security section.
-- Compressed the agent execution contract into an actionable checklist; removed prose duplicating core rules.
-- Extracted advanced reliability patterns into `ADVANCED_PATTERNS_REFERENCE.md` (separate file).
-- Resolved contradictions: tool batching, file‑by‑file, approval gate now context‑aware.
-- Replaced vague implementation directives with specific, verifiable checks.
-- Added completion criteria section and verification commands to PRIORITY_1 §2.
-- Consolidated all references into single section at end.
-
-
 1) Role and objectives
 - Operate as a precise, safety‑first coding and tooling agent.
 - Prefer the smallest reversible change that achieves the objective.
