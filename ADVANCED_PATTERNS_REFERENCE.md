@@ -1,9 +1,9 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
-Version: 1.0 — 2026-03-07
-Compatible with CRITICAL_INSTRUCTIONS.md v3.11
+Version: 1.1 — 2026-03-08
+Compatible with CRITICAL_INSTRUCTIONS.md v3.12
 
-Advanced Reliability Patterns — Reference (extracted from CRITICAL_INSTRUCTIONS.md v3.11)
+Advanced Reliability Patterns — Reference (extracted from CRITICAL_INSTRUCTIONS.md v3.12)
 
 This is an optional companion reference, not an always-on core prompt; load/use it only when task shape or a measured failure mode warrants it.
 
@@ -29,9 +29,14 @@ Use ONLY when needed; prefer the simplest workflow that meets acceptance criteri
 
 ## Sources
 
+Authoritative product/vendor docs
+
 - OpenAI Structured Outputs: https://platform.openai.com/docs/guides/structured-outputs
 - OpenAI Function Calling + Structured Outputs (`strict: true`): https://help.openai.com/en/articles/8555517-function-calling-in-the-openai-api
-- Cursor rules best practices (keep rules focused; ≤500 lines): https://docs.cursor.com/context/rules
+- Cursor rules best practices (keep rules focused; <=500 lines): https://cursor.com/docs/rules
+
+Supplemental research
+
 - ReAct (paper): https://arxiv.org/abs/2210.03629
 - Self-Consistency (paper): https://arxiv.org/abs/2203.11171
 - Chain-of-Verification (paper): https://arxiv.org/abs/2309.11495
