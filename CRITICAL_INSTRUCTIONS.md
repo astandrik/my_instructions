@@ -62,14 +62,13 @@ Purpose
 - Assume non‑idempotent unless documented; guard against retries and race conditions.
 - For destructive actions (deletes, bulk refactors, migrations), summarize impact and obtain explicit approval first.
 
-7) Memory and knowledge management
-- If a memory tool is available (e.g., Supermemory MCP), use it to persist reusable knowledge; keep entries short and atomic.
-- Retrieval (read path): at the start of each new user request (before planning), search using 3–6 task keywords; pull at most 3–5 memories; treat results as hints to validate against the repo/user.
-- Capture (write path): when you learn a stable, reusable fact (preferences, workflow constraints, build/test commands, recurring pitfalls, root-cause lessons), promptly search first; if not already present, store it.
-- Consent boundary: only write to external memory if the user has enabled a memory tool; treat its availability as consent for storing non-sensitive items per the safety rule below.
-- De-duplication: search before writing; if already present, avoid re-storing; otherwise add a short "Supersedes:"/"Correction:" entry when updating.
-- Format: one statement per memory; prefix with `Preference:`, `Workflow:`, `Build:`, `Pitfall:`, `Lesson:`; include date and an optional project/repo identifier when relevant.
-- Safety: NEVER store secrets, tokens, credentials, private keys, personal data, or proprietary payloads; if unsure, do not store.
+7) Search and retrieval strategy
+- For repo/codebase questions, start with semantic/codebase search or targeted symbol/content search; then open only the minimal files needed to verify.
+- Build search queries from 3–6 discriminative terms; prefer stable identifiers first (filenames, symbols, API names, error strings, versions).
+- For external documentation, prefer official/vendor docs first. If docs/search MCP servers are available, use them before broad web search.
+- For broader internet research, start narrow and refine iteratively; add vendor/product/version/date terms before widening scope.
+- Treat search results as hints until verified against authoritative sources, the repo, or the active environment.
+- If search tooling is unavailable, state the limitation explicitly and proceed with the best available authoritative sources.
 
 8) Research and citations
 - Trigger research when platform behavior, security/privacy, performance, or build/tooling is uncertain.
@@ -343,9 +342,9 @@ Verification checklist (pre-action)
 
 References (authoritative)
 - Cursor: https://docs.cursor.com/en/context/rules
+- Search & retrieval: https://docs.cursor.com/en/context/codebase-indexing ; https://docs.cursor.com/context/@-symbols/@-codebase ; https://developers.openai.com/api/docs/docs-mcp/ ; https://developers.openai.com/api/docs/guides/tools-web-search ; https://developers.openai.com/api/docs/guides/tools-tool-search/ ; https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector
 - Roo: https://docs.roocode.com/features/custom-instructions , https://docs.roocode.com/features/custom-modes
 - GitHub Copilot custom instructions: https://docs.github.com/copilot/concepts/about-customizing-github-copilot-chat-responses
-- Supermemory MCP: https://supermemory.ai/blog/how-to-make-your-mcp-clients-share-context-with-supermemory-mcp/ , https://supermemory.ai/docs/api-reference/search/search-memory-entries
 - OpenAI: https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions ; https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api ; https://help.openai.com/en/articles/9358033-key-guidelines-for-writing-instructions-for-custom-gpts ; https://platform.openai.com/docs/guides/function-calling ; https://platform.openai.com/docs/guides/structured-outputs ; https://cookbook.openai.com/examples/structured_outputs_multi_agent ; https://cookbook.openai.com/examples/how_to_use_guardrails
 - Research: https://arxiv.org/abs/2602.17046 (ITR — dynamic instruction retrieval); https://arxiv.org/abs/2511.14342 (instruction conflict detection); https://arxiv.org/abs/2602.07338 (multi-turn degradation)
 - AGENTS.md standard: https://agents.md/ ; https://developers.openai.com/codex/guides/agents-md
