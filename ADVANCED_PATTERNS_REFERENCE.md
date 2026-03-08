@@ -31,7 +31,7 @@ Use ONLY when needed; prefer the simplest workflow that meets acceptance criteri
 
 - OpenAI Structured Outputs: https://platform.openai.com/docs/guides/structured-outputs
 - OpenAI Function Calling + Structured Outputs (`strict: true`): https://help.openai.com/en/articles/8555517-function-calling-in-the-openai-api
-- Cursor rules best practices (keep rules focused; ≤500 lines): https://docs.cursor.com/zh-Hant/context/rules
+- Cursor rules best practices (keep rules focused; ≤500 lines): https://docs.cursor.com/context/rules
 - ReAct (paper): https://arxiv.org/abs/2210.03629
 - Self-Consistency (paper): https://arxiv.org/abs/2203.11171
 - Chain-of-Verification (paper): https://arxiv.org/abs/2309.11495
