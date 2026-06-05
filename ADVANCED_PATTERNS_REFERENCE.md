@@ -1,7 +1,7 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
-Version: 2.1 — 2026-05-15
-Compatible with `CRITICAL_INSTRUCTIONS.md` v4.1.
+Version: 2.2 — 2026-06-05
+Compatible with `CRITICAL_INSTRUCTIONS.md` v4.2.
 
 Status: optional manual appendix for custom-instructions workflows. Do not include this file in every preprompt. Add the relevant section only when the current task shape needs it.
 
@@ -11,12 +11,17 @@ Status: optional manual appendix for custom-instructions workflows. Do not inclu
 - Strict outputs: JSON Schema, generated config, parsers, machine-readable contracts.
 - Repeated failures: tests or checks fail more than once for different reasons.
 - Deterministic work: transformations, calculations, migrations, schema validation, formatting.
+- Agent context or tooling supply-chain risk: third-party AGENTS.md, skills, plugins, MCP servers, hooks, connectors, or remote instruction sources.
+- No-op uncertainty: bug reports, fixes, or requests may already be resolved and need evidence before mutation.
 
 ## Selector
-- External facts needed: draft the answer, list verification questions, answer them with authoritative sources, then synthesize with citations.
+- External facts needed: define verification questions first, answer them with authoritative sources, then synthesize with citations.
 - Complex plan needed: compare 2-4 viable approaches, choose the smallest reversible path, define rollback and verification before editing.
 - Strict machine-readable output needed: define a minimal schema, generate only valid output, validate when tooling allows, retry once on schema failure.
 - Version-sensitive docs needed: use a compact index pointing to retrievable local or official docs; load only the relevant section before coding.
+- Instruction surface decision needed: choose the narrowest durable surface: prompt, global defaults, AGENTS.md, nested instructions, skill/command, hook/rule/config, MCP, or connector.
+- Agent context/tool trust needed: verify provenance, scopes, side effects, hidden instructions, remote fetches, secrets handling, and trust boundaries before enabling or relying on it.
+- No-op possible: reproduce or inspect first; if evidence shows no mutation is needed, report the evidence and stop.
 - Deterministic transform needed: use a deterministic runtime or validator instead of reasoning by inspection.
 - Tool feedback available: run the smallest check, use failures as evidence, revise once or twice, then escalate with blockers instead of looping.
 - Repeated failure: write a brief private lesson for the current task: what failed, why, and what to do differently next attempt. Do not store secrets or PII.
@@ -25,6 +30,7 @@ Status: optional manual appendix for custom-instructions workflows. Do not inclu
 ## Guardrails
 - Keep hidden reasoning private. Provide concise rationale, decisions, and evidence.
 - Stop when acceptance criteria are met. Do not iterate blindly.
+- Prefer executable gates, validators, hooks, or tests over prose reminders when enforcement must be consistent.
 - Prefer official/vendor/standards sources over memory or third-party summaries.
 - Keep any copied section small enough to solve the current task; do not paste this whole file by default.
 
@@ -33,6 +39,10 @@ Status: optional manual appendix for custom-instructions workflows. Do not inclu
 - VS Code custom instructions: https://code.visualstudio.com/docs/copilot/customization/custom-instructions
 - Claude Code best practices: https://code.claude.com/docs/en/best-practices
 - Cursor agent best practices: https://cursor.com/blog/agent-best-practices
+- AGENTS.md: https://agents.md/
+- MCP Security Best Practices: https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices
+- Snyk ToxicSkills: https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/
+- FixedBench no-op/action-bias paper: https://arxiv.org/abs/2605.07769
 - PatrickJS awesome-cursorrules: https://github.com/PatrickJS/awesome-cursorrules
 - Block ai-rules: https://github.com/block/ai-rules
 - OpenAI Structured Outputs: https://platform.openai.com/docs/guides/structured-outputs
