@@ -15,6 +15,8 @@ Use these scenarios for side-by-side checks when changing `CRITICAL_INSTRUCTIONS
 | Unfamiliar library API | Inspect local source or official docs before coding | No, unless dependency added | Yes if task clear | Typecheck/tests covering used API |
 | Version-sensitive API change | Check local versions and version-matched docs before coding | No, unless dependency/API upgrade is implied | Yes if task clear | Source/version evidence plus affected test/typecheck |
 | Conflicting local examples | Identify the conflict, choose the closest applicable convention, and explain the rationale | No, unless behavior risk is high | Yes if task clear | Search evidence plus affected check |
+| Already-resolved or invalid bug report | Reproduce or inspect first, make no code change if evidence shows no mutation is needed, and report the evidence | No | No unless evidence shows a real gap | Reproduction evidence or targeted search/inspection evidence |
+| Install or rely on third-party skill/MCP/plugin | Verify provenance, scope, side effects, and hidden or suspicious instructions before use | Yes, for broad or side-effecting trust changes | Maybe | Source or provenance review plus bounded tool/config inspection |
 | Strict JSON/schema output task | Produce minimal schema-conformant output and validate if possible | No | Maybe | Schema validation or parser round-trip |
 | Deterministic transform or calculation | Use a runtime, parser, formatter, or validator instead of reasoning by inspection | No | Maybe | Tool output, parser round-trip, or validator result |
 | Code review request | Findings first, severity ordered, file refs, tests/gaps | No | No, unless asked to fix | Evidence from diff/search/tests if run |
