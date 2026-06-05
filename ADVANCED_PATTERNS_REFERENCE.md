@@ -1,7 +1,7 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
-Version: 2.2 — 2026-06-05
-Compatible with `CRITICAL_INSTRUCTIONS.md` v4.2.
+Version: 2.3 — 2026-06-05
+Compatible with `CRITICAL_INSTRUCTIONS.md` v4.3.
 
 Status: optional manual appendix for custom-instructions workflows. Do not include this file in every preprompt. Add the relevant section only when the current task shape needs it.
 
@@ -21,6 +21,10 @@ Status: optional manual appendix for custom-instructions workflows. Do not inclu
 - Version-sensitive docs needed: use a compact index pointing to retrievable local or official docs; load only the relevant section before coding.
 - Instruction surface decision needed: choose the narrowest durable surface: prompt, global defaults, AGENTS.md, nested instructions, skill/command, hook/rule/config, MCP, or connector.
 - Agent context/tool trust needed: verify provenance, scopes, side effects, hidden instructions, remote fetches, secrets handling, and trust boundaries before enabling or relying on it.
+- Side-effecting agent/tool action needed: validate original user intent against exact tool name, target, arguments, credential scope, and external effect; pause or ask on goal drift, broad scope, or summary/raw-action mismatch.
+- Skill/MCP/hook/update trust needed: verify publisher, install/update path, exact local command, permission manifest, pinned version/hash/signature when available, sandbox, egress, and update drift before enabling or relying on it.
+- Long-running or multi-agent context needed: keep requirements and decisions in the main thread, isolate noisy exploration/subagents, preserve accepted constraints through compaction, and avoid concurrent writes to the same files.
+- Agentic automation/deployment needed: prefer least-agency over autonomy, start bounded and low-risk, define owner/stop authority, ephemeral credentials, monitoring, and incident response before broad access.
 - No-op possible: reproduce or inspect first; if evidence shows no mutation is needed, report the evidence and stop.
 - Deterministic transform needed: use a deterministic runtime or validator instead of reasoning by inspection.
 - Tool feedback available: run the smallest check, use failures as evidence, revise once or twice, then escalate with blockers instead of looping.
@@ -43,6 +47,12 @@ Status: optional manual appendix for custom-instructions workflows. Do not inclu
 - MCP Security Best Practices: https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices
 - Snyk ToxicSkills: https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/
 - FixedBench no-op/action-bias paper: https://arxiv.org/abs/2605.07769
+- OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+- OWASP Agentic Skills Top 10: https://owasp.org/www-project-agentic-skills-top-10/
+- Careful Adoption of Agentic AI Services: https://www.ncsc.govt.nz/protect-your-organisation/careful-adoption-of-agentic-ai-services/
+- NIST AI Agent Standards Initiative: https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure
+- MCP tool poisoning paper: https://arxiv.org/abs/2603.22489
+- Secure AI agents system-level defenses: https://arxiv.org/abs/2603.30016
 - PatrickJS awesome-cursorrules: https://github.com/PatrickJS/awesome-cursorrules
 - Block ai-rules: https://github.com/block/ai-rules
 - OpenAI Structured Outputs: https://platform.openai.com/docs/guides/structured-outputs
