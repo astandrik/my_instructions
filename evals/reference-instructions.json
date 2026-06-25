@@ -1,0 +1,17 @@
+{
+  "openhands-agents": {
+    "label": "OpenHands AGENTS.md",
+    "description": "Public AGENTS.md from the OpenHands automated software engineer repository, used as an external reference instruction bundle.",
+    "license": "MIT",
+    "source_repository": "https://github.com/OpenHands/OpenHands",
+    "files": {
+      "CRITICAL_INSTRUCTIONS.md": {
+        "url": "https://raw.githubusercontent.com/OpenHands/OpenHands/main/AGENTS.md",
+        "sha256": "b98bdff135c6d3ba0ba3b5cae23c332d9bbcb86dd61fac46a63cbb2769b2646d"
+      },
+      "ADVANCED_PATTERNS_REFERENCE.md": {
+        "literal": ""
+      }
+    }
+  }
+}

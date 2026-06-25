@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["winner", "baseline_score", "current_score", "confidence", "reason", "checks"],
+  "properties": {
+    "winner": {
+      "type": "string",
+      "enum": ["baseline", "current", "tie", "inconclusive"]
+    },
+    "baseline_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "current_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "baseline_score", "current_score", "winner", "note"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "instruction_activation",
+              "evidence_grounding",
+              "scope_control",
+              "engineering_specificity",
+              "verification_quality",
+              "risk_handling",
+              "noise_control"
+            ]
+          },
+          "baseline_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "current_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "winner": {
+            "type": "string",
+            "enum": ["baseline", "current", "tie", "inconclusive"]
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "description": "Runner validation requires one check for each allowed id."
+    }
+  }
+}

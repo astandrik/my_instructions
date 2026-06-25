@@ -3,7 +3,7 @@
 Version: 2.5 — 2026-06-13
 Compatible with `CRITICAL_INSTRUCTIONS.md` v4.5.
 
-Status: optional manual appendix for custom-instructions workflows. Do not include this file in every preprompt. Add the relevant section only when the current task shape needs it.
+Status: optional manual appendix for custom-instructions workflows. When this file is present in a combined instruction bundle, apply only the relevant section when the current task shape needs it.
 
 ## When to Use
 - External factual risk: platform behavior, compatibility, security/privacy, performance, legal/current facts.
