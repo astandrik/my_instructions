@@ -1,0 +1,58 @@
+{
+  "gpt-5.4-high": {
+    "model": "gpt-5.4",
+    "reasoning_effort": "high",
+    "service_tier": "fast"
+  },
+  "gpt-5.4-low": {
+    "model": "gpt-5.4",
+    "reasoning_effort": "low",
+    "service_tier": "fast"
+  },
+  "gpt-5.4-medium": {
+    "model": "gpt-5.4",
+    "reasoning_effort": "medium",
+    "service_tier": "fast"
+  },
+  "gpt-5.4-xhigh": {
+    "model": "gpt-5.4",
+    "reasoning_effort": "xhigh",
+    "service_tier": "fast"
+  },
+  "gpt-5.5-high": {
+    "model": "gpt-5.5",
+    "reasoning_effort": "high",
+    "service_tier": "fast"
+  },
+  "gpt-5.5-low": {
+    "model": "gpt-5.5",
+    "reasoning_effort": "low",
+    "service_tier": "fast"
+  },
+  "gpt-5.5-medium": {
+    "model": "gpt-5.5",
+    "reasoning_effort": "medium",
+    "service_tier": "fast"
+  },
+  "gpt-5.5-xhigh": {
+    "model": "gpt-5.5",
+    "reasoning_effort": "xhigh",
+    "service_tier": "fast"
+  },
+  "spark-high": {
+    "model": "gpt-5.3-codex-spark",
+    "reasoning_effort": "high"
+  },
+  "spark-low": {
+    "model": "gpt-5.3-codex-spark",
+    "reasoning_effort": "low"
+  },
+  "spark-medium": {
+    "model": "gpt-5.3-codex-spark",
+    "reasoning_effort": "medium"
+  },
+  "spark-xhigh": {
+    "model": "gpt-5.3-codex-spark",
+    "reasoning_effort": "xhigh"
+  }
+}
