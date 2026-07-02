@@ -69,6 +69,7 @@ PRIVATE_RAW_CONTENT_PATTERNS = [
     re.compile(r"session_string\s*=", re.IGNORECASE),
 ]
 REASONING_EFFORTS = {"low", "medium", "high", "xhigh"}
+AGENT_COMMAND_MODES = {"legacy-codex", "current-codex"}
 
 
 class ValidationError(Exception):
@@ -902,6 +903,12 @@ def preflight_agent_command(agent_command: str) -> None:
         raise HarnessFailure(f"agent command preflight failed: {message}")
 
 
+def timeout_stream_text(value: str | bytes | None) -> str:
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value or ""
+
+
 def case_prompt_from_contents(case: dict[str, Any], file_contents: dict[str, str], label: str = "current") -> str:
     instruction_blocks = []
     for target in case["target_files"]:
@@ -911,7 +918,10 @@ def case_prompt_from_contents(case: dict[str, Any], file_contents: dict[str, str
     return (
         "You are running a repo-local instruction eval.\n"
         "Treat the candidate instruction files below as the instruction set under evaluation for this task.\n"
-        "Return only the JSON object required by the provided output schema.\n\n"
+        "Return only a JSON object. Required keys: decision, risk_level, summary, evidence, actions.\n"
+        "decision must be one of: pass, fail, needs_approval, no_op, blocked.\n"
+        "risk_level must be one of: low, medium, high.\n"
+        "summary must be a non-empty string. evidence must be a non-empty array of strings. actions must be an array of strings.\n\n"
         "Set decision to the recommended action for the user task, not to whether the eval itself passes.\n\n"
         f"Eval label: {label}\n"
         f"Case id: {case['id']}\n"
@@ -965,7 +975,9 @@ def quality_judge_prompt(
         "baseline": safe_quality_record(baseline_label, baseline),
         "current": safe_quality_record(current_label, current),
         "instructions": [
-            "Return only the JSON object required by the output schema.",
+            "Return only a JSON object with keys: winner, baseline_score, current_score, confidence, reason, checks.",
+            "winner must be one of: baseline, current, tie, inconclusive. confidence must be one of: low, medium, high.",
+            "checks must include one object for each quality_checks id with id, baseline_score, current_score, winner, and note.",
             "Judge instruction-following quality, not whether the eval harness passed.",
             "Use baseline_score, current_score, and per-check scores on a 0 to 100 scale where 100 is best.",
             "Use winner='tie' when neither response is materially better.",
@@ -993,6 +1005,7 @@ def build_agent_command(
     workspace: Path,
     output_last_message: Path,
     schema_path: Path,
+    agent_command_mode: str,
 ) -> list[str]:
     command = split_agent_command(agent_command)
     command.extend(
@@ -1005,23 +1018,39 @@ def build_agent_command(
     )
     if service_tier:
         command.extend(["-c", f'service_tier="{service_tier}"'])
-    command.extend(
-        [
-            "--json",
-            "--ephemeral",
-            "--ignore-user-config",
-            "--skip-git-repo-check",
-            "--sandbox",
-            "read-only",
-            "--cd",
-            str(workspace),
-            "--output-schema",
-            str(schema_path),
-            "--output-last-message",
-            str(output_last_message),
-            "-",
-        ]
-    )
+    if agent_command_mode == "current-codex":
+        command.extend(["-c", "mcp_servers={}"])
+        command.extend(
+            [
+                "--json",
+                "--skip-git-repo-check",
+                "--sandbox",
+                "read-only",
+                "--cd",
+                str(workspace),
+                "--output-last-message",
+                str(output_last_message),
+                "-",
+            ]
+        )
+    else:
+        command.extend(
+            [
+                "--json",
+                "--ephemeral",
+                "--ignore-user-config",
+                "--skip-git-repo-check",
+                "--sandbox",
+                "read-only",
+                "--cd",
+                str(workspace),
+                "--output-schema",
+                str(schema_path),
+                "--output-last-message",
+                str(output_last_message),
+                "-",
+            ]
+        )
     return command
 
 
@@ -1055,6 +1084,8 @@ def run_case(
     service_tier: str | None,
     output_dir: Path,
     dry_run: bool,
+    agent_command_mode: str,
+    case_timeout_seconds: int | None,
     label: str = "current",
 ) -> AgentClassification:
     if dry_run:
@@ -1067,6 +1098,7 @@ def run_case(
             workspace=repo_root,
             output_last_message=case_output / "final-message.json",
             schema_path=repo_root / FINAL_RESPONSE_SCHEMA,
+            agent_command_mode=agent_command_mode,
         )
         print(shell_join(command))
         return AgentClassification(True, "none", ["dry-run"])
@@ -1088,29 +1120,47 @@ def run_case(
                 workspace=workspace,
                 output_last_message=output_last_message,
                 schema_path=schema_path,
+                agent_command_mode=agent_command_mode,
             )
             case_output.mkdir(parents=True, exist_ok=True)
-            completed = subprocess.run(
-                command,
-                cwd=repo_root,
-                text=True,
-                input=prompt,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            (case_output / "events.jsonl").write_text(completed.stdout, encoding="utf-8")
-            (case_output / "stderr.txt").write_text(completed.stderr, encoding="utf-8")
+            try:
+                completed = subprocess.run(
+                    command,
+                    cwd=repo_root,
+                    text=True,
+                    input=prompt,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=case_timeout_seconds,
+                )
+                stdout = completed.stdout
+                stderr = completed.stderr
+                returncode = completed.returncode
+                timed_out = False
+                timeout_details: list[str] = []
+            except subprocess.TimeoutExpired as exc:
+                stdout = timeout_stream_text(exc.stdout)
+                stderr = timeout_stream_text(exc.stderr)
+                returncode = 124
+                timed_out = True
+                timeout_details = [f"agent timed out after {case_timeout_seconds}s"]
+            (case_output / "events.jsonl").write_text(stdout, encoding="utf-8")
+            (case_output / "stderr.txt").write_text(stderr, encoding="utf-8")
+            if timed_out:
+                (case_output / "timeout.txt").write_text("\n".join(timeout_details) + "\n", encoding="utf-8")
             final_text = ""
             if output_last_message.exists():
                 final_text = output_last_message.read_text(encoding="utf-8")
             if not final_text:
-                final_text = completed.stdout
+                final_text = stdout
             final_response = parse_final_response(final_text)
             result = classify_agent_result(
-                completed.returncode,
+                returncode,
                 final_text,
                 [deterministic_check_from(case)],
             )
+            if timed_out:
+                result = AgentClassification(False, "agent", timeout_details, final_response)
             result.final_response = final_response
             print(f"case={case['id']} label={label} passed={str(result.passed).lower()} failure_type={result.failure_type}")
             for detail in result.details:
@@ -1133,6 +1183,7 @@ def build_quality_judge_command(
     workspace: Path,
     output_last_message: Path,
     schema_path: Path,
+    agent_command_mode: str,
 ) -> list[str]:
     return build_agent_command(
         agent_command,
@@ -1142,6 +1193,7 @@ def build_quality_judge_command(
         workspace=workspace,
         output_last_message=output_last_message,
         schema_path=schema_path,
+        agent_command_mode=agent_command_mode,
     )
 
 
@@ -1158,6 +1210,8 @@ def run_quality_judge(
     baseline_label: str,
     baseline_record: dict[str, Any],
     current_record: dict[str, Any],
+    agent_command_mode: str,
+    case_timeout_seconds: int | None,
 ) -> dict[str, Any]:
     schema_source = repo_root / QUALITY_JUDGE_SCHEMA
     if not schema_source.exists():
@@ -1180,25 +1234,39 @@ def run_quality_judge(
                 workspace=workspace,
                 output_last_message=output_last_message,
                 schema_path=schema_path,
+                agent_command_mode=agent_command_mode,
             )
             case_output.mkdir(parents=True, exist_ok=True)
-            completed = subprocess.run(
-                command,
-                cwd=repo_root,
-                text=True,
-                input=prompt,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            (case_output / "events.jsonl").write_text(completed.stdout, encoding="utf-8")
-            (case_output / "stderr.txt").write_text(completed.stderr, encoding="utf-8")
-            if completed.returncode != 0:
-                raise AgentExecutionFailure(f"quality judge exited with code {completed.returncode}")
+            try:
+                completed = subprocess.run(
+                    command,
+                    cwd=repo_root,
+                    text=True,
+                    input=prompt,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=case_timeout_seconds,
+                )
+                stdout = completed.stdout
+                stderr = completed.stderr
+                returncode = completed.returncode
+            except subprocess.TimeoutExpired as exc:
+                stdout = timeout_stream_text(exc.stdout)
+                stderr = timeout_stream_text(exc.stderr)
+                returncode = 124
+                timeout_detail = f"quality judge timed out after {case_timeout_seconds}s"
+                (case_output / "timeout.txt").write_text(timeout_detail + "\n", encoding="utf-8")
+            (case_output / "events.jsonl").write_text(stdout, encoding="utf-8")
+            (case_output / "stderr.txt").write_text(stderr, encoding="utf-8")
+            if returncode == 124:
+                raise AgentExecutionFailure(f"quality judge timed out after {case_timeout_seconds}s")
+            if returncode != 0:
+                raise AgentExecutionFailure(f"quality judge exited with code {returncode}")
             final_text = ""
             if output_last_message.exists():
                 final_text = output_last_message.read_text(encoding="utf-8")
             if not final_text:
-                final_text = completed.stdout
+                final_text = stdout
             response = parse_final_response(final_text)
             try:
                 return normalize_quality_judge_response(response if isinstance(response, dict) else None)
@@ -1264,6 +1332,8 @@ def command_run(args: argparse.Namespace) -> int:
                 service_tier=service_tier,
                 output_dir=output_dir,
                 dry_run=args.dry_run,
+                agent_command_mode=args.agent_command_mode,
+                case_timeout_seconds=args.case_timeout_seconds,
             )
             return result_record(case, "current", result)
 
@@ -1361,6 +1431,7 @@ def command_compare(args: argparse.Namespace) -> int:
                     workspace=repo_root,
                     output_last_message=output_dir / baseline_label / case["id"] / "final-message.json",
                     schema_path=repo_root / FINAL_RESPONSE_SCHEMA,
+                    agent_command_mode=args.agent_command_mode,
                 )
                 print(shell_join(baseline_command))
                 print_case_progress(case, label="current", index=progress_index, total=total_runs)
@@ -1374,6 +1445,8 @@ def command_compare(args: argparse.Namespace) -> int:
                     service_tier=service_tier,
                     output_dir=output_dir,
                     dry_run=True,
+                    agent_command_mode=args.agent_command_mode,
+                    case_timeout_seconds=args.case_timeout_seconds,
                     label="current",
                 )
                 if args.quality_judge:
@@ -1391,6 +1464,7 @@ def command_compare(args: argparse.Namespace) -> int:
                         / case["id"]
                         / "final-message.json",
                         schema_path=repo_root / QUALITY_JUDGE_SCHEMA,
+                        agent_command_mode=args.agent_command_mode,
                     )
                     print(shell_join(judge_command))
             return 0
@@ -1417,6 +1491,8 @@ def command_compare(args: argparse.Namespace) -> int:
                     service_tier=service_tier,
                     output_dir=output_dir,
                     dry_run=args.dry_run,
+                    agent_command_mode=args.agent_command_mode,
+                    case_timeout_seconds=args.case_timeout_seconds,
                     label=baseline_label,
                 )
                 print_case_progress(case, label="current", index=progress_index + 1, total=total_runs)
@@ -1429,6 +1505,8 @@ def command_compare(args: argparse.Namespace) -> int:
                     service_tier=service_tier,
                     output_dir=output_dir,
                     dry_run=args.dry_run,
+                    agent_command_mode=args.agent_command_mode,
+                    case_timeout_seconds=args.case_timeout_seconds,
                     label="current",
                 )
                 case_worst = 0
@@ -1459,6 +1537,8 @@ def command_compare(args: argparse.Namespace) -> int:
                             baseline_label=baseline_label,
                             baseline_record=baseline_record,
                             current_record=current_record,
+                            agent_command_mode=args.agent_command_mode,
+                            case_timeout_seconds=args.case_timeout_seconds,
                         )
                 return baseline_record, current_record, quality_judgment, case_worst
 
@@ -1503,6 +1583,12 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser = subparsers.add_parser("run", help="Run one or more cases against the current instructions.")
     run_parser.add_argument("--case", help="Case id to run. Defaults to all cases.")
     run_parser.add_argument("--agent-command", required=True, help='Agent command, for example "/path/to/codex exec".')
+    run_parser.add_argument(
+        "--agent-command-mode",
+        choices=sorted(AGENT_COMMAND_MODES),
+        default="legacy-codex",
+        help="Command flag profile. Use current-codex for newer Codex CLI flag sets.",
+    )
     run_parser.add_argument("--preset", default=DEFAULT_PRESET, help=f"Model preset. Defaults to {DEFAULT_PRESET}.")
     run_parser.add_argument("--model", help="Codex model slug. Overrides --preset model.")
     run_parser.add_argument(
@@ -1513,11 +1599,22 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--service-tier", help="Codex service_tier value. Overrides --preset service_tier.")
     run_parser.add_argument("--dry-run", action="store_true", help="Print commands without running the agent.")
     run_parser.add_argument("--jobs", type=positive_int, default=4, help="Maximum parallel case runs. Defaults to 4. Use 1 for sequential runs.")
+    run_parser.add_argument(
+        "--case-timeout-seconds",
+        type=positive_int,
+        help="Optional per-agent-run timeout. Timed-out cases are recorded as agent failures.",
+    )
     run_parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Directory for agent artifacts.")
 
     compare_parser = subparsers.add_parser("compare", help="Run baseline and current instructions side by side.")
     compare_parser.add_argument("--case", help="Case id to run. Defaults to all cases.")
     compare_parser.add_argument("--agent-command", required=True, help='Agent command, for example "/path/to/codex exec".')
+    compare_parser.add_argument(
+        "--agent-command-mode",
+        choices=sorted(AGENT_COMMAND_MODES),
+        default="legacy-codex",
+        help="Command flag profile. Use current-codex for newer Codex CLI flag sets.",
+    )
     compare_parser.add_argument("--preset", default=DEFAULT_PRESET, help=f"Model preset. Defaults to {DEFAULT_PRESET}.")
     compare_parser.add_argument("--model", help="Codex model slug. Overrides --preset model.")
     compare_parser.add_argument(
@@ -1539,6 +1636,11 @@ def build_parser() -> argparse.ArgumentParser:
     compare_parser.add_argument("--baseline-reference", help="Reference instruction bundle id used as the baseline instead of --baseline-ref.")
     compare_parser.add_argument("--dry-run", action="store_true", help="Print commands without running the agent.")
     compare_parser.add_argument("--jobs", type=positive_int, default=4, help="Maximum parallel case comparisons. Defaults to 4. Use 1 for sequential runs.")
+    compare_parser.add_argument(
+        "--case-timeout-seconds",
+        type=positive_int,
+        help="Optional per-agent-run timeout. Timed-out cases or judges are recorded as agent failures.",
+    )
     compare_parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Directory for agent artifacts.")
     return parser
 
