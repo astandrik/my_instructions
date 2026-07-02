@@ -79,7 +79,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("cases=26", result.stdout)
+        self.assertIn("cases=43", result.stdout)
         self.assertIn("markdown_tables=2", result.stdout)
         self.assertIn("presets=12", result.stdout)
         self.assertIn("references=1", result.stdout)
@@ -142,6 +142,38 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         self.assertIn('model_reasoning_effort="medium"', result.stdout)
         self.assertNotIn("service_tier", result.stdout)
 
+    def test_dry_run_can_use_current_codex_command_mode(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT_PATH),
+                "run",
+                "--case",
+                "privacy-persistent-state",
+                "--agent-command",
+                "/tmp/codex exec",
+                "--agent-command-mode",
+                "current-codex",
+                "--dry-run",
+            ],
+            cwd=REPO_ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("/tmp/codex exec", result.stdout)
+        self.assertIn("-c 'mcp_servers={}'", result.stdout)
+        self.assertIn("--json", result.stdout)
+        self.assertIn("--skip-git-repo-check", result.stdout)
+        self.assertIn("--sandbox read-only", result.stdout)
+        self.assertIn("--cd", result.stdout)
+        self.assertIn("--output-last-message", result.stdout)
+        self.assertNotIn("--ephemeral", result.stdout)
+        self.assertNotIn("--ignore-user-config", result.stdout)
+        self.assertNotIn("--output-schema", result.stdout)
+
     def test_presets_command_lists_model_presets(self):
         result = subprocess.run(
             [sys.executable, str(SCRIPT_PATH), "presets"],
@@ -190,11 +222,11 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 26)
-        self.assertEqual(len(commands), 26)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=26", result.stdout)
+        self.assertEqual(len(progress), 43)
+        self.assertEqual(len(commands), 43)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=43", result.stdout)
         self.assertIn(
-            "case=architecture-options-for-ambiguous-change label=current status=running index=26 total=26",
+            "case=human-time-scope-gate label=current status=running index=43 total=43",
             result.stdout,
         )
         for case_id in [
@@ -224,6 +256,23 @@ class InstructionEvalRunnerTests(unittest.TestCase):
             "complexity-and-resource-analysis",
             "concurrency-idempotency",
             "architecture-options-for-ambiguous-change",
+            "retrieval-led-versioned-docs",
+            "multi-agent-write-coordination",
+            "small-fix-local-pattern-over-clever-rewrite",
+            "existing-architecture-decision-check",
+            "architecture-quality-tradeoff",
+            "cross-file-symbol-disambiguation",
+            "feature-slice-integration-proof",
+            "verification-command-discovery",
+            "dirty-worktree-user-changes",
+            "eval-task-reward-hacking-resistance",
+            "dependency-addition-gate",
+            "question-only-readonly-answer",
+            "repo-wide-migration-plan",
+            "architectural-smell-triage",
+            "select-implementation-proposal",
+            "implicit-review-comment-comprehension",
+            "human-time-scope-gate",
         ]:
             self.assertIn(f"/{case_id}/final-message.json", result.stdout)
 
@@ -249,11 +298,11 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 26)
-        self.assertEqual(len(commands), 26)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=26", result.stdout)
+        self.assertEqual(len(progress), 43)
+        self.assertEqual(len(commands), 43)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=43", result.stdout)
         self.assertIn(
-            "case=architecture-options-for-ambiguous-change label=current status=running index=26 total=26",
+            "case=human-time-scope-gate label=current status=running index=43 total=43",
             result.stdout,
         )
         self.assertLess(
@@ -375,6 +424,47 @@ class InstructionEvalRunnerTests(unittest.TestCase):
             summary = json.loads((tmp_path / "parallel" / "current" / "summary.json").read_text())
             self.assertEqual(summary["total"], 2)
             self.assertEqual(summary["passed"], 2)
+
+    def test_run_case_timeout_records_agent_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            cases_path = tmp_path / "cases.jsonl"
+            self.write_parallel_smoke_cases(cases_path)
+            fake_agent = self.write_sleeping_fake_agent(tmp_path, sleep_seconds=2)
+            output_dir = tmp_path / "timeout-output"
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT_PATH),
+                    "--cases",
+                    str(cases_path),
+                    "run",
+                    "--case",
+                    "parallel-one",
+                    "--agent-command",
+                    f"{fake_agent} exec",
+                    "--jobs",
+                    "1",
+                    "--case-timeout-seconds",
+                    "1",
+                    "--output-dir",
+                    str(output_dir),
+                ],
+                cwd=REPO_ROOT,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            self.assertEqual(result.returncode, 3, result.stderr)
+            self.assertIn("failure_type=agent", result.stdout)
+            self.assertIn("agent timed out after 1s", result.stdout)
+            timeout_file = output_dir / "current" / "parallel-one" / "timeout.txt"
+            self.assertIn("agent timed out after 1s", timeout_file.read_text())
+            summary = json.loads((output_dir / "current" / "summary.json").read_text())
+            self.assertEqual(summary["total"], 1)
+            self.assertEqual(summary["failed"], 1)
 
     def test_preflight_reports_missing_agent_as_harness_failure(self):
         result = subprocess.run(

@@ -1,7 +1,7 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
 Version: 2.6 — 2026-06-25
-Compatible with `CRITICAL_INSTRUCTIONS.md` v4.7.
+Compatible with `CRITICAL_INSTRUCTIONS.md` v4.8.
 
 Status: optional manual appendix for custom-instructions workflows. When this file is present in a combined instruction bundle, apply only the relevant section when the current task shape needs it.
 

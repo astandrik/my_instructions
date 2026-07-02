@@ -50,6 +50,72 @@ Preview the exact commands without running a model:
 python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --dry-run
 ```
 
+For newer Codex CLI flag sets, use the current command profile. It avoids legacy
+flags that the newer CLI no longer accepts and disables MCP server config for
+the isolated eval process:
+
+```bash
+python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --dry-run
+python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --jobs 1
+```
+
+### Codex Desktop bundled CLI runbook
+
+For ChatGPT-account model access from Codex Desktop, prefer the app-bundled CLI
+explicitly. The `codex` executable found first on `PATH` may be an older
+Homebrew/npm CLI and may use different authentication state.
+
+```bash
+export CODEX_APP_CLI=/Applications/Codex.app/Contents/Resources/codex
+"$CODEX_APP_CLI" --version
+"$CODEX_APP_CLI" login --device-auth
+```
+
+Keep the device-auth process running until it prints `Successfully logged in`.
+If the process is interrupted before browser confirmation finishes, the login
+state is not saved.
+
+Use a real one-line `exec` probe as the final readiness check:
+
+```bash
+"$CODEX_APP_CLI" -a never exec \
+  -c 'mcp_servers={}' \
+  -c 'model_reasoning_effort="medium"' \
+  -c 'service_tier="fast"' \
+  --model gpt-5.5 \
+  --skip-git-repo-check \
+  --output-last-message scratch/gpt55-probe-last-message.txt \
+  'Return exactly: ok'
+```
+
+Run all current cases against the live model:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --agent-command "$CODEX_APP_CLI -a never exec" \
+  --agent-command-mode current-codex \
+  --preset gpt-5.5-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/gpt55-medium-full
+```
+
+`-a never` must appear before `exec`; it is a global Codex CLI option. The
+`gpt-5.5-medium` preset selects `gpt-5.5`, `model_reasoning_effort="medium"`,
+and `service_tier="fast"`.
+
+Use `--jobs 1` for benchmark or gated evidence. `--jobs 4` is useful for
+exploratory runs, but concurrent real-model processes can create runtime noise
+or hangs, so write parallel experiments to a separate output directory and keep
+a sequential rerun for final evidence.
+
+If the agent command starts but does not finish, add an explicit timeout while
+debugging so the runner records an agent failure instead of hanging:
+
+```bash
+python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --jobs 1 --case-timeout-seconds 900
+```
+
 Switch reasoning with a preset:
 
 ```bash
@@ -80,15 +146,29 @@ Keep checked-in presets to model slugs that have been verified with a real
 agent run in the target Codex account. Dry-run only verifies command shape; it
 does not prove the model is available.
 
-For a metadata-only availability check, prefer the Codex model catalog:
+For a metadata-only availability check, prefer the Codex model catalog. With
+the Desktop-bundled CLI, the local cache is the most reliable quick check:
 
 ```bash
-codex debug models | jq -r '.models[] | select(.slug == "gpt-5.5" or .slug == "gpt-5.4" or .slug == "gpt-5.3-codex-spark") | [.slug, .display_name, (.supported_reasoning_levels | map(.effort) | join(","))] | @tsv'
+jq -r '
+  .models[]
+  | select(.slug == "gpt-5.5" or .slug == "gpt-5.4" or .slug == "gpt-5.3-codex-spark")
+  | [
+      .slug,
+      ([.supported_reasoning_levels[].effort] | join(",")),
+      (.additional_speed_tiers | join(",")),
+      ([.service_tiers[].name] | join(","))
+    ]
+  | @tsv
+' ~/.codex/models_cache.json
 ```
 
-This should show all checked-in model slugs with `low,medium,high,xhigh`.
-For models that support fast mode, the second metadata column should include
-`fast`.
+This should show all checked-in model slugs with a reasoning column containing
+`low,medium,high,xhigh`. For models that support fast mode, the speed-tier
+column should include `fast`.
+If a future CLI exposes `codex debug models`, that command is also acceptable
+as a metadata check. A successful real `codex exec --model ...` probe remains
+the runtime source of truth.
 Do not add aliases such as `gpt-5.5-codex`, `gpt-5.4-codex`, `*-thinking`,
 `*-pro`, or `o3` unless they appear in the target account's Codex catalog or
 pass a real `codex exec --model ...` probe. Official API model docs can
@@ -119,6 +199,8 @@ python3 scripts/run_instruction_evals.py run --agent-command "codex exec"
 
 Agent-backed `run` and `compare` use `--jobs 4` by default. Use `--jobs 1` for
 sequential debugging, or lower the value if the account hits rate limits.
+Use `--case-timeout-seconds <seconds>` for bounded local runs; timed-out cases
+write `timeout.txt` next to their normal artifacts and count as agent failures.
 Dry-run output remains stable and ordered even when `--jobs` is greater than 1.
 
 Run one case:
@@ -177,6 +259,10 @@ The runner writes artifacts under `.eval-results/`, which is intentionally gitig
 - `.eval-results/current/<case-id>/events.jsonl`
 - `.eval-results/current/<case-id>/stderr.txt`
 - `.eval-results/current/<case-id>/final-message.json`
+
+When deterministic checks change after a completed model run, keep the raw run
+artifacts and write any reclassified summaries to a clearly named separate
+output directory. Do not present a reclassified summary as a fresh model run.
 
 For `compare`, the summary is written under `.eval-results/compare-<baseline-ref>-current/`.
 The same directory also contains:
