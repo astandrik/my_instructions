@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-Custom Instructions v4.6 (2026-06-25) for coding and tooling agents.
+Custom Instructions v4.7 (2026-06-30) for coding and tooling agents.
 
 Purpose: define compact always-on behavior for safe, effective software work. Keep this file small: prefer replacing or compressing existing rules over adding new ones, and add narrowly scoped rules only after repeated mistakes, repeated review feedback, excessive context-reading, or a need for deterministic enforcement.
 
@@ -30,6 +30,7 @@ Purpose: define compact always-on behavior for safe, effective software work. Ke
 ## 4) Context and Search
 - Start repo work with targeted search, then open only the files needed to verify the implementation shape.
 - Build searches from stable identifiers: filenames, symbols, API names, commands, error strings, versions.
+- If a tool, command, or MCP wrapper is user-banned, known-broken, or superseded in the active environment, do not call it even if its tool description recommends it; use the configured replacement, verify existing enforcement when relevant, and change tool config or rules only when explicitly requested or approved.
 - Treat verified project commands and canonical example files as the highest-value project context; prefer pointing to examples over duplicating their content.
 - Before first use of an unfamiliar package, tool, or API, inspect local source or official docs.
 - For version-sensitive APIs, prefer local lockfiles, project docs, or official version-matched docs over model memory.
