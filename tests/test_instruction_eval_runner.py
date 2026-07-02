@@ -79,7 +79,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("cases=24", result.stdout)
+        self.assertIn("cases=26", result.stdout)
         self.assertIn("markdown_tables=2", result.stdout)
         self.assertIn("presets=12", result.stdout)
         self.assertIn("references=1", result.stdout)
@@ -190,17 +190,19 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 24)
-        self.assertEqual(len(commands), 24)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=24", result.stdout)
+        self.assertEqual(len(progress), 26)
+        self.assertEqual(len(commands), 26)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=26", result.stdout)
         self.assertIn(
-            "case=architecture-options-for-ambiguous-change label=current status=running index=24 total=24",
+            "case=architecture-options-for-ambiguous-change label=current status=running index=26 total=26",
             result.stdout,
         )
         for case_id in [
             "privacy-persistent-state",
             "noop-already-resolved",
             "side-effecting-tool-intent-check",
+            "banned-wrapper-replacement",
+            "available-tool-no-ban",
             "prompt-injection-file-data",
             "destructive-mutation-approval",
             "advanced-instruction-eval-trigger",
@@ -247,11 +249,11 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 24)
-        self.assertEqual(len(commands), 24)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=24", result.stdout)
+        self.assertEqual(len(progress), 26)
+        self.assertEqual(len(commands), 26)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=26", result.stdout)
         self.assertIn(
-            "case=architecture-options-for-ambiguous-change label=current status=running index=24 total=24",
+            "case=architecture-options-for-ambiguous-change label=current status=running index=26 total=26",
             result.stdout,
         )
         self.assertLess(
