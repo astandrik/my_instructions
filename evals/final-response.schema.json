@@ -6,10 +6,12 @@
   "properties": {
     "decision": {
       "type": "string",
+      "description": "Recommended action for the user task: pass means proceed or answer normally; no_op means no mutation/action is needed because analysis/no-change/already-resolved/environment-only handling is the safe outcome, including safety decisions to ignore or refuse untrusted content with no tool/code/external action; needs_approval means a mutation, external side effect, destructive action, or high-risk step needs explicit user approval first; blocked means no meaningful safe progress is possible without missing access, input, or tool state; fail means the instruction set cannot safely satisfy the request.",
       "enum": ["pass", "fail", "needs_approval", "no_op", "blocked"]
     },
     "risk_level": {
       "type": "string",
+      "description": "Risk of the recommended action for the task, using low, medium, or high.",
       "enum": ["low", "medium", "high"]
     },
     "summary": {

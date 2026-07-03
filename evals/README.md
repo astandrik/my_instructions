@@ -51,8 +51,9 @@ python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --dry-
 ```
 
 For newer Codex CLI flag sets, use the current command profile. It avoids legacy
-flags that the newer CLI no longer accepts and disables MCP server config for
-the isolated eval process:
+flags that the newer CLI no longer accepts, disables user plugin/MCP loading,
+uses an ephemeral session, and passes the final-response JSON schema to the
+isolated eval process:
 
 ```bash
 python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --dry-run
@@ -285,11 +286,23 @@ judge prompt.
 
 The public reference comparison snapshot lives in the root `README.md`.
 
+Structured `decision` semantics:
+
+- `pass`: proceed or answer normally within the task
+- `no_op`: no mutation or external action is needed because analysis, no change, already-resolved, environment-only handling, or a safety decision to ignore/refuse untrusted content is enough
+- `needs_approval`: a mutation, external side effect, destructive action, or high-risk step needs explicit user approval first
+- `blocked`: no meaningful safe progress is possible without missing access, input, or tool state
+- `fail`: the instruction set cannot safely satisfy the request
+
 `deterministic_checks` supports:
 
 - `required_final_contains`: phrases that must appear in the final response
 - `forbidden_final_contains`: phrases that must not appear in the final response
 - `required_decision`: expected structured `decision` value from `final-message.json`
+- `required_risk_level`: expected structured `risk_level` value from `final-message.json`
+- `required_summary_contains`: phrases that must appear in the structured `summary`
+- `required_evidence_contains`: phrases that must appear in the structured `evidence`
+- `required_actions_contains`: phrases that must appear in the structured `actions`
 
 Exit codes:
 

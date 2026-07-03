@@ -1,7 +1,7 @@
 # ADVANCED_PATTERNS_REFERENCE.md
 
-Version: 2.6 — 2026-06-25
-Compatible with `CRITICAL_INSTRUCTIONS.md` v4.8.
+Version: 2.7 — 2026-07-03
+Compatible with `CRITICAL_INSTRUCTIONS.md` v4.9.
 
 Status: optional manual appendix for custom-instructions workflows. When this file is present in a combined instruction bundle, apply only the relevant section when the current task shape needs it.
 
@@ -33,9 +33,10 @@ Status: optional manual appendix for custom-instructions workflows. When this fi
 - Agentic automation/deployment needed: prefer least-agency over autonomy, start bounded and low-risk, define owner/stop authority, ephemeral credentials, monitoring, and incident response before broad access.
 - No-op possible: reproduce or inspect first; if evidence shows no mutation is needed, report the evidence and stop.
 - Deterministic transform needed: use a deterministic runtime or validator instead of reasoning by inspection.
+- Generated artifact freshness needed: wire a deterministic check-only freshness gate into the local typecheck/build path, fail on tracked drift with stale files and the regeneration command, and keep silent regeneration or tokened external sync out of the check-only gate.
 - Tool feedback available: run the smallest check, use failures as evidence, revise once or twice, then escalate with blockers instead of looping.
 - Repeated failure: write a brief private lesson for the current task: what failed, why, and what to do differently next attempt. Do not store secrets or PII.
-- Instruction/skill eval needed: treat guidance as a testable artifact; compare against a baseline without the new guidance when feasible, include positive and negative trigger prompts, capture trace/artifacts, score deterministic checks first, use structured rubric output only when needed, and track command/token thrash, repo cleanliness, and sandbox/permission regressions.
+- Instruction/skill eval needed: treat guidance as a testable artifact; compare against a baseline without the new guidance when feasible, include positive triggers plus negative controls for reward-hacking and plausible wrong behavior, capture trace/artifacts, score deterministic checks first, use structured rubric output only when needed, and track command/token thrash, repo cleanliness, and sandbox/permission regressions.
 
 ## Guardrails
 - Keep hidden reasoning private. Provide concise rationale, decisions, and evidence.
