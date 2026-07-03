@@ -1091,11 +1091,17 @@ def build_agent_command(
         command.extend(
             [
                 "--json",
+                "--disable",
+                "plugins",
+                "--ephemeral",
+                "--ignore-user-config",
                 "--skip-git-repo-check",
                 "--sandbox",
                 "read-only",
                 "--cd",
                 str(workspace),
+                "--output-schema",
+                str(schema_path),
                 "--output-last-message",
                 str(output_last_message),
                 "-",
@@ -1105,6 +1111,8 @@ def build_agent_command(
         command.extend(
             [
                 "--json",
+                "--disable",
+                "plugins",
                 "--ephemeral",
                 "--ignore-user-config",
                 "--skip-git-repo-check",

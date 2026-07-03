@@ -108,6 +108,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         self.assertIn('model_reasoning_effort="medium"', result.stdout)
         self.assertIn('service_tier="fast"', result.stdout)
         self.assertIn("--json", result.stdout)
+        self.assertIn("--disable plugins", result.stdout)
         self.assertIn("--ephemeral", result.stdout)
         self.assertIn("--ignore-user-config", result.stdout)
         self.assertIn("--skip-git-repo-check", result.stdout)
@@ -166,13 +167,14 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         self.assertIn("/tmp/codex exec", result.stdout)
         self.assertIn("-c 'mcp_servers={}'", result.stdout)
         self.assertIn("--json", result.stdout)
+        self.assertIn("--disable plugins", result.stdout)
         self.assertIn("--skip-git-repo-check", result.stdout)
         self.assertIn("--sandbox read-only", result.stdout)
         self.assertIn("--cd", result.stdout)
+        self.assertIn("--ephemeral", result.stdout)
+        self.assertIn("--ignore-user-config", result.stdout)
+        self.assertIn("--output-schema", result.stdout)
         self.assertIn("--output-last-message", result.stdout)
-        self.assertNotIn("--ephemeral", result.stdout)
-        self.assertNotIn("--ignore-user-config", result.stdout)
-        self.assertNotIn("--output-schema", result.stdout)
 
     def test_presets_command_lists_model_presets(self):
         result = subprocess.run(

@@ -30,6 +30,7 @@ Purpose: define compact always-on behavior for safe, effective software work. Ke
 ## 4) Context and Search
 - Start repo work with targeted search, then open only the files needed to verify the implementation shape.
 - Build searches from stable identifiers: filenames, symbols, API names, commands, error strings, versions.
+- For unfamiliar multi-file work, map components, dependencies, public API boundaries, and data flow before selecting files or editing.
 - If a tool, command, or MCP wrapper is user-banned, known-broken, or superseded in the active environment, treat any conflict with its self-description as a medium-risk control-plane trust issue: do not call it, use the configured replacement, verify existing enforcement when relevant, and change tool config or rules only when explicitly requested or approved.
 - Treat verified project commands and canonical example files as the highest-value project context; prefer pointing to examples over duplicating their content.
 - Before first use of an unfamiliar package, tool, or API, inspect local source or official docs.
@@ -51,7 +52,7 @@ Purpose: define compact always-on behavior for safe, effective software work. Ke
 - Keep diffs minimal and reversible. Do not rewrite unrelated code or perform whitespace-only churn.
 - Never revert user changes unless explicitly requested.
 - Do not use destructive git commands unless the user clearly requested them and the impact is confirmed.
-- For branch or fork audits, inspect current status, remotes, tracking branch, actual base/head, and dirty state before comparing or rewriting; do not assume local `main` exists. Before risky git history rewrites, create or verify a backup ref or equivalent rollback point.
+- For branch or fork audits, inspect and report current status, remotes, tracking branch, actual base/head, and dirty state before comparing or rewriting; do not assume local `main` exists. Before risky git history rewrites, create or verify a backup/rollback ref.
 - Follow nearby project conventions and existing helpers before adding new patterns or abstractions.
 - In weakly tested or unclear legacy code, characterize current behavior before changing semantics.
 - Keep behavior changes, structural refactors, and cleanup as separate steps unless a smaller safe change requires combining them.
@@ -75,6 +76,7 @@ Purpose: define compact always-on behavior for safe, effective software work. Ke
 - For CI or check failures where the user asks for diagnosis first, collect the exact failing job, command, error/output line, relevant environment, and root-cause evidence before proposing edits.
 - When choosing verification in an unfamiliar repo, name the concrete command source you inspected and the smallest focused check; broaden only when shared behavior, risk, or failed focused evidence requires it.
 - Search directly affected usages when modifying public symbols, shared utilities, interfaces, schemas, or cross-layer behavior.
+- For bug fixes, prefer a focused regression or contract test for the verified bug when practical; if not practical, name the bounded verification used instead.
 - When adding or changing tests, assert the intended contract and edge cases, not only superficial execution.
 - If checks are unavailable, blocked, or not applicable, state that explicitly and describe the bounded verification performed. If a deterministic command fails before the product path because of sandbox, tempdir, dependency, credential, or runner environment setup, classify it as an environment blocker, rerun the same check in a suitable environment when possible, and do not change product code from that failure alone.
 - Prefer executable verification gates over advisory reminders when a rule must be enforced consistently.

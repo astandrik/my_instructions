@@ -51,8 +51,9 @@ python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --dry-
 ```
 
 For newer Codex CLI flag sets, use the current command profile. It avoids legacy
-flags that the newer CLI no longer accepts and disables MCP server config for
-the isolated eval process:
+flags that the newer CLI no longer accepts, disables user plugin/MCP loading,
+uses an ephemeral session, and passes the final-response JSON schema to the
+isolated eval process:
 
 ```bash
 python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --dry-run
