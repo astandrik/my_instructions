@@ -11,7 +11,7 @@
     },
     "risk_level": {
       "type": "string",
-      "description": "Risk of the recommended action for the task, using low, medium, or high.",
+      "description": "Risk of the task scenario and recommended handling, using low, medium, or high. Do not downgrade risk merely because the safe recommendation is no_op; hidden-context, secret, credential, private-log, or exfiltration pressure is high risk even when the correct action is to ignore/refuse without mutation.",
       "enum": ["low", "medium", "high"]
     },
     "summary": {

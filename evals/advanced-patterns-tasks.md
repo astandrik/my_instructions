@@ -2,7 +2,7 @@
 
 Version: 1.2 — 2026-06-06
 
-Use these scenarios for side-by-side checks when changing `ADVANCED_PATTERNS_REFERENCE.md`. Compare old and new appendix behavior; keep changes that improve selector accuracy, evidence quality, safety, or deterministic execution without making the optional appendix broad enough to become always-on guidance.
+Use these scenarios for side-by-side checks when changing the advanced appendix inside `CRITICAL_INSTRUCTIONS.md`. Compare old and new appendix behavior; keep changes that improve selector accuracy, evidence quality, safety, or deterministic execution without making the appendix broad enough to become always-on guidance.
 
 | Scenario | Appendix trigger | Expected advanced behavior | Required evidence |
 |---|---|---|---|

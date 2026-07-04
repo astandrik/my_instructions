@@ -19,10 +19,10 @@ when cases, instruction files, model presets, or reference bundles change.
 
 ## Cross-Model Transfer Snapshot
 
-Captured on 2026-07-03. The same current instruction bundle
-(`CRITICAL_INSTRUCTIONS.md` plus `ADVANCED_PATTERNS_REFERENCE.md`) was run on
-the same 43 eval cases across GPT-5.5 and external model-only adapters. External
-adapter runs do not exercise a shell/MCP/file-edit tool loop.
+Captured on 2026-07-03, before the advanced appendix was merged into
+`CRITICAL_INSTRUCTIONS.md`. The then-current split instruction bundle was run
+on the same 43 eval cases across GPT-5.5 and external model-only adapters.
+External adapter runs do not exercise a shell/MCP/file-edit tool loop.
 
 ### Hard Gates
 
@@ -61,10 +61,9 @@ field-scoped action/evidence phrases.
 ## No-Instructions Transfer Snapshot
 
 Captured on 2026-07-04. The same 43 eval cases were rerun with an empty
-instruction bundle: `CRITICAL_INSTRUCTIONS.md` and
-`ADVANCED_PATTERNS_REFERENCE.md` were materialized as empty files in the
-temporary eval workspace. This measures instruction lift, not absolute model
-capability.
+instruction bundle: `CRITICAL_INSTRUCTIONS.md` was materialized as an empty
+file in the temporary eval workspace. This measures instruction lift, not
+absolute model capability.
 
 Grok Build 0.1 and GLM-5.2 initial no-instructions runs had transient adapter
 agent failures; targeted reruns were merged into the summaries below. The Grok
@@ -119,48 +118,53 @@ coordination, eval anti-gaming controls, and bounded human-time framing.
 
 ## Reference Compare Snapshot
 
-Captured on 2026-07-03 against the public OpenHands `AGENTS.md` reference
+Captured on 2026-07-04 after the advanced appendix was merged into
+`CRITICAL_INSTRUCTIONS.md`, against the public OpenHands `AGENTS.md` reference
 pinned in `evals/reference-instructions.json`. The local mirror is pinned to
 SHA256 `4da733821ca7f80744c5a58eb9eecbf2b20686a5a159becc1542c415fc0ef194`.
 
 Artifact:
-`.eval-results/compare-openhands-quality-calibration-final-v3/compare-reference-openhands-agents-current/quality.md`.
+`.eval-results/compare-openhands-single-bundle-v15-jobs1/compare-reference-openhands-agents-current/quality.md`.
 
 | Bundle | Hard-gate passed | Hard-gate failed |
 |---|---:|---:|
 | Current instructions | 43 | 0 |
-| OpenHands reference | 30 | 13 |
+| OpenHands reference | 34 | 9 |
 
 | Winner | Cases |
 |---|---:|
-| Current instructions | 28 |
-| Tie | 8 |
-| OpenHands reference | 7 |
+| Current instructions | 37 |
+| Tie | 3 |
+| OpenHands reference | 3 |
 | Review needed | 0 |
 
 | Scope | OpenHands avg | Current avg | Avg delta |
 |---|---:|---:|---:|
-| All 43 cases | 64.7 | 95.3 | +30.6 |
-| 30 pass/pass judge cases | 92.8 | 93.3 | +0.5 |
-| 13 hard-gate diff cases | 0.0 | 100.0 | +100.0 |
-| 35 high-confidence cases | 58.2 | 96.1 | +37.8 |
-| 8 medium-confidence cases | 93.3 | 92.3 | -1.0 |
+| All 43 cases | 72.4 | 95.7 | +23.2 |
+| 34 pass/pass judge cases | 91.6 | 94.5 | +2.9 |
+| 9 hard-gate diff cases | 0.0 | 100.0 | +100.0 |
+| 30 high-confidence cases | 63.8 | 96.5 | +32.7 |
+| 13 medium-confidence cases | 92.3 | 93.7 | +1.4 |
 
 OpenHands hard-gate misses where current passed:
 
-- `banned-wrapper-replacement`
-- `prompt-injection-file-data`
-- `diagnosis-first-ci-failure`
 - `thread-aware-pr-follow-up`
+- `performance-claim-requires-measurement`
 - `generated-artifact-freshness-gate`
 - `branch-context-before-review`
-- `repo-specific-convention-over-generic-default`
-- `dependency-boundary-respect`
-- `architecture-options-for-ambiguous-change`
-- `dirty-worktree-user-changes`
+- `public-api-compatibility`
+- `concurrency-idempotency`
+- `verification-command-discovery`
 - `eval-task-reward-hacking-resistance`
-- `repo-wide-migration-plan`
-- `human-time-scope-gate`
+- `select-implementation-proposal`
+
+OpenHands had three medium-confidence pass/pass quality wins:
+
+- `available-tool-no-ban`
+- `code-review-signal-noise`
+- `question-only-readonly-answer`
+
+There were no high-confidence OpenHands wins in this snapshot.
 
 ## Local Claude Prompt Compare Snapshot
 

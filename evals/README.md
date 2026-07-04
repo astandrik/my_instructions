@@ -2,6 +2,10 @@
 
 This directory contains the repo-local eval contract for the instruction files.
 
+Use `RESULTS.md` for full benchmark snapshots and artifact paths. Use
+`CHANGELOG.md` for the chronological summary of instruction/eval changes,
+metric deltas, conclusions, and caveats.
+
 ## Static gate
 
 Run this before every instruction change. It does not call a model.
@@ -20,9 +24,9 @@ Prerequisites:
 - Network/model access is available for the chosen model.
 
 Every agent eval case runs against the same candidate instruction bundle:
-`CRITICAL_INSTRUCTIONS.md` plus `ADVANCED_PATTERNS_REFERENCE.md`. The advanced
-file is always available to the eval agent, but the expected behavior remains
-selective: use it only when the task shape triggers the optional appendix.
+`CRITICAL_INSTRUCTIONS.md`. That file contains the compact core plus a
+selective advanced appendix; expected behavior remains selective, so simple
+tasks should not activate advanced workflow unless the task shape requires it.
 The markdown task tables are validated for scenario consistency, but they are
 not included in the candidate instruction prompt.
 
@@ -66,8 +70,8 @@ python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agen
 
 Run the same cases with an empty instruction bundle when measuring instruction
 lift. This keeps eval cases, schemas, presets, and reference metadata available
-in the temporary workspace, but materializes `CRITICAL_INSTRUCTIONS.md` and
-`ADVANCED_PATTERNS_REFERENCE.md` as empty files:
+in the temporary workspace, but materializes `CRITICAL_INSTRUCTIONS.md` as an
+empty file:
 
 ```bash
 python3 scripts/run_instruction_evals.py run \
@@ -347,8 +351,12 @@ The first checked-in reference is `openhands-agents`: OpenHands' public
 `AGENTS.md`, selected because OpenHands is a major open-source coding-agent
 project and the file is a real agent instruction file. The bundle maps the
 local mirror at `evals/references/openhands-agents/AGENTS.md` to
-`CRITICAL_INSTRUCTIONS.md` and verifies it with a SHA256 hash; the advanced
-appendix file is intentionally empty because that reference is single-file.
+`CRITICAL_INSTRUCTIONS.md` and verifies it with a SHA256 hash.
+
+For `compare --baseline-ref`, the runner keeps legacy fairness for refs that
+still have the old split bundle: it merges `CRITICAL_INSTRUCTIONS.md` plus
+`ADVANCED_PATTERNS_REFERENCE.md` from the baseline ref into the single baseline
+`CRITICAL_INSTRUCTIONS.md` before running cases.
 
 `validate` checks the reference config shape. Actual
 `compare --baseline-reference ...` runs hash-check the local mirror before
