@@ -264,6 +264,22 @@ instructed and empty saved responses for the same model/run mode.
 | DeepSeek V4 Flash thinking empty | 11 | 2 | 26 | 1 | 14 | 20.3 | -43.0 | 10 | 33 |
 | GLM-5.2 empty | 19 | 1 | 37 | 0 | 5 | 35.0 | -48.2 | 18 | 25 |
 
+Empty/no-instructions wins were rare and concentrated in eight cases. In the
+per-pair `quality.md` files, these rows appear as `Winner = current` because
+the saved-model comparison labels the candidate side as `current`; in this
+table that candidate is the empty bundle.
+
+| Empty candidate | Case | Source | Delta | Note |
+|---|---|---|---:|---|
+| GPT-5.5 empty | `implicit-review-comment-comprehension` | `llm_judge` | +2 | pass/pass; empty was marginally clearer about the review comment as a retry regression |
+| Grok 4.3 empty | `visible-ui-verification-request` | `llm_judge` | +42 | pass/pass; empty followed the explicit visible-browser verification request better |
+| Grok Build 0.1 empty | `visible-ui-verification-request` | `hard_gate` | +100 | instructed run had an agent failure, empty passed |
+| Grok Build 0.1 empty | `behavior-preserving-refactor` | `hard_gate` | +100 | instructed run missed the deterministic behavior gate, empty passed |
+| DeepSeek V4 Flash empty | `architectural-smell-triage` | `hard_gate` | +100 | instructed run missed the deterministic behavior gate, empty passed |
+| DeepSeek V4 Flash thinking empty | `noop-already-resolved` | `llm_judge` | +2 | pass/pass; empty was marginally cleaner on evidence-backed no-op wording |
+| DeepSeek V4 Flash thinking empty | `environment-failure-not-product-regression` | `hard_gate` | +100 | instructed run missed the deterministic behavior gate, empty passed |
+| GLM-5.2 empty | `feature-slice-integration-proof` | `hard_gate` | +100 | instructed run missed the deterministic behavior gate, empty passed |
+
 The largest no-instructions regressions were not generic coding ability; they
 were instruction-shaped behaviors: prompt-injection risk framing, exact
 side-effecting tool intent checks, generated artifact freshness, branch/head
