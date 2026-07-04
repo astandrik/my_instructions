@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import subprocess
 import sys
@@ -81,7 +82,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("cases=43", result.stdout)
         self.assertIn("markdown_tables=2", result.stdout)
-        self.assertIn("presets=12", result.stdout)
+        self.assertIn("presets=16", result.stdout)
         self.assertIn("references=1", result.stdout)
 
     def test_dry_run_prints_codex_exec_command_without_running_agent(self):
@@ -572,6 +573,18 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         self.assertNotIn("Expected behavior", prompt)
         self.assertNotIn("Forbidden behavior", prompt)
 
+    def test_copy_eval_workspace_can_materialize_empty_instruction_bundle(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            runner.copy_eval_workspace(REPO_ROOT, workspace, instruction_bundle="empty")
+
+            self.assertEqual((workspace / "CRITICAL_INSTRUCTIONS.md").read_text(encoding="utf-8"), "")
+            self.assertEqual((workspace / "ADVANCED_PATTERNS_REFERENCE.md").read_text(encoding="utf-8"), "")
+            self.assertTrue((workspace / "evals" / "cases.jsonl").read_text(encoding="utf-8").strip())
+            self.assertTrue((workspace / "evals" / "final-response.schema.json").read_text(encoding="utf-8").strip())
+
     def test_classifies_agent_and_behavior_failures_separately(self):
         runner = load_runner()
 
@@ -847,6 +860,54 @@ class InstructionEvalRunnerTests(unittest.TestCase):
 
             self.assertEqual((root / "CRITICAL_INSTRUCTIONS.md").read_text(), "Reference critical instructions.")
             self.assertEqual((root / "ADVANCED_PATTERNS_REFERENCE.md").read_text(), "")
+
+    def test_reference_bundle_can_materialize_local_path_source(self):
+        runner = load_runner()
+        content = "Reference critical instructions from a local mirror."
+        digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        bundle = {
+            "label": "Local path reference",
+            "description": "Used by tests.",
+            "license": "MIT",
+            "source_repository": "https://example.com/repo",
+            "files": {
+                "CRITICAL_INSTRUCTIONS.md": {
+                    "path": "vendor/reference/AGENTS.md",
+                    "sha256": digest,
+                },
+                "ADVANCED_PATTERNS_REFERENCE.md": {"literal": ""},
+            },
+        }
+
+        runner.validate_reference_bundle("local-reference", bundle)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source_root = Path(tmp) / "source"
+            baseline_root = Path(tmp) / "baseline"
+            source_path = source_root / "vendor" / "reference" / "AGENTS.md"
+            source_path.parent.mkdir(parents=True)
+            source_path.write_text(content, encoding="utf-8")
+
+            runner.write_reference_baseline_files(baseline_root, bundle, source_root=source_root)
+
+            self.assertEqual((baseline_root / "CRITICAL_INSTRUCTIONS.md").read_text(), content)
+            self.assertEqual((baseline_root / "ADVANCED_PATTERNS_REFERENCE.md").read_text(), "")
+
+    def test_reference_bundle_rejects_unsafe_local_path_source(self):
+        runner = load_runner()
+        bundle = {
+            "label": "Broken reference",
+            "files": {
+                "CRITICAL_INSTRUCTIONS.md": {
+                    "path": "../AGENTS.md",
+                    "sha256": "0" * 64,
+                },
+                "ADVANCED_PATTERNS_REFERENCE.md": {"literal": ""},
+            },
+        }
+
+        with self.assertRaisesRegex(runner.ValidationError, "safe repo-relative path"):
+            runner.validate_reference_bundle("broken-reference", bundle)
 
     def test_reference_bundle_validation_rejects_missing_target_file(self):
         runner = load_runner()

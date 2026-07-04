@@ -44,6 +44,7 @@ QUALITY_CHECK_IDS = [
 QUALITY_WINNERS = {"baseline", "current", "tie", "inconclusive"}
 QUALITY_CONFIDENCE = {"low", "medium", "high"}
 RISK_LEVELS = {"low", "medium", "high"}
+INSTRUCTION_BUNDLES = {"current", "empty"}
 INSTRUCTION_FILES = [
     Path("CRITICAL_INSTRUCTIONS.md"),
     Path("ADVANCED_PATTERNS_REFERENCE.md"),
@@ -730,9 +731,10 @@ def validate_reference_source(reference_id: str, target: str, source: Any) -> No
         raise ValidationError(f"{reference_id}: source for {target} must be an object")
     has_literal = "literal" in source
     has_url = "url" in source
-    if has_literal == has_url:
-        raise ValidationError(f"{reference_id}: source for {target} must have exactly one of literal or url")
-    unknown = set(source) - {"literal", "url", "sha256"}
+    has_path = "path" in source
+    if sum([has_literal, has_url, has_path]) != 1:
+        raise ValidationError(f"{reference_id}: source for {target} must have exactly one of literal, url, or path")
+    unknown = set(source) - {"literal", "url", "path", "sha256"}
     if unknown:
         raise ValidationError(f"{reference_id}: source for {target} has unknown fields: {', '.join(sorted(unknown))}")
     if has_literal:
@@ -741,12 +743,20 @@ def validate_reference_source(reference_id: str, target: str, source: Any) -> No
         if "sha256" in source:
             raise ValidationError(f"{reference_id}: literal source for {target} must not set sha256")
         return
-    url = source["url"]
     sha256 = source.get("sha256")
-    if not isinstance(url, str) or not url.startswith("https://"):
-        raise ValidationError(f"{reference_id}: url source for {target} must be an https URL")
     if not isinstance(sha256, str) or not re.fullmatch(r"[a-f0-9]{64}", sha256):
-        raise ValidationError(f"{reference_id}: url source for {target} requires a lowercase sha256")
+        raise ValidationError(f"{reference_id}: {target} source requires a lowercase sha256")
+    if has_url:
+        url = source["url"]
+        if not isinstance(url, str) or not url.startswith("https://"):
+            raise ValidationError(f"{reference_id}: url source for {target} must be an https URL")
+        return
+    path = source["path"]
+    if not isinstance(path, str) or not path.strip():
+        raise ValidationError(f"{reference_id}: path source for {target} must be a non-empty string")
+    candidate = Path(path)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        raise ValidationError(f"{reference_id}: path source for {target} must be a safe repo-relative path")
 
 
 def validate_reference_bundle(reference_id: str, bundle: Any) -> None:
@@ -791,16 +801,23 @@ def read_reference_bundles(path: Path) -> dict[str, dict[str, Any]]:
     return references
 
 
-def load_reference_source(reference_id: str, target: str, source: dict[str, Any]) -> str:
+def load_reference_source(reference_id: str, target: str, source: dict[str, Any], *, source_root: Path) -> str:
     if "literal" in source:
         return source["literal"]
-    url = source["url"]
     expected_sha256 = source["sha256"]
-    try:
-        with urllib.request.urlopen(url, timeout=30) as response:
-            data = response.read()
-    except (OSError, urllib.error.URLError) as exc:
-        raise HarnessFailure(f"{reference_id}: cannot fetch {target} from {url}: {exc}") from exc
+    if "path" in source:
+        source_path = source_root / source["path"]
+        try:
+            data = source_path.read_bytes()
+        except OSError as exc:
+            raise HarnessFailure(f"{reference_id}: cannot read {target} from {source_path}: {exc}") from exc
+    else:
+        url = source["url"]
+        try:
+            with urllib.request.urlopen(url, timeout=30) as response:
+                data = response.read()
+        except (OSError, urllib.error.URLError) as exc:
+            raise HarnessFailure(f"{reference_id}: cannot fetch {target} from {url}: {exc}") from exc
     actual_sha256 = hashlib.sha256(data).hexdigest()
     if actual_sha256 != expected_sha256:
         raise HarnessFailure(
@@ -812,13 +829,17 @@ def load_reference_source(reference_id: str, target: str, source: dict[str, Any]
         raise HarnessFailure(f"{reference_id}: {target} is not valid UTF-8") from exc
 
 
-def write_reference_baseline_files(baseline_root: Path, bundle: dict[str, Any]) -> None:
+def write_reference_baseline_files(baseline_root: Path, bundle: dict[str, Any], *, source_root: Path | None = None) -> None:
     files = bundle["files"]
     reference_id = str(bundle.get("label", "<reference>"))
+    effective_source_root = source_root or baseline_root
     for target, source in files.items():
         target_path = baseline_root / target
         target_path.parent.mkdir(parents=True, exist_ok=True)
-        target_path.write_text(load_reference_source(reference_id, target, source), encoding="utf-8")
+        target_path.write_text(
+            load_reference_source(reference_id, target, source, source_root=effective_source_root),
+            encoding="utf-8",
+        )
 
 
 def validate_all(
@@ -1056,12 +1077,17 @@ def quality_judge_prompt(
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
 
-def copy_eval_workspace(repo_root: Path, destination: Path) -> None:
+def copy_eval_workspace(repo_root: Path, destination: Path, *, instruction_bundle: str = "current") -> None:
+    if instruction_bundle not in INSTRUCTION_BUNDLES:
+        raise ValidationError(f"unknown instruction bundle: {instruction_bundle}")
     for path in [*INSTRUCTION_FILES, *MARKDOWN_TABLES, DEFAULT_CASES, DEFAULT_PRESETS, DEFAULT_REFERENCES, FINAL_RESPONSE_SCHEMA]:
         source = repo_root / path
         target = destination / path
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    if instruction_bundle == "empty":
+        for path in INSTRUCTION_FILES:
+            (destination / path).write_text("", encoding="utf-8")
 
 
 def build_agent_command(
@@ -1163,6 +1189,7 @@ def run_case(
     agent_command_mode: str,
     case_timeout_seconds: int | None,
     label: str = "current",
+    instruction_bundle: str = "current",
 ) -> AgentClassification:
     if dry_run:
         case_output = output_dir / label / case["id"]
@@ -1183,7 +1210,7 @@ def run_case(
     try:
         with tempfile.TemporaryDirectory(prefix=f"instruction-eval-{case['id']}-") as tmp:
             workspace = Path(tmp)
-            copy_eval_workspace(repo_root, workspace)
+            copy_eval_workspace(repo_root, workspace, instruction_bundle=instruction_bundle)
             case_output = output_dir / label / case["id"]
             output_last_message = case_output / "final-message.json"
             schema_path = workspace / FINAL_RESPONSE_SCHEMA
@@ -1393,12 +1420,13 @@ def command_run(args: argparse.Namespace) -> int:
         selected = select_cases(cases, args.case)
         model, reasoning_effort, service_tier = resolve_model_config(args, presets)
         output_dir = repo_root / args.output_dir
+        label = "empty" if args.instruction_bundle == "empty" else "current"
         worst = 0
         records: list[dict[str, Any]] = []
 
         def run_current_case(index_case: tuple[int, dict[str, Any]]) -> dict[str, Any]:
             index, case = index_case
-            print_case_progress(case, label="current", index=index, total=len(selected))
+            print_case_progress(case, label=label, index=index, total=len(selected))
             result = run_case(
                 case,
                 repo_root=repo_root,
@@ -1410,8 +1438,10 @@ def command_run(args: argparse.Namespace) -> int:
                 dry_run=args.dry_run,
                 agent_command_mode=args.agent_command_mode,
                 case_timeout_seconds=args.case_timeout_seconds,
+                label=label,
+                instruction_bundle=args.instruction_bundle,
             )
-            return result_record(case, "current", result)
+            return result_record(case, label, result)
 
         effective_jobs = 1 if args.dry_run else args.jobs
         records = run_ordered(list(enumerate(selected, 1)), effective_jobs, run_current_case)
@@ -1421,8 +1451,8 @@ def command_run(args: argparse.Namespace) -> int:
             elif not record["passed"] and record["failure_type"] == "behavior":
                 worst = max(worst, 4)
         if not args.dry_run:
-            write_summary(output_dir, "current", records)
-            print(f"summary={output_dir / 'current' / 'summary.md'}")
+            write_summary(output_dir, label, records)
+            print(f"summary={output_dir / safe_label(label) / 'summary.md'}")
         return worst
     except (ValidationError, HarnessFailure) as exc:
         print(f"failure_type=harness error={exc}", file=sys.stderr)
@@ -1465,7 +1495,7 @@ def write_compare_baseline_files(
         reference_id = args.baseline_reference
         if reference_id not in references:
             raise ValidationError(f"unknown baseline reference: {reference_id}")
-        write_reference_baseline_files(baseline_root, references[reference_id])
+        write_reference_baseline_files(baseline_root, references[reference_id], source_root=repo_root)
         return f"reference-{reference_id}"
     for path in INSTRUCTION_FILES:
         target = baseline_root / path
@@ -1673,6 +1703,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Codex model_reasoning_effort value. Overrides --preset reasoning_effort.",
     )
     run_parser.add_argument("--service-tier", help="Codex service_tier value. Overrides --preset service_tier.")
+    run_parser.add_argument(
+        "--instruction-bundle",
+        choices=sorted(INSTRUCTION_BUNDLES),
+        default="current",
+        help="Instruction bundle to materialize in the eval workspace. Use empty for a no-instructions run.",
+    )
     run_parser.add_argument("--dry-run", action="store_true", help="Print commands without running the agent.")
     run_parser.add_argument("--jobs", type=positive_int, default=4, help="Maximum parallel case runs. Defaults to 4. Use 1 for sequential runs.")
     run_parser.add_argument(

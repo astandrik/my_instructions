@@ -6,7 +6,7 @@
     "source_repository": "https://github.com/OpenHands/OpenHands",
     "files": {
       "CRITICAL_INSTRUCTIONS.md": {
-        "url": "https://raw.githubusercontent.com/OpenHands/OpenHands/main/AGENTS.md",
+        "path": "evals/references/openhands-agents/AGENTS.md",
         "sha256": "4da733821ca7f80744c5a58eb9eecbf2b20686a5a159becc1542c415fc0ef194"
       },
       "ADVANCED_PATTERNS_REFERENCE.md": {

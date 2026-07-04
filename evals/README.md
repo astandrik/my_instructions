@@ -38,11 +38,15 @@ The checked-in presets currently cover:
 - `gpt-5.5-{low,medium,high,xhigh}` -> `gpt-5.5`
 - `gpt-5.4-{low,medium,high,xhigh}` -> `gpt-5.4`
 - `spark-{low,medium,high,xhigh}` -> `gpt-5.3-codex-spark`
+- `grok-4.3-medium` -> `grok-4.3`
+- `grok-build-0.1-medium` -> `grok-build-0.1`
+- `deepseek-v4-flash-medium` -> `deepseek-v4-flash`
+- `glm-5.2-medium` -> `glm-5.2`
 
 The `gpt-5.5-*` and `gpt-5.4-*` presets set `service_tier="fast"` because
 the local Codex catalog advertises Fast tier for those models. Spark presets
-do not set a service tier unless the target account catalog starts advertising
-one.
+and the external API adapter presets do not set a service tier unless the
+target runtime starts advertising one.
 
 Preview the exact commands without running a model:
 
@@ -58,6 +62,19 @@ isolated eval process:
 ```bash
 python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --dry-run
 python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agent-command-mode current-codex --jobs 1
+```
+
+Run the same cases with an empty instruction bundle when measuring instruction
+lift. This keeps eval cases, schemas, presets, and reference metadata available
+in the temporary workspace, but materializes `CRITICAL_INSTRUCTIONS.md` and
+`ADVANCED_PATTERNS_REFERENCE.md` as empty files:
+
+```bash
+python3 scripts/run_instruction_evals.py run \
+  --instruction-bundle empty \
+  --agent-command "codex exec" \
+  --agent-command-mode current-codex \
+  --jobs 1
 ```
 
 ### Codex Desktop bundled CLI runbook
@@ -176,6 +193,150 @@ pass a real `codex exec --model ...` probe. Official API model docs can
 confirm public model IDs, but Codex account access is the runtime source of
 truth for these eval presets.
 
+## xAI / Grok Model-Only Runs
+
+`scripts/xai_eval_agent.py` is a narrow adapter for running the same eval cases
+against xAI/Grok structured outputs. It is not a full Codex agent runtime: it
+does not expose shell tools, MCP, file edits, or a tool loop. Use it to measure
+instruction-following transfer across models, not to compare full agent
+capability.
+
+Use the adapter instead of configuring Grok as a Codex custom provider for
+these evals. Current Codex custom providers use the Responses API path, while
+the verified xAI structured-output path here is Chat Completions; provider
+probes can fail before model output if Codex sends a tool payload that xAI does
+not accept.
+
+Keep the xAI key out of this repository. For local macOS runs, one safe pattern
+is to store the key in Keychain and export it only for the command:
+
+```bash
+security add-generic-password -U -a "$USER" -s codex-xai-api-key -w '<xai-api-key>'
+export XAI_API_KEY="$(security find-generic-password -a "$USER" -s codex-xai-api-key -w)"
+```
+
+Smoke one case before a broad run:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --case prompt-injection-file-data \
+  --agent-command "python3 scripts/xai_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset grok-4.3-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/grok-4.3-smoke
+```
+
+Then run the current bundle:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --agent-command "python3 scripts/xai_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset grok-4.3-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/grok-4.3-current
+```
+
+Switch `--preset` and `--output-dir` to run another xAI model, for example
+`grok-build-0.1-medium` with `.eval-results/grok-build-0.1-current`.
+
+For transfer measurement, compare Grok and GPT on the same case set and keep a
+stable judge model. The useful metric is instruction lift per model, not raw
+Grok-vs-GPT score. If the quality judge remains Codex/GPT-backed, label the
+judge separately from the Grok primary run.
+
+## DeepSeek Model-Only Runs
+
+`scripts/deepseek_eval_agent.py` is the DeepSeek equivalent of the xAI adapter.
+DeepSeek documents OpenAI-compatible Chat Completions at
+`https://api.deepseek.com` and exposes `deepseek-v4-flash`. Its JSON Output
+mode uses `response_format={"type":"json_object"}` rather than JSON Schema, so
+the adapter puts `evals/final-response.schema.json` into the system prompt and
+the eval runner remains the schema validator.
+The adapter sends `thinking={"type":"disabled"}` by default; set
+`DEEPSEEK_THINKING=enabled` only for a deliberately separate thinking-mode run.
+
+Keep the DeepSeek key out of this repository. For local macOS runs:
+
+```bash
+security add-generic-password -U -a "$USER" -s codex-deepseek-api-key -w '<deepseek-api-key>'
+export DEEPSEEK_API_KEY="$(security find-generic-password -a "$USER" -s codex-deepseek-api-key -w)"
+```
+
+Smoke one case first:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --case prompt-injection-file-data \
+  --agent-command "python3 scripts/deepseek_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset deepseek-v4-flash-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/deepseek-v4-flash-smoke
+```
+
+Then run the current bundle:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --agent-command "python3 scripts/deepseek_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset deepseek-v4-flash-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/deepseek-v4-flash-current
+```
+
+## Z.ai / GLM Model-Only Runs
+
+`scripts/zai_eval_agent.py` runs the same model-only eval contract against
+Z.ai GLM models. Z.ai documents OpenAI-compatible Chat Completions at
+`https://api.z.ai/api/paas/v4/`, model `glm-5.2`, and structured output through
+`response_format={"type":"json_object"}`. The adapter therefore follows the
+DeepSeek-style JSON-mode path: it puts `evals/final-response.schema.json` into
+the system prompt and lets the eval runner validate the final response.
+
+The adapter sends `thinking={"type":"enabled"}` by default for GLM-5.2 and
+uses the preset's `model_reasoning_effort` value as `reasoning_effort`. Override
+locally with `ZAI_THINKING`, `ZAI_REASONING_EFFORT`, or `ZAI_MAX_TOKENS` only
+when intentionally measuring a separate mode.
+
+Keep the Z.ai key out of this repository. For local macOS runs:
+
+```bash
+security add-generic-password -U -a "$USER" -s codex-zai-api-key -w '<zai-api-key>' "$HOME/Library/Keychains/login.keychain-db"
+export ZAI_API_KEY="$(security find-generic-password -a "$USER" -s codex-zai-api-key -w "$HOME/Library/Keychains/login.keychain-db")"
+```
+
+Smoke one case first:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --case prompt-injection-file-data \
+  --agent-command "python3 scripts/zai_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset glm-5.2-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/glm-5.2-smoke
+```
+
+Then run the current bundle:
+
+```bash
+python3 -B scripts/run_instruction_evals.py run \
+  --agent-command "python3 scripts/zai_eval_agent.py" \
+  --agent-command-mode current-codex \
+  --preset glm-5.2-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900 \
+  --output-dir .eval-results/glm-5.2-current
+```
+
 ## External Reference Baselines
 
 Reference bundles live in `evals/reference-instructions.json`. They let the
@@ -184,13 +345,15 @@ without copying the full external text into this repository.
 
 The first checked-in reference is `openhands-agents`: OpenHands' public
 `AGENTS.md`, selected because OpenHands is a major open-source coding-agent
-project and the file is a real agent instruction file. The bundle pins the raw
-URL with a SHA256 hash and maps it to `CRITICAL_INSTRUCTIONS.md`; the advanced
+project and the file is a real agent instruction file. The bundle maps the
+local mirror at `evals/references/openhands-agents/AGENTS.md` to
+`CRITICAL_INSTRUCTIONS.md` and verifies it with a SHA256 hash; the advanced
 appendix file is intentionally empty because that reference is single-file.
 
-`validate` checks the reference config shape but does not fetch external URLs.
-Actual `compare --baseline-reference ...` runs fetch and hash-check the pinned
-content before invoking the eval agent.
+`validate` checks the reference config shape. Actual
+`compare --baseline-reference ...` runs hash-check the local mirror before
+invoking the eval agent. To refresh a mirrored external reference, update the
+local file and its SHA256 together in `evals/reference-instructions.json`.
 
 Run all cases against the current instruction files:
 

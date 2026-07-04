@@ -39,6 +39,22 @@
     "reasoning_effort": "xhigh",
     "service_tier": "fast"
   },
+  "grok-4.3-medium": {
+    "model": "grok-4.3",
+    "reasoning_effort": "medium"
+  },
+  "grok-build-0.1-medium": {
+    "model": "grok-build-0.1",
+    "reasoning_effort": "medium"
+  },
+  "deepseek-v4-flash-medium": {
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "medium"
+  },
+  "glm-5.2-medium": {
+    "model": "glm-5.2",
+    "reasoning_effort": "medium"
+  },
   "spark-high": {
     "model": "gpt-5.3-codex-spark",
     "reasoning_effort": "high"
