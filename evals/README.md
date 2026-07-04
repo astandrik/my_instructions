@@ -447,7 +447,8 @@ sent to a second structured Codex run using `evals/quality-judge.schema.json`.
 grader-only for the primary eval agent and are only included in the optional
 judge prompt.
 
-The public reference comparison snapshot lives in the root `README.md`.
+Benchmark snapshots live in `evals/RESULTS.md`; the root `README.md` keeps only
+the current evidence summary and links.
 
 Structured `decision` semantics:
 
