@@ -37,6 +37,8 @@ Representative quality results:
 | GLM-5.2 instructed vs empty | 37 | 0 | 1 | Strong instruction lift even on the strongest external model. |
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
+[evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
+per-case prompt/reference quality outcomes. See
 [evals/CHANGELOG.md](evals/CHANGELOG.md) for the chronological change and
 metric-summary log.
 
@@ -88,6 +90,7 @@ for benchmark evidence.
 | [CRITICAL_INSTRUCTIONS.md](CRITICAL_INSTRUCTIONS.md) | Single instruction bundle: compact core plus selective advanced appendix. |
 | [evals/README.md](evals/README.md) | Harness contract, command runbooks, provider adapter usage, reference-baseline setup, and artifact layout. |
 | [evals/RESULTS.md](evals/RESULTS.md) | Latest benchmark snapshots and interpretation notes. |
+| [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) | Per-case quality winners, deltas, confidence, and hard-gate shortcuts for tracked prompt/reference compares. |
 | [evals/CHANGELOG.md](evals/CHANGELOG.md) | Chronological instruction/eval changes with compact metric deltas and conclusions. |
 | [evals/cases.jsonl](evals/cases.jsonl) | Canonical eval cases and deterministic checks. |
 | [evals/model-presets.json](evals/model-presets.json) | Model preset names used by the harness. |

@@ -125,6 +125,8 @@ SHA256 `4da733821ca7f80744c5a58eb9eecbf2b20686a5a159becc1542c415fc0ef194`.
 
 Artifact:
 `.eval-results/compare-openhands-single-bundle-v15-jobs1/compare-reference-openhands-agents-current/quality.md`.
+Tracked per-case prompt/reference outcomes are summarized in
+`evals/PROMPT_QUALITY_CASES.md`.
 
 | Bundle | Hard-gate passed | Hard-gate failed |
 |---|---:|---:|
@@ -178,6 +180,9 @@ Artifacts:
 
 - `.eval-results/compare-claude-fable-gpt55/compare-reference-claude-fable-5-current/summary.md`
 - `.eval-results/compare-claude-fable-gpt55/compare-reference-claude-fable-5-current/quality.md`
+
+Tracked per-case prompt/reference outcomes are summarized in
+`evals/PROMPT_QUALITY_CASES.md`.
 
 | Bundle | Hard-gate passed | Hard-gate failed |
 |---|---:|---:|
