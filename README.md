@@ -15,12 +15,17 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## Current Evidence
 
-Latest tracked model-backed snapshot: 49 eval cases, captured on 2026-07-05
+Latest broad model-backed snapshot: 49 eval cases, captured on 2026-07-05
 under `.eval-results/refresh-2026-07-05-49-case-v1/`, with `gpt-5.5-medium`
-as the fixed quality judge. This refresh changed eval coverage, not the
-instruction text: `HEAD == origin/main` and the instruction/reference files
-have no local diff, so previous-vs-current instruction comparison is not
-applicable for this pass.
+as the fixed quality judge. That broad snapshot changed eval coverage, not the
+instruction text.
+
+Latest focused instruction-change evidence: v4.12 micro-calibration on the
+seven expanded watchlist cases. A GPT-5.5 compare of baseline `HEAD` v4.11
+against current v4.12 produced 5 current hard-gate wins, 1 pass/pass tie, and
+1 both-fail residual. The focused artifacts live under
+`.eval-results/v4.12-watchlist-compare-gpt55/`. This is not a replacement for
+a full 49-case refresh.
 
 Visual snapshot:
 
@@ -52,6 +57,9 @@ Read this as:
   gate.
 - The headline 49-case score mixes strong old-suite coverage with six new strict
   cases that should be treated as the next improvement backlog.
+- The v4.12 focused compare shows that several watchlist cases respond to small
+  wording changes, but `tool-output-prompt-injection-utility-security` remains
+  a strict lexical/summary-framing watchlist item.
 
 Summary:
 
@@ -60,9 +68,8 @@ winner. They materially improve coding-agent behavior versus an empty bundle,
 especially around safety gates, evidence discipline, preserving user changes,
 and avoiding unjustified mutation. GPT-5.5 is the strongest tested runner, and
 GLM-5.2 is the only external model close enough to be a plausible fallback.
-The 49-case refresh also exposed real watchlist gaps, so the right conclusion
-is that the bundle is useful and evidence-backed, but not complete or
-model-independent.
+The v4.12 micro-calibration improves the focused GPT-5.5 watchlist evidence,
+but the bundle is still not complete or model-independent.
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
