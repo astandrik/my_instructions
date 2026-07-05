@@ -15,26 +15,29 @@ eval harness for checking whether those instructions actually change behavior.
 
 Latest tracked snapshot: 43 eval cases, `gpt-5.5-medium` as the primary Codex
 runner and fixed quality judge.
-The OpenHands reference row below was refreshed after the single-bundle cleanup;
-cross-model and no-instructions rows are historical snapshots documented in
-`evals/RESULTS.md`.
+Cross-model, no-instructions, and previous-vs-current rows were refreshed after
+the single-bundle cleanup. OpenHands and Claude/Fable reference rows are the
+latest tracked reference compares documented in `evals/RESULTS.md`.
 
 | Question | Result | What it means |
 |---|---:|---|
-| Does the current bundle pass its deterministic gates? | 43 / 43 | The current instruction set satisfies all hard checks after the documented targeted rerun. |
-| Does the bundle transfer to non-GPT models? | GLM-5.2: 37 / 43, DeepSeek: 27-28 / 43, Grok: 21-29 / 43 | Instructions help across models, but weaker models still miss safety/process gates. |
-| Does removing instructions hurt? | -13 to -18 passed cases depending on model | The bundle is doing real work, especially on prompt injection, side-effecting tools, generated artifacts, branch context, dependency boundaries, and verification discovery. |
+| Does the current bundle pass its deterministic gates? | 43 / 43 on GPT-5.5 | The current instruction set satisfies all hard checks on the primary runner after the documented targeted rerun. |
+| Does the bundle transfer to non-GPT models? | GLM-5.2: 40 / 43, Grok Build: 36 / 43, Grok 4.3: 29 / 43, DeepSeek: 27-28 / 43 | Instructions help across models, but weaker models still miss safety/process gates. |
+| Did the single-bundle refresh improve prior external-model runs? | Grok 4.3 +8 cases, Grok Build +7, GLM +3; DeepSeek unchanged | Quality improved for GPT/Grok/GLM, while DeepSeek quality moved slightly down despite unchanged hard-gate counts. |
+| Does removing instructions hurt? | Current gains +10 to +24 passed cases over empty | The bundle is doing real work, especially on prompt injection, side-effecting tools, generated artifacts, branch context, dependency boundaries, and verification discovery. |
 | Does it beat OpenHands `AGENTS.md` on these cases? | Current 43 / 43, OpenHands 34 / 43 | The current bundle keeps a hard-gate safety/process edge and has no high-confidence OpenHands quality wins in the latest run. |
-| Does it beat a local Claude-style prompt on these cases? | Current 43 / 43, Claude local reference 29 / 43 | Similar pattern: large deterministic advantage, narrower pass/pass quality advantage. |
+| Does it beat a Claude-style prompt on these cases? | Current 43 / 43, Claude/Fable reference 29 / 43 | Similar pattern: large deterministic advantage, narrower pass/pass quality advantage. |
 
 Representative quality results:
 
 | Comparison | Current / instructed wins | Ties | Other wins | Read this as |
 |---|---:|---:|---:|---|
 | Current vs OpenHands reference | 37 | 3 | 3 | Strong hard-gate advantage; current also has a pass/pass quality edge. |
-| Current vs local Claude reference | 24 | 11 | 8 | Strong hard-gate advantage; pass/pass quality remains competitive, not one-sided. |
-| GPT-5.5 instructed vs empty | 36 | 6 | 1 | Instructions clearly improve behavior, with one narrow empty-response quality win. |
-| GLM-5.2 instructed vs empty | 37 | 0 | 1 | Strong instruction lift even on the strongest external model. |
+| Current vs Claude/Fable reference | 24 | 11 | 8 | Strong hard-gate advantage; pass/pass quality remains competitive, not one-sided. |
+| GPT-5.5 instructed vs empty | 40 | 3 | 0 | Instructions clearly improve behavior under the same-day single-bundle run. |
+| GLM-5.2 instructed vs empty | 40 | 0 | 0 | Strong instruction lift even on the strongest external model. |
+| Grok Build 0.1 current vs previous instructions | 29 | 3 | 6 | The single-bundle refresh materially improved this model despite two residual transport failures. |
+| DeepSeek V4 Flash current vs previous instructions | 13 | 4 | 16 | Hard gates were stable, but quality slightly favored the previous split-bundle run. |
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
@@ -102,7 +105,7 @@ for benchmark evidence.
 - Put benchmark snapshots in `evals/RESULTS.md`.
 - Put chronological instruction/eval deltas in `evals/CHANGELOG.md`.
 - Keep `.eval-results/` ignored and out of commits.
-- Do not commit local prompt mirrors or private reference material unless
-  redistribution is explicitly approved.
+- Do not commit private reference material unless redistribution is explicitly
+  approved.
 - For meaningful instruction changes, update eval cases and rerun the smallest
   evidence chain that proves the intended behavior.

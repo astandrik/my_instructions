@@ -17,7 +17,70 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
-## Cross-Model Transfer Snapshot
+## Single-Bundle Model Refresh Snapshot
+
+Captured on 2026-07-05 after the advanced appendix was merged into
+`CRITICAL_INSTRUCTIONS.md`. The same 43 eval cases were rerun across GPT-5.5,
+external model-only adapters, and empty-bundle baselines. Raw artifacts live
+under `.eval-results/refresh-2026-07-05-single-bundle-v1/`.
+
+External adapter runs do not exercise a shell/MCP/file-edit tool loop. Grok
+Build 0.1 still has two residual xAI remote disconnects after targeted reruns,
+so its hard-gate and quality rows carry that transport caveat.
+
+### Hard Gates
+
+| Model / runner | Previous instructed | Current instructed | Empty | Notes |
+|---|---:|---:|---:|---|
+| GPT-5.5 via Codex CLI | 43 / 43 | 43 / 43 | 33 / 43 | Current and previous both pass all hard gates; current is stronger on quality. |
+| Grok 4.3 via xAI adapter | 21 / 43 | 29 / 43 | 7 / 43 | Single-bundle refresh fixed eight hard-gate misses. |
+| Grok Build 0.1 via xAI adapter | 29 / 43 | 36 / 43 | 12 / 43 | Current merged summary still has 2 agent failures from xAI remote disconnects. |
+| DeepSeek V4 Flash via DeepSeek adapter | 27 / 43 | 27 / 43 | 9 / 43 | Hard-gate count unchanged; quality moved slightly toward previous. |
+| DeepSeek V4 Flash thinking mode | 28 / 43 | 28 / 43 | 8 / 43 | Hard-gate count unchanged; quality moved slightly toward previous. |
+| GLM-5.2 via Z.ai adapter | 37 / 43 | 40 / 43 | 21 / 43 | Strongest external-model current result. |
+
+### Previous vs Current Quality
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. Each row is a
+same-model comparison: previous instructed output for that model versus current
+instructed output for the same model.
+
+| Model | Current wins | Previous wins | Ties | Inconclusive | Avg previous | Avg current | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5 | 30 | 5 | 8 | 0 | 93.0 | 94.9 | +1.9 | 43 | 0 |
+| Grok 4.3 | 20 | 11 | 2 | 10 | 44.6 | 64.3 | +19.7 | 17 | 26 |
+| Grok Build 0.1 | 29 | 6 | 3 | 5 | 61.4 | 79.4 | +18.0 | 27 | 16 |
+| DeepSeek V4 Flash | 13 | 16 | 4 | 10 | 57.8 | 55.0 | -2.8 | 21 | 22 |
+| DeepSeek V4 Flash thinking | 12 | 18 | 4 | 9 | 60.7 | 59.5 | -1.2 | 22 | 21 |
+| GLM-5.2 | 24 | 13 | 5 | 1 | 79.3 | 86.9 | +7.6 | 35 | 8 |
+
+The single-bundle refresh is a net quality improvement for GPT-5.5, Grok 4.3,
+Grok Build 0.1, and GLM-5.2. DeepSeek V4 Flash variants are the exception:
+hard-gate counts stayed flat, but the judge slightly preferred the previous
+split-bundle outputs.
+
+### Current vs Empty Quality
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. The empty side
+uses a materialized empty `CRITICAL_INSTRUCTIONS.md` in the temporary eval
+workspace. This measures instruction lift under the same-day runner, not a
+claim that empty instructions changed.
+
+| Model | Current wins | Empty wins | Ties | Inconclusive | Avg current | Avg empty | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5 | 40 | 0 | 3 | 0 | 95.2 | 67.8 | +27.4 | 33 | 10 |
+| Grok 4.3 | 29 | 1 | 0 | 13 | 66.4 | 13.1 | +53.3 | 6 | 37 |
+| Grok Build 0.1 | 36 | 0 | 0 | 7 | 81.8 | 18.5 | +63.3 | 12 | 31 |
+| DeepSeek V4 Flash | 25 | 2 | 1 | 15 | 60.9 | 16.8 | +44.1 | 8 | 35 |
+| DeepSeek V4 Flash thinking | 28 | 0 | 0 | 15 | 63.7 | 15.0 | +48.7 | 8 | 35 |
+| GLM-5.2 | 40 | 0 | 0 | 3 | 89.7 | 38.1 | +51.6 | 21 | 22 |
+
+The instruction bundle beats the empty baseline for every tested model by a
+large quality-score margin. Empty wins remain isolated and are mostly cases
+where the instructed side missed a deterministic gate or the model produced a
+shorter pass/pass answer that the judge preferred.
+
+## Historical Cross-Model Transfer Snapshot
 
 Captured on 2026-07-03, before the advanced appendix was merged into
 `CRITICAL_INSTRUCTIONS.md`. The then-current split instruction bundle was run
@@ -168,13 +231,12 @@ OpenHands had three medium-confidence pass/pass quality wins:
 
 There were no high-confidence OpenHands wins in this snapshot.
 
-## Local Claude Prompt Compare Snapshot
+## Claude Fable Prompt Compare Snapshot
 
-Captured on 2026-07-04. This local compare used `CLAUDE-FABLE-5.md` as a
-temporary reference baseline against the current instruction bundle, with
-`gpt-5.5-medium` as both the eval agent and quality judge. The raw prompt file
-was treated as a local input for this run; do not publish or commit the prompt
-text itself unless redistribution is explicitly approved.
+Captured on 2026-07-04. This compare used the checked-in
+`evals/references/claude-agents/CLAUDE-FABLE-5.md` mirror as reference
+baseline `claude-fable-5` against the current instruction bundle, with
+`gpt-5.5-medium` as both the eval agent and quality judge.
 
 Artifacts:
 
@@ -187,7 +249,7 @@ Tracked per-case prompt/reference outcomes are summarized in
 | Bundle | Hard-gate passed | Hard-gate failed |
 |---|---:|---:|
 | Current instructions | 43 | 0 |
-| Claude Fable local reference | 29 | 14 |
+| Claude Fable reference | 29 | 14 |
 
 | Scope | Current wins | Ties | Claude reference wins |
 |---|---:|---:|---:|

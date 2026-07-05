@@ -16,6 +16,62 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-07-05 - v4.11 Cross-Model Refresh
+
+Instruction surface:
+
+- No instruction text change from the v4.11 single-bundle calibration.
+- Refreshed all tracked model rows on the current single-bundle instructions:
+  GPT-5.5, Grok 4.3, Grok Build 0.1, DeepSeek V4 Flash, DeepSeek V4 Flash
+  thinking, and GLM-5.2.
+- Reran empty/no-instructions baselines only for same-day instruction-lift
+  comparability, not because the empty bundle changed.
+- Added same-model quality comparisons for previous-vs-current instructions:
+  `GPT-prev` vs `GPT-current`, `Grok-prev` vs `Grok-current`, and equivalent
+  pairs for the other tracked models.
+
+Metric snapshot:
+
+| Model | Previous hard gates | Current hard gates | Empty hard gates | Prev -> current quality |
+|---|---:|---:|---:|---|
+| GPT-5.5 | 43 / 43 | 43 / 43 | 33 / 43 | current 30, previous 5, tie 8, avg delta +1.9 |
+| Grok 4.3 | 21 / 43 | 29 / 43 | 7 / 43 | current 20, previous 11, tie 2, avg delta +19.7 |
+| Grok Build 0.1 | 29 / 43 | 36 / 43 | 12 / 43 | current 29, previous 6, tie 3, avg delta +18.0 |
+| DeepSeek V4 Flash | 27 / 43 | 27 / 43 | 9 / 43 | current 13, previous 16, tie 4, avg delta -2.8 |
+| DeepSeek V4 Flash thinking | 28 / 43 | 28 / 43 | 8 / 43 | current 12, previous 18, tie 4, avg delta -1.2 |
+| GLM-5.2 | 37 / 43 | 40 / 43 | 21 / 43 | current 24, previous 13, tie 5, avg delta +7.6 |
+
+Current-vs-empty quality remained strongly positive for every model:
+GPT-5.5 current won 40 cases, Grok 4.3 29, Grok Build 36, DeepSeek V4 Flash
+25, DeepSeek V4 Flash thinking 28, and GLM-5.2 40.
+
+Artifacts:
+
+- `.eval-results/refresh-2026-07-05-single-bundle-v1/`
+- Same-model quality pairs are under `quality-same-model-*` in that artifact
+  family, except GPT-5.5 which uses the valid pair already produced under
+  `quality-prev-current-vs-gpt55-prev`.
+
+Conclusion:
+
+- The single-bundle refresh improved transfer for Grok 4.3, Grok Build 0.1,
+  and GLM-5.2, while GPT-5.5 stayed at 43 / 43 and improved slightly on
+  quality.
+- DeepSeek V4 Flash variants did not gain hard-gate coverage and slightly
+  regressed in same-model quality, so they remain the main watchlist models for
+  wording sensitivity.
+- Instruction lift versus empty remains large across every tested model.
+
+Caveats:
+
+- External adapter runs are model-only structured-output runs, not full Codex
+  shell/MCP/file-edit agent loops.
+- Grok Build 0.1 current still has 2 residual agent failures from xAI remote
+  disconnects after targeted reruns.
+- A broad `GPT-5.5-prev` vs all-candidates quality run was interrupted because
+  it answered cross-model distance rather than same-model instruction delta;
+  only the valid GPT same-model pair from that artifact is used.
+
 ## 2026-07-05 - v4.11 Single-Bundle Calibration
 
 Instruction surface:
@@ -89,8 +145,8 @@ Caveats:
 
 - `origin/main` diagnostic used `--jobs 4`; treat it as regression signal, not
   publication evidence.
-- Cross-model and no-instructions rows in `evals/RESULTS.md` were not rerun
-  after the single-bundle merge.
+- The original calibration comparison did not include cross-model refresh rows;
+  see the later 2026-07-05 cross-model refresh entry above.
 
 ## 2026-07-04 - Split-Bundle Transfer and Instruction-Lift Snapshot
 
@@ -99,7 +155,7 @@ Instruction surface:
 - Historical split bundle:
   `CRITICAL_INSTRUCTIONS.md` plus `ADVANCED_PATTERNS_REFERENCE.md`.
 - Same 43 eval cases were used for GPT-5.5, external model-only adapters,
-  empty-bundle runs, and a local Claude-style prompt reference.
+  empty-bundle runs, and a Claude/Fable prompt reference.
 
 Metric snapshot:
 
@@ -107,14 +163,14 @@ Metric snapshot:
 |---|---|---:|---:|---|
 | GPT-5.5 instructed vs empty | `.eval-results/no-instructions-gpt55-current` | 43 / 43 | 26 / 43 | instructed 36, empty 1, tie 6 |
 | GLM-5.2 instructed vs empty | `.eval-results/no-instructions-glm-5.2-current-merged` | 37 / 43 | 19 / 43 | instructed 37, empty 1, tie 0 |
-| Current vs local Claude reference | `.eval-results/compare-claude-fable-gpt55` | 43 / 43 | 29 / 43 | current 24, Claude 8, tie 11 |
+| Current vs Claude/Fable reference | `.eval-results/compare-claude-fable-gpt55` | 43 / 43 | 29 / 43 | current 24, Claude 8, tie 11 |
 
 Conclusion:
 
 - Removing instructions hurt every tested model by 13-18 hard-gate cases.
 - GLM-5.2 was the strongest non-GPT transfer result, but still lagged GPT-5.5
   on hard gates and quality.
-- The local Claude-style reference was competitive on some pass/pass wording,
+- The Claude/Fable reference was competitive on some pass/pass wording,
   but missed many deterministic safety/process gates.
 
 Caveats:

@@ -344,14 +344,19 @@ python3 -B scripts/run_instruction_evals.py run \
 ## External Reference Baselines
 
 Reference bundles live in `evals/reference-instructions.json`. They let the
-same cases compare local instructions against a public instruction source
-without copying the full external text into this repository.
+same cases compare local instructions against another instruction source with
+a hash-checked local mirror.
 
-The first checked-in reference is `openhands-agents`: OpenHands' public
-`AGENTS.md`, selected because OpenHands is a major open-source coding-agent
-project and the file is a real agent instruction file. The bundle maps the
-local mirror at `evals/references/openhands-agents/AGENTS.md` to
-`CRITICAL_INSTRUCTIONS.md` and verifies it with a SHA256 hash.
+The checked-in references are:
+
+- `openhands-agents`: OpenHands' public `AGENTS.md`, selected because
+  OpenHands is a major open-source coding-agent project and the file is a real
+  agent instruction file. The bundle maps the local mirror at
+  `evals/references/openhands-agents/AGENTS.md` to
+  `CRITICAL_INSTRUCTIONS.md` and verifies it with a SHA256 hash.
+- `claude-fable-5`: the Claude/Fable-style prompt mirror at
+  `evals/references/claude-agents/CLAUDE-FABLE-5.md`, used as a reference
+  prompt for the tracked Fable comparison snapshot.
 
 For `compare --baseline-ref`, the runner keeps legacy fairness for refs that
 still have the old split bundle: it merges `CRITICAL_INSTRUCTIONS.md` plus
@@ -407,6 +412,7 @@ Compare against the public OpenHands reference instead of a git ref:
 ```bash
 python3 scripts/run_instruction_evals.py compare --baseline-reference openhands-agents --agent-command "codex exec"
 python3 scripts/run_instruction_evals.py compare --baseline-reference openhands-agents --quality-judge --agent-command "codex exec"
+python3 scripts/run_instruction_evals.py compare --baseline-reference claude-fable-5 --quality-judge --agent-command "codex exec"
 ```
 
 Preview the reference comparison command shape without fetching or running the
@@ -414,6 +420,7 @@ agent:
 
 ```bash
 python3 scripts/run_instruction_evals.py compare --baseline-reference openhands-agents --quality-judge --agent-command "codex exec" --dry-run
+python3 scripts/run_instruction_evals.py compare --baseline-reference claude-fable-5 --quality-judge --agent-command "codex exec" --dry-run
 ```
 
 If the global `codex` wrapper is not the executable you want, pass an absolute command instead:

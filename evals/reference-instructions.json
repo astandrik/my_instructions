@@ -10,5 +10,17 @@
         "sha256": "4da733821ca7f80744c5a58eb9eecbf2b20686a5a159becc1542c415fc0ef194"
       }
     }
+  },
+  "claude-fable-5": {
+    "label": "Claude Fable 5 prompt",
+    "description": "Checked-in Claude/Fable-style prompt mirror used as an external reference instruction bundle for eval comparison.",
+    "license": "unknown",
+    "source_repository": "local mirror",
+    "files": {
+      "CRITICAL_INSTRUCTIONS.md": {
+        "path": "evals/references/claude-agents/CLAUDE-FABLE-5.md",
+        "sha256": "1244cec455a053b59513f834c2d476c7772df52c992cd1dd3d591dd485c49fc6"
+      }
+    }
   }
 }
