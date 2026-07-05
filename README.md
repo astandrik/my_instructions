@@ -53,6 +53,17 @@ Read this as:
 - The headline 49-case score mixes strong old-suite coverage with six new strict
   cases that should be treated as the next improvement backlog.
 
+Summary:
+
+Current instructions are a strong practical baseline, not a finished benchmark
+winner. They materially improve coding-agent behavior versus an empty bundle,
+especially around safety gates, evidence discipline, preserving user changes,
+and avoiding unjustified mutation. GPT-5.5 is the strongest tested runner, and
+GLM-5.2 is the only external model close enough to be a plausible fallback.
+The 49-case refresh also exposed real watchlist gaps, so the right conclusion
+is that the bundle is useful and evidence-backed, but not complete or
+model-independent.
+
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
 per-case prompt/reference quality outcomes. See
