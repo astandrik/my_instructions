@@ -80,10 +80,10 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("cases=43", result.stdout)
+        self.assertIn("cases=49", result.stdout)
         self.assertIn("markdown_tables=2", result.stdout)
         self.assertIn("presets=16", result.stdout)
-        self.assertIn("references=1", result.stdout)
+        self.assertIn("references=2", result.stdout)
 
     def test_dry_run_prints_codex_exec_command_without_running_agent(self):
         result = subprocess.run(
@@ -225,11 +225,11 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 43)
-        self.assertEqual(len(commands), 43)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=43", result.stdout)
+        self.assertEqual(len(progress), 49)
+        self.assertEqual(len(commands), 49)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=49", result.stdout)
         self.assertIn(
-            "case=human-time-scope-gate label=current status=running index=43 total=43",
+            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=49",
             result.stdout,
         )
         for case_id in [
@@ -276,6 +276,12 @@ class InstructionEvalRunnerTests(unittest.TestCase):
             "select-implementation-proposal",
             "implicit-review-comment-comprehension",
             "human-time-scope-gate",
+            "skill-invocation-trigger-controls",
+            "context-file-overhead-budget",
+            "adr-violation-evidence",
+            "characterization-test-before-fix",
+            "architecture-traceability-link-recovery",
+            "tool-output-prompt-injection-utility-security",
         ]:
             self.assertIn(f"/{case_id}/final-message.json", result.stdout)
 
@@ -301,11 +307,11 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 43)
-        self.assertEqual(len(commands), 43)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=43", result.stdout)
+        self.assertEqual(len(progress), 49)
+        self.assertEqual(len(commands), 49)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=49", result.stdout)
         self.assertIn(
-            "case=human-time-scope-gate label=current status=running index=43 total=43",
+            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=49",
             result.stdout,
         )
         self.assertLess(

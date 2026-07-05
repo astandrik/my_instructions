@@ -17,6 +17,99 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## 49-Case Refresh Snapshot
+
+Captured on 2026-07-05 after the Fable-era eval coverage expansion. This
+refresh changed eval coverage, not the instruction text: `HEAD == origin/main`
+and the instruction/reference files had no local diff, so previous-vs-current
+instruction comparison is not applicable for this pass.
+
+Raw artifacts live under
+`.eval-results/refresh-2026-07-05-49-case-v1/`. Targeted transport reruns were
+merged only in explicitly named generated summaries under that artifact root;
+raw summaries remain unchanged.
+
+External adapter runs do not exercise a shell/MCP/file-edit tool loop.
+
+### Hard Gates
+
+| Model / runner | Current instructed | Empty | Instruction lift | Agent failures after rerun | Notes |
+|---|---:|---:|---:|---:|---|
+| GPT-5.5 via Codex CLI | 42 / 49 | 28 / 49 | +14 | 0 | Standalone current run missed seven strict gates, all behavior failures. |
+| Grok 4.3 via xAI adapter | 28 / 49 | 9 / 49 | +19 | 0 | Weakest external transfer result in this snapshot. |
+| Grok Build 0.1 via xAI adapter | 36 / 49 | 13 / 49 | +23 | 3 current | Current still has 3 residual xAI remote-disconnect agent failures after targeted reruns; empty rerun cleared its transport failure. |
+| DeepSeek V4 Flash via DeepSeek adapter | 29 / 49 | 11 / 49 | +18 | 0 | Non-thinking beat thinking on hard gates. |
+| DeepSeek V4 Flash thinking mode | 26 / 49 | 6 / 49 | +20 | 0 | Thinking mode regressed hard-gate coverage in this suite. |
+| GLM-5.2 via Z.ai adapter | 41 / 49 | 17 / 49 | +24 | 0 | Closest external hard-gate result; targeted rerun cleared one current and two empty transport failures. |
+
+### GPT-5.5 vs External Models on Current Instructions
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. Baseline is
+the GPT-5.5 current instructed summary; candidates are external current
+instructed summaries on the same 49 cases.
+
+Artifact:
+`.eval-results/refresh-2026-07-05-49-case-v1/quality-gpt55-vs-external-current/GPT-5.5-current-saved-model-quality/model-quality-summary.md`.
+
+| Candidate | Hard passed | Candidate wins | GPT-5.5 wins | Ties | Inconclusive | Avg candidate score | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Grok 4.3 | 28 | 0 | 42 | 0 | 7 | 48.7 | -33.3 | 28 | 21 |
+| Grok Build 0.1 | 36 | 4 | 30 | 8 | 7 | 66.1 | -15.0 | 36 | 13 |
+| DeepSeek V4 Flash | 29 | 0 | 42 | 0 | 7 | 49.6 | -32.3 | 29 | 20 |
+| DeepSeek V4 Flash thinking | 26 | 0 | 42 | 0 | 7 | 44.3 | -38.0 | 26 | 23 |
+| GLM-5.2 | 41 | 15 | 19 | 9 | 6 | 77.8 | -2.8 | 40 | 9 |
+
+GLM-5.2 is now the only external model close enough to be interesting as a
+fallback quality candidate. It still trails GPT-5.5 on deterministic coverage,
+but the pass/pass quality comparison is competitive. Grok Build is materially
+better than Grok 4.3 and DeepSeek, but still has a large aggregate gap.
+
+### Current vs Empty Quality
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. The empty side
+uses a materialized empty `CRITICAL_INSTRUCTIONS.md` in the temporary eval
+workspace. This measures instruction lift for the 49-case suite.
+
+| Model | Current wins | Empty wins | Ties | Inconclusive | Avg current | Avg empty | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5 | 41 | 1 | 1 | 6 | 83.0 | 52.2 | +30.8 | 27 | 22 |
+| Grok 4.3 | 28 | 1 | 0 | 20 | 55.9 | 15.2 | +40.6 | 8 | 41 |
+| Grok Build 0.1 | 34 | 4 | 0 | 11 | 71.6 | 21.9 | +49.7 | 11 | 38 |
+| DeepSeek V4 Flash | 23 | 4 | 4 | 18 | 56.9 | 20.4 | +36.5 | 9 | 40 |
+| DeepSeek V4 Flash thinking | 24 | 1 | 2 | 22 | 52.4 | 11.0 | +41.4 | 5 | 44 |
+| GLM-5.2 | 38 | 1 | 2 | 8 | 81.1 | 30.2 | +50.9 | 17 | 32 |
+
+Instruction lift remains strongly positive across every tested model. Empty
+wins are watchlist items, not a reversal of the overall result.
+
+### Reference Prompt Quality
+
+Fixed eval primary and judge: `gpt-5.5-medium` via the Codex Desktop bundled
+CLI.
+
+Artifacts:
+
+- `.eval-results/refresh-2026-07-05-49-case-v1/compare-openhands-gpt55-quality/compare-reference-openhands-agents-current/quality.md`
+- `.eval-results/refresh-2026-07-05-49-case-v1/compare-claude-fable-gpt55-quality/compare-reference-claude-fable-5-current/quality.md`
+
+| Reference | Reference hard passed | Current-side hard passed | Current wins | Reference wins | Ties | Inconclusive | Avg current | Avg reference | Avg delta |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| OpenHands `AGENTS.md` | 32 / 49 | 42 / 49 | 32 | 1 | 10 | 6 | 82.5 | 60.4 | +22.1 |
+| Claude/Fable prompt | 34 / 49 | 44 / 49 | 37 | 6 | 2 | 4 | 86.1 | 64.3 | +21.8 |
+
+Current keeps a large reference-prompt advantage, but the expanded suite also
+surfaced real current watchlist cases. OpenHands had a hard-gate win on
+`skill-invocation-trigger-controls`; Fable had a hard-gate win on
+`characterization-test-before-fix`. The strict new cases also produced
+inconclusive both-fail results for context overhead, ADR evidence,
+traceability, and tool-output prompt-injection utility/security.
+
+The current-side hard-gate count differs between standalone and reference
+comparison runs because GPT final-response wording varies on the strict new
+cases. Treat standalone current 42 / 49 as the primary current hard-gate row,
+and the reference current-side counts as the exact side of those comparison
+artifacts.
+
 ## Single-Bundle Model Refresh Snapshot
 
 Captured on 2026-07-05 after the advanced appendix was merged into

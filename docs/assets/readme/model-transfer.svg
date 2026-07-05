@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="660" viewBox="0 0 1120 660" role="img" aria-labelledby="title desc">
+<title id="title">Cross-model transfer on current instructions</title>
+<desc id="desc">Hard-gate coverage and quality wins for external models against GPT-5.5.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.title{font-size:30px;font-weight:700;fill:#0f172a}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:600;fill:#0f172a}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#0f172a}
+.pill{font-size:12px;font-weight:700;fill:#0f172a}
+.axis{font-size:11px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1120" height="660" rx="0" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Cross-model transfer</text>
+<text x="40.0" y="84.0" class="subtitle">GLM is the only external model close to GPT on hard gates and pass/pass quality.</text>
+<rect x="40.0" y="112.0" width="505.0" height="455.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="148.0" class="label">Current hard gates</text>
+<text x="72.0" y="170.0" class="small">Bars show passed cases out of 49.</text>
+<text x="72.0" y="219.0" class="label">GPT</text>
+<rect x="190.0" y="205.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="205.0" width="231.4" height="16.0" rx="8.0" fill="#2563eb"/>
+<text x="478.0" y="218.0" class="value">42/49</text>
+<text x="72.0" y="271.0" class="label">GLM</text>
+<rect x="190.0" y="257.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="257.0" width="225.9" height="16.0" rx="8.0" fill="#16a34a"/>
+<text x="478.0" y="270.0" class="value">41/49</text>
+<text x="72.0" y="323.0" class="label">Grok Build</text>
+<rect x="190.0" y="309.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="309.0" width="198.4" height="16.0" rx="8.0" fill="#7c3aed"/>
+<text x="478.0" y="322.0" class="value">36/49</text>
+<text x="72.0" y="375.0" class="label">DeepSeek</text>
+<rect x="190.0" y="361.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="361.0" width="159.8" height="16.0" rx="8.0" fill="#0891b2"/>
+<text x="478.0" y="374.0" class="value">29/49</text>
+<text x="72.0" y="427.0" class="label">Grok 4.3</text>
+<rect x="190.0" y="413.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="413.0" width="154.3" height="16.0" rx="8.0" fill="#ea580c"/>
+<text x="478.0" y="426.0" class="value">28/49</text>
+<text x="72.0" y="479.0" class="label">DS thinking</text>
+<rect x="190.0" y="465.0" width="270.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="190.0" y="465.0" width="143.3" height="16.0" rx="8.0" fill="#0f766e"/>
+<text x="478.0" y="478.0" class="value">26/49</text>
+<rect x="575.0" y="112.0" width="505.0" height="455.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="607.0" y="148.0" class="label">External quality vs GPT-5.5</text>
+<text x="607.0" y="170.0" class="small">Candidate wins / ties / GPT wins / inconclusive.</text>
+<rect x="607.0" y="188.0" width="12.0" height="12.0" rx="3.0" fill="#16a34a"/>
+<text x="625.0" y="199.0" class="axis">candidate</text>
+<rect x="702.0" y="188.0" width="12.0" height="12.0" rx="3.0" fill="#f59e0b"/>
+<text x="720.0" y="199.0" class="axis">tie</text>
+<rect x="752.0" y="188.0" width="12.0" height="12.0" rx="3.0" fill="#334155"/>
+<text x="770.0" y="199.0" class="axis">GPT</text>
+<rect x="802.0" y="188.0" width="12.0" height="12.0" rx="3.0" fill="#cbd5e1"/>
+<text x="820.0" y="199.0" class="axis">inconclusive</text>
+<text x="607.0" y="246.0" class="label">Grok 4.3</text>
+<rect x="735.0" y="230.0" width="218.6" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="953.6" y="230.0" width="36.4" height="18.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="735.0" y="230.0" width="255.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="1008.0" y="244.0" class="value">0/0/42</text>
+<text x="735.0" y="269.0" class="small">avg 48.7, delta -33.3</text>
+<text x="607.0" y="308.0" class="label">Grok Build</text>
+<rect x="735.0" y="292.0" width="20.8" height="18.0" rx="4.0" fill="#16a34a"/>
+<rect x="755.8" y="292.0" width="41.6" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="797.4" y="292.0" width="156.1" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="953.6" y="292.0" width="36.4" height="18.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="735.0" y="292.0" width="255.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="1008.0" y="306.0" class="value">4/8/30</text>
+<text x="735.0" y="331.0" class="small">avg 66.1, delta -15.0</text>
+<text x="607.0" y="370.0" class="label">DeepSeek</text>
+<rect x="735.0" y="354.0" width="218.6" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="953.6" y="354.0" width="36.4" height="18.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="735.0" y="354.0" width="255.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="1008.0" y="368.0" class="value">0/0/42</text>
+<text x="735.0" y="393.0" class="small">avg 49.6, delta -32.3</text>
+<text x="607.0" y="432.0" class="label">DS thinking</text>
+<rect x="735.0" y="416.0" width="218.6" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="953.6" y="416.0" width="36.4" height="18.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="735.0" y="416.0" width="255.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="1008.0" y="430.0" class="value">0/0/42</text>
+<text x="735.0" y="455.0" class="small">avg 44.3, delta -38.0</text>
+<text x="607.0" y="494.0" class="label">GLM-5.2</text>
+<rect x="735.0" y="478.0" width="78.1" height="18.0" rx="4.0" fill="#16a34a"/>
+<rect x="813.1" y="478.0" width="46.8" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="859.9" y="478.0" width="98.9" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="958.8" y="478.0" width="31.2" height="18.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="735.0" y="478.0" width="255.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="1008.0" y="492.0" class="value">15/9/19</text>
+<text x="735.0" y="517.0" class="small">avg 77.8, delta -2.8</text>
+<rect x="72.0" y="518.0" width="86.0" height="24.0" rx="12.0" fill="#dbeafe"/>
+<text x="115.0" y="534.0" class="pill" text-anchor="middle">GPT 42/49</text>
+<rect x="172.0" y="518.0" width="86.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="215.0" y="534.0" class="pill" text-anchor="middle">GLM 41/49</text>
+<text x="282.0" y="535.0" class="small">Grok Build is improved but still far behind GPT on quality wins.</text>
+<line x1="32.0" y1="612.0" x2="1088.0" y2="612.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="630.0" class="small">Source: GPT-vs-external model-quality-summary.json</text>
+<text x="1088.0" y="630.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

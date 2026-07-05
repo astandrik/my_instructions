@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="640" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc">
+<title id="title">Instruction lift across models</title>
+<desc id="desc">Current instructions versus empty instruction bundle on the 49-case eval suite.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.title{font-size:30px;font-weight:700;fill:#0f172a}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:600;fill:#0f172a}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#0f172a}
+.pill{font-size:12px;font-weight:700;fill:#0f172a}
+.axis{font-size:11px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1120" height="640" rx="0" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Instruction lift across models</text>
+<text x="40.0" y="84.0" class="subtitle">49 cases. Hard-gate passes improve for every tested model; quality deltas stay strongly positive.</text>
+<rect x="40.0" y="110.0" width="1040.0" height="430.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="145.0" class="axis">Model</text>
+<text x="260.0" y="145.0" class="axis">Hard-gate passes out of 49</text>
+<text x="1010.0" y="145.0" class="axis" text-anchor="middle">Quality delta</text>
+<line x1="260.0" y1="172.0" x2="260.0" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="260.0" y="164.0" class="axis" text-anchor="middle">0</text>
+<line x1="366.1" y1="172.0" x2="366.1" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="366.1" y="164.0" class="axis" text-anchor="middle">10</text>
+<line x1="472.2" y1="172.0" x2="472.2" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="472.2" y="164.0" class="axis" text-anchor="middle">20</text>
+<line x1="578.4" y1="172.0" x2="578.4" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="578.4" y="164.0" class="axis" text-anchor="middle">30</text>
+<line x1="684.5" y1="172.0" x2="684.5" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="684.5" y="164.0" class="axis" text-anchor="middle">40</text>
+<line x1="780.0" y1="172.0" x2="780.0" y2="562.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="780.0" y="164.0" class="axis" text-anchor="middle">49</text>
+<text x="72.0" y="203.0" class="label">GPT-5.5</text>
+<rect x="260.0" y="185.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="185.0" width="297.1" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="203.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="203.0" width="445.7" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="794.0" y="195.0" class="small">empty 28/49</text>
+<text x="794.0" y="215.0" class="value">current 42/49</text>
+<rect x="890.0" y="191.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="207.0" class="pill" text-anchor="middle">+14</text>
+<text x="1010.0" y="208.0" class="value" text-anchor="middle">+30.8</text>
+<text x="72.0" y="259.0" class="label">GLM-5.2</text>
+<rect x="260.0" y="241.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="241.0" width="180.4" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="259.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="259.0" width="435.1" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="794.0" y="251.0" class="small">empty 17/49</text>
+<text x="794.0" y="271.0" class="value">current 41/49</text>
+<rect x="890.0" y="247.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="263.0" class="pill" text-anchor="middle">+24</text>
+<text x="1010.0" y="264.0" class="value" text-anchor="middle">+50.9</text>
+<text x="72.0" y="315.0" class="label">Grok Build 0.1</text>
+<rect x="260.0" y="297.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="297.0" width="138.0" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="315.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="315.0" width="382.0" height="14.0" rx="7.0" fill="#7c3aed"/>
+<text x="794.0" y="307.0" class="small">empty 13/49</text>
+<text x="794.0" y="327.0" class="value">current 36/49</text>
+<rect x="890.0" y="303.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="319.0" class="pill" text-anchor="middle">+23</text>
+<text x="1010.0" y="320.0" class="value" text-anchor="middle">+49.7</text>
+<text x="72.0" y="371.0" class="label">DeepSeek V4 Flash</text>
+<rect x="260.0" y="353.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="353.0" width="116.7" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="371.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="371.0" width="307.8" height="14.0" rx="7.0" fill="#0891b2"/>
+<text x="794.0" y="363.0" class="small">empty 11/49</text>
+<text x="794.0" y="383.0" class="value">current 29/49</text>
+<rect x="890.0" y="359.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="375.0" class="pill" text-anchor="middle">+18</text>
+<text x="1010.0" y="376.0" class="value" text-anchor="middle">+36.5</text>
+<text x="72.0" y="427.0" class="label">Grok 4.3</text>
+<rect x="260.0" y="409.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="409.0" width="95.5" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="427.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="427.0" width="297.1" height="14.0" rx="7.0" fill="#ea580c"/>
+<text x="794.0" y="419.0" class="small">empty 9/49</text>
+<text x="794.0" y="439.0" class="value">current 28/49</text>
+<rect x="890.0" y="415.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="431.0" class="pill" text-anchor="middle">+19</text>
+<text x="1010.0" y="432.0" class="value" text-anchor="middle">+40.6</text>
+<text x="72.0" y="483.0" class="label">DeepSeek V4 thinking</text>
+<rect x="260.0" y="465.0" width="520.0" height="12.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="260.0" y="465.0" width="63.7" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="483.0" width="520.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
+<rect x="260.0" y="483.0" width="275.9" height="14.0" rx="7.0" fill="#0f766e"/>
+<text x="794.0" y="475.0" class="small">empty 6/49</text>
+<text x="794.0" y="495.0" class="value">current 26/49</text>
+<rect x="890.0" y="471.0" width="54.0" height="24.0" rx="12.0" fill="#dcfce7"/>
+<text x="917.0" y="487.0" class="pill" text-anchor="middle">+20</text>
+<text x="1010.0" y="488.0" class="value" text-anchor="middle">+41.4</text>
+<rect x="70.0" y="568.0" width="16.0" height="10.0" rx="5.0" fill="#94a3b8"/>
+<text x="94.0" y="577.0" class="small">Empty bundle</text>
+<rect x="194.0" y="568.0" width="16.0" height="10.0" rx="5.0" fill="#2563eb"/>
+<text x="218.0" y="577.0" class="small">Current instructions</text>
+<line x1="32.0" y1="594.0" x2="1088.0" y2="594.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="612.0" class="small">Source: 49-case refresh summaries and current-vs-empty quality aggregates</text>
+<text x="1088.0" y="612.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

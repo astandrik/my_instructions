@@ -16,6 +16,101 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-07-05 - 49-Case Model and Reference Refresh
+
+Instruction surface:
+
+- No instruction text change: `HEAD == origin/main`, and
+  `CRITICAL_INSTRUCTIONS.md`, reference mirrors, and legacy appendix files had
+  no local diff.
+- Refreshed all tracked model, empty/no-instructions, cross-model quality, and
+  reference quality metrics on the expanded 49-case suite.
+- Previous-vs-current instruction comparison is not applicable for this pass:
+  the current worktree only changes eval/docs/tests, not the instruction
+  bundle.
+
+Artifacts:
+
+- `.eval-results/refresh-2026-07-05-49-case-v1/`
+- GPT-vs-external quality:
+  `.eval-results/refresh-2026-07-05-49-case-v1/quality-gpt55-vs-external-current/GPT-5.5-current-saved-model-quality/model-quality-summary.md`
+- OpenHands/Fable per-case quality:
+  `evals/PROMPT_QUALITY_CASES.md`
+
+Metric snapshot:
+
+| Model | Current hard gates | Empty hard gates | Current-vs-empty quality | GPT-vs-external quality |
+|---|---:|---:|---|---|
+| GPT-5.5 | 42 / 49 | 28 / 49 | current 41, empty 1, tie 1 | baseline |
+| Grok 4.3 | 28 / 49 | 9 / 49 | current 28, empty 1, tie 0 | GPT 42, Grok 0, tie 0 |
+| Grok Build 0.1 | 36 / 49 | 13 / 49 | current 34, empty 4, tie 0 | GPT 30, Grok Build 4, tie 8 |
+| DeepSeek V4 Flash | 29 / 49 | 11 / 49 | current 23, empty 4, tie 4 | GPT 42, DeepSeek 0, tie 0 |
+| DeepSeek V4 Flash thinking | 26 / 49 | 6 / 49 | current 24, empty 1, tie 2 | GPT 42, DeepSeek thinking 0, tie 0 |
+| GLM-5.2 | 41 / 49 | 17 / 49 | current 38, empty 1, tie 2 | GPT 19, GLM 15, tie 9 |
+
+Reference quality:
+
+| Reference | Reference hard gates | Current-side hard gates | Current wins | Reference wins | Ties | Inconclusive |
+|---|---:|---:|---:|---:|---:|---:|
+| OpenHands `AGENTS.md` | 32 / 49 | 42 / 49 | 32 | 1 | 10 | 6 |
+| Claude/Fable prompt | 34 / 49 | 44 / 49 | 37 | 6 | 2 | 4 |
+
+Conclusion:
+
+- Instruction lift remains large across every tested model on the expanded
+  suite.
+- GLM-5.2 is the closest external fallback candidate: it still trails GPT-5.5
+  on hard gates, but pass/pass quality is competitive.
+- The expanded cases are doing useful work: they exposed current watchlist
+  misses in skill invocation, context-overhead risk calibration, ADR evidence,
+  characterization-test wording, traceability links, and tool-output
+  injection/utility framing.
+- Current still beats OpenHands and Fable references in aggregate, but the new
+  suite found real reference wins: OpenHands on
+  `skill-invocation-trigger-controls`, Fable on
+  `characterization-test-before-fix`, plus several pass/pass Fable wins.
+
+Caveats:
+
+- External adapter runs are model-only structured-output runs, not full Codex
+  shell/MCP/file-edit agent loops.
+- Grok Build 0.1 current has 3 residual xAI transport/agent failures after
+  targeted reruns.
+- Current-side hard-gate count varies between standalone and reference compare
+  runs because GPT final-response wording is stochastic on strict new cases.
+
+## 2026-07-05 - Fable-Era Eval Coverage Expansion
+
+Instruction surface:
+
+- No `CRITICAL_INSTRUCTIONS.md` text change.
+- Expanded `evals/cases.jsonl` from 43 to 49 cases using patterns from the
+  Claude Fable research pass and related benchmark families: OpenAI skill evals,
+  AgentIF/OctoBench, Vercel AGENTS-vs-skills, SWE Atlas/SWE-QA-Pro,
+  ArchBench/R2ABench/SAKE, SABER, AgentDojo, and InjecAgent.
+- Added compact cases for skill trigger controls, context-file overhead,
+  ADR violation evidence, characterization tests before fixes, architecture
+  traceability links, and tool-output prompt injection with utility preservation.
+
+Metric snapshot:
+
+- Static validation is the required gate for this entry.
+- A fresh 49-case model/reference refresh was produced later the same day; see
+  the entry above for the measured results.
+
+Conclusion:
+
+- The eval suite now tests more of the Fable-era capabilities that matter for
+  instruction quality: skill invocation, context-surface cost, logical
+  traceability, evidence-first architecture review, fail-before/pass-after test
+  design, and preserving utility while ignoring injected tool-output
+  instructions.
+
+Caveats:
+
+- Historical 43-case model/reference metrics remain useful as the previous
+  snapshot but are no longer complete coverage for the expanded suite.
+
 ## 2026-07-05 - v4.11 Cross-Model Refresh
 
 Instruction surface:

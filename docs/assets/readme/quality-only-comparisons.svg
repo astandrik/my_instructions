@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="720" viewBox="0 0 1120 720" role="img" aria-labelledby="title desc">
+<title id="title">Quality-only comparisons after hard gates pass</title>
+<desc id="desc">Only pass/pass cases are included, so the bars compare judged response quality rather than deterministic failures.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.title{font-size:30px;font-weight:700;fill:#0f172a}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:600;fill:#0f172a}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#0f172a}
+.pill{font-size:12px;font-weight:700;fill:#0f172a}
+.axis{font-size:11px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1120" height="720" rx="0" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Quality-only comparisons</text>
+<text x="40.0" y="84.0" class="subtitle">Only cases where both sides passed deterministic hard gates. Bars show judged quality wins and ties.</text>
+<rect x="40.0" y="116.0" width="500.0" height="500.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="152.0" class="label">Current vs empty</text>
+<text x="72.0" y="174.0" class="small">Among pass/pass cases, current usually wins on quality.</text>
+<rect x="72.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#2563eb"/>
+<text x="90.0" y="204.0" class="axis">current</text>
+<rect x="156.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#f59e0b"/>
+<text x="174.0" y="204.0" class="axis">tie</text>
+<rect x="212.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#94a3b8"/>
+<text x="230.0" y="204.0" class="axis">empty</text>
+<text x="72.0" y="247.0" class="label">GPT</text>
+<rect x="190.0" y="232.0" width="207.0" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="397.0" y="232.0" width="8.0" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="190.0" y="232.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="246.0" class="value">26/1/0</text>
+<text x="190.0" y="270.0" class="small">27 pass/pass, avg delta +4.1</text>
+<text x="72.0" y="303.0" class="label">GLM</text>
+<rect x="190.0" y="288.0" width="177.1" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="367.1" y="288.0" width="25.3" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="392.4" y="288.0" width="12.6" height="18.0" rx="4.0" fill="#94a3b8"/>
+<rect x="190.0" y="288.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="302.0" class="value">14/2/1</text>
+<text x="190.0" y="326.0" class="small">17 pass/pass, avg delta +5.4</text>
+<text x="72.0" y="359.0" class="label">Grok Build</text>
+<rect x="190.0" y="344.0" width="175.9" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="365.9" y="344.0" width="39.1" height="18.0" rx="4.0" fill="#94a3b8"/>
+<rect x="190.0" y="344.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="358.0" class="value">9/0/2</text>
+<text x="190.0" y="382.0" class="small">11 pass/pass, avg delta +12.2</text>
+<text x="72.0" y="415.0" class="label">DeepSeek</text>
+<rect x="190.0" y="400.0" width="71.7" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="261.7" y="400.0" width="95.6" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="357.2" y="400.0" width="47.8" height="18.0" rx="4.0" fill="#94a3b8"/>
+<rect x="190.0" y="400.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="414.0" class="value">3/4/2</text>
+<text x="190.0" y="438.0" class="small">9 pass/pass, avg delta -1.3</text>
+<text x="72.0" y="471.0" class="label">Grok 4.3</text>
+<rect x="190.0" y="456.0" width="215.0" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="190.0" y="456.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="470.0" class="value">8/0/0</text>
+<text x="190.0" y="494.0" class="small">8 pass/pass, avg delta +11.3</text>
+<text x="72.0" y="527.0" class="label">DS thinking</text>
+<rect x="190.0" y="512.0" width="129.0" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="319.0" y="512.0" width="86.0" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="190.0" y="512.0" width="215.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="422.0" y="526.0" class="value">3/2/0</text>
+<text x="190.0" y="550.0" class="small">5 pass/pass, avg delta +5.4</text>
+<rect x="580.0" y="116.0" width="500.0" height="300.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="612.0" y="152.0" class="label">External models vs GPT-5.5</text>
+<text x="612.0" y="174.0" class="small">Candidate / tie / GPT wins, pass/pass only.</text>
+<rect x="612.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#16a34a"/>
+<text x="630.0" y="204.0" class="axis">candidate</text>
+<rect x="706.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#f59e0b"/>
+<text x="724.0" y="204.0" class="axis">tie</text>
+<rect x="756.0" y="193.0" width="12.0" height="12.0" rx="3.0" fill="#334155"/>
+<text x="774.0" y="204.0" class="axis">GPT</text>
+<text x="612.0" y="246.0" class="label">GLM</text>
+<rect x="716.0" y="232.0" width="71.8" height="18.0" rx="4.0" fill="#16a34a"/>
+<rect x="787.8" y="232.0" width="46.1" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="833.9" y="232.0" width="87.1" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="716.0" y="232.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="938.0" y="246.0" class="value">14/9/17</text>
+<text x="998.0" y="246.0" class="small">n=40</text>
+<text x="612.0" y="282.0" class="label">Grok Build</text>
+<rect x="716.0" y="268.0" width="22.8" height="18.0" rx="4.0" fill="#16a34a"/>
+<rect x="738.8" y="268.0" width="45.6" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="784.3" y="268.0" width="136.7" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="716.0" y="268.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="938.0" y="282.0" class="value">4/8/24</text>
+<text x="998.0" y="282.0" class="small">n=36</text>
+<text x="612.0" y="318.0" class="label">DeepSeek</text>
+<rect x="716.0" y="304.0" width="205.0" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="716.0" y="304.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="938.0" y="318.0" class="value">0/0/29</text>
+<text x="998.0" y="318.0" class="small">n=29</text>
+<text x="612.0" y="354.0" class="label">Grok 4.3</text>
+<rect x="716.0" y="340.0" width="205.0" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="716.0" y="340.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="938.0" y="354.0" class="value">0/0/28</text>
+<text x="998.0" y="354.0" class="small">n=28</text>
+<text x="612.0" y="390.0" class="label">DS thinking</text>
+<rect x="716.0" y="376.0" width="205.0" height="18.0" rx="4.0" fill="#334155"/>
+<rect x="716.0" y="376.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="938.0" y="390.0" class="value">0/0/26</text>
+<text x="998.0" y="390.0" class="small">n=26</text>
+<rect x="580.0" y="446.0" width="500.0" height="170.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="612.0" y="482.0" class="label">Reference prompts vs current</text>
+<text x="612.0" y="504.0" class="small">Current / tie / reference wins, pass/pass only.</text>
+<text x="612.0" y="546.0" class="label">OpenHands</text>
+<rect x="728.0" y="532.0" width="138.9" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="866.9" y="532.0" width="66.1" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="728.0" y="532.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="950.0" y="546.0" class="value">21/10/0</text>
+<text x="1004.0" y="546.0" class="small">n=31</text>
+<text x="612.0" y="592.0" class="label">Fable</text>
+<rect x="728.0" y="578.0" width="161.5" height="18.0" rx="4.0" fill="#2563eb"/>
+<rect x="889.5" y="578.0" width="12.4" height="18.0" rx="4.0" fill="#f59e0b"/>
+<rect x="901.9" y="578.0" width="31.1" height="18.0" rx="4.0" fill="#7c3aed"/>
+<rect x="728.0" y="578.0" width="205.0" height="18.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
+<text x="950.0" y="592.0" class="value">26/2/5</text>
+<text x="1004.0" y="592.0" class="small">n=33</text>
+<text x="72.0" y="648.0" class="label">Read each triplet as left-side wins / ties / right-side wins. Hard-gate failures are excluded.</text>
+<line x1="32.0" y1="672.0" x2="1088.0" y2="672.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="690.0" class="small">Source: saved quality.json pair reports filtered to both sides passed</text>
+<text x="1088.0" y="690.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

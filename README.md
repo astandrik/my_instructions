@@ -10,34 +10,48 @@ eval harness for checking whether those instructions actually change behavior.
 - `evals/`: deterministic and model-backed evals for the instruction bundle.
 - `scripts/run_instruction_evals.py`: the main validation, run, and compare
   harness.
+- `scripts/build_readme_infographics.py`: deterministic SVG generator for the
+  README evidence snapshot.
 
 ## Current Evidence
 
-Latest tracked snapshot: 43 eval cases, `gpt-5.5-medium` as the primary Codex
-runner and fixed quality judge.
-Cross-model, no-instructions, and previous-vs-current rows were refreshed after
-the single-bundle cleanup. OpenHands and Claude/Fable reference rows are the
-latest tracked reference compares documented in `evals/RESULTS.md`.
+Latest tracked model-backed snapshot: 49 eval cases, captured on 2026-07-05
+under `.eval-results/refresh-2026-07-05-49-case-v1/`, with `gpt-5.5-medium`
+as the fixed quality judge. This refresh changed eval coverage, not the
+instruction text: `HEAD == origin/main` and the instruction/reference files
+have no local diff, so previous-vs-current instruction comparison is not
+applicable for this pass.
 
-| Question | Result | What it means |
-|---|---:|---|
-| Does the current bundle pass its deterministic gates? | 43 / 43 on GPT-5.5 | The current instruction set satisfies all hard checks on the primary runner after the documented targeted rerun. |
-| Does the bundle transfer to non-GPT models? | GLM-5.2: 40 / 43, Grok Build: 36 / 43, Grok 4.3: 29 / 43, DeepSeek: 27-28 / 43 | Instructions help across models, but weaker models still miss safety/process gates. |
-| Did the single-bundle refresh improve prior external-model runs? | Grok 4.3 +8 cases, Grok Build +7, GLM +3; DeepSeek unchanged | Quality improved for GPT/Grok/GLM, while DeepSeek quality moved slightly down despite unchanged hard-gate counts. |
-| Does removing instructions hurt? | Current gains +10 to +24 passed cases over empty | The bundle is doing real work, especially on prompt injection, side-effecting tools, generated artifacts, branch context, dependency boundaries, and verification discovery. |
-| Does it beat OpenHands `AGENTS.md` on these cases? | Current 43 / 43, OpenHands 34 / 43 | The current bundle keeps a hard-gate safety/process edge and has no high-confidence OpenHands quality wins in the latest run. |
-| Does it beat a Claude-style prompt on these cases? | Current 43 / 43, Claude/Fable reference 29 / 43 | Similar pattern: large deterministic advantage, narrower pass/pass quality advantage. |
+Visual snapshot:
 
-Representative quality results:
+![Instruction lift across models](docs/assets/readme/instruction-lift.svg)
 
-| Comparison | Current / instructed wins | Ties | Other wins | Read this as |
-|---|---:|---:|---:|---|
-| Current vs OpenHands reference | 37 | 3 | 3 | Strong hard-gate advantage; current also has a pass/pass quality edge. |
-| Current vs Claude/Fable reference | 24 | 11 | 8 | Strong hard-gate advantage; pass/pass quality remains competitive, not one-sided. |
-| GPT-5.5 instructed vs empty | 40 | 3 | 0 | Instructions clearly improve behavior under the same-day single-bundle run. |
-| GLM-5.2 instructed vs empty | 40 | 0 | 0 | Strong instruction lift even on the strongest external model. |
-| Grok Build 0.1 current vs previous instructions | 29 | 3 | 6 | The single-bundle refresh materially improved this model despite two residual transport failures. |
-| DeepSeek V4 Flash current vs previous instructions | 13 | 4 | 16 | Hard gates were stable, but quality slightly favored the previous split-bundle run. |
+![Cross-model transfer](docs/assets/readme/model-transfer.svg)
+
+![Reference prompt comparison](docs/assets/readme/reference-prompts.svg)
+
+Quality-only view:
+
+![Quality-only comparisons after hard gates pass](docs/assets/readme/quality-only-comparisons.svg)
+
+![Case-level quality-only matrix](docs/assets/readme/quality-only-case-matrix.svg)
+
+![49-case coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
+
+Read this as:
+
+- Instruction lift remains large across every tested model.
+- GLM-5.2 is the closest non-GPT fallback; Grok Build improves over empty but
+  remains far behind GPT-5.5 on quality wins.
+- Current instructions beat OpenHands and Claude/Fable references in aggregate,
+  while those references still identify targeted watchlist cases.
+- Among cases where both sides pass hard gates, the quality-only view compares
+  judged response quality without counting deterministic failures.
+- The case-level matrix shows the same quality-only comparison per concrete
+  eval case; blank cells are excluded because at least one side failed a hard
+  gate.
+- The headline 49-case score mixes strong old-suite coverage with six new strict
+  cases that should be treated as the next improvement backlog.
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
@@ -52,6 +66,12 @@ Run the static contract before changing instructions or eval cases:
 ```bash
 python3 -B scripts/run_instruction_evals.py validate
 git diff --check
+```
+
+Regenerate the README SVG snapshot after refreshing `.eval-results/`:
+
+```bash
+python3 -B scripts/build_readme_infographics.py
 ```
 
 Run a local GPT-5.5 pass when model access and cost are acceptable:
@@ -97,6 +117,7 @@ for benchmark evidence.
 | [evals/CHANGELOG.md](evals/CHANGELOG.md) | Chronological instruction/eval changes with compact metric deltas and conclusions. |
 | [evals/cases.jsonl](evals/cases.jsonl) | Canonical eval cases and deterministic checks. |
 | [evals/model-presets.json](evals/model-presets.json) | Model preset names used by the harness. |
+| [docs/assets/readme/](docs/assets/readme/) | Generated SVG infographics for the root README evidence snapshot. |
 
 ## Maintenance Rules
 
@@ -105,6 +126,8 @@ for benchmark evidence.
 - Put benchmark snapshots in `evals/RESULTS.md`.
 - Put chronological instruction/eval deltas in `evals/CHANGELOG.md`.
 - Keep `.eval-results/` ignored and out of commits.
+- Regenerate `docs/assets/readme/*.svg` from the latest saved eval artifacts
+  after publication-grade metric refreshes.
 - Do not commit private reference material unless redistribution is explicitly
   approved.
 - For meaningful instruction changes, update eval cases and rerun the smallest

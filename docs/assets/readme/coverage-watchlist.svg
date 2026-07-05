@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="650" viewBox="0 0 1120 650" role="img" aria-labelledby="title desc">
+<title id="title">49-case coverage watchlist</title>
+<desc id="desc">Old 43-case coverage remains strong, while the six new strict cases expose unresolved gaps.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.title{font-size:30px;font-weight:700;fill:#0f172a}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:600;fill:#0f172a}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#0f172a}
+.pill{font-size:12px;font-weight:700;fill:#0f172a}
+.axis{font-size:11px;fill:#64748b}
+</style>
+<rect x="0" y="0" width="1120" height="650" rx="0" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">49-case coverage watchlist</text>
+<text x="40.0" y="84.0" class="subtitle">The headline score mixes a strong old suite with a new strict watchlist. Keep them visually separated.</text>
+<rect x="40.0" y="116.0" width="610.0" height="420.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="152.0" class="label">Current pass split</text>
+<text x="262.0" y="152.0" class="axis">Original 43 cases</text>
+<text x="510.0" y="152.0" class="axis">New strict 6</text>
+<text x="72.0" y="202.0" class="label">GPT</text>
+<rect x="220.0" y="188.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="188.0" width="244.2" height="16.0" rx="8.0" fill="#2563eb"/>
+<text x="482.0" y="201.0" class="value">42/43</text>
+<rect x="550.0" y="188.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="188.0" width="1.4" height="16.0" rx="8.0" fill="#dc2626"/>
+<text x="618.0" y="201.0" class="value">0/6</text>
+<text x="72.0" y="254.0" class="label">GLM</text>
+<rect x="220.0" y="240.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="240.0" width="232.6" height="16.0" rx="8.0" fill="#16a34a"/>
+<text x="482.0" y="253.0" class="value">40/43</text>
+<rect x="550.0" y="240.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="240.0" width="9.7" height="16.0" rx="8.0" fill="#16a34a"/>
+<text x="618.0" y="253.0" class="value">1/6</text>
+<text x="72.0" y="306.0" class="label">Grok Build</text>
+<rect x="220.0" y="292.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="292.0" width="209.3" height="16.0" rx="8.0" fill="#7c3aed"/>
+<text x="482.0" y="305.0" class="value">36/43</text>
+<rect x="550.0" y="292.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="292.0" width="1.4" height="16.0" rx="8.0" fill="#dc2626"/>
+<text x="618.0" y="305.0" class="value">0/6</text>
+<text x="72.0" y="358.0" class="label">DeepSeek</text>
+<rect x="220.0" y="344.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="344.0" width="168.6" height="16.0" rx="8.0" fill="#0891b2"/>
+<text x="482.0" y="357.0" class="value">29/43</text>
+<rect x="550.0" y="344.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="344.0" width="1.4" height="16.0" rx="8.0" fill="#dc2626"/>
+<text x="618.0" y="357.0" class="value">0/6</text>
+<text x="72.0" y="410.0" class="label">Grok 4.3</text>
+<rect x="220.0" y="396.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="396.0" width="162.8" height="16.0" rx="8.0" fill="#ea580c"/>
+<text x="482.0" y="409.0" class="value">28/43</text>
+<rect x="550.0" y="396.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="396.0" width="1.4" height="16.0" rx="8.0" fill="#dc2626"/>
+<text x="618.0" y="409.0" class="value">0/6</text>
+<text x="72.0" y="462.0" class="label">DS thinking</text>
+<rect x="220.0" y="448.0" width="250.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="220.0" y="448.0" width="151.2" height="16.0" rx="8.0" fill="#0f766e"/>
+<text x="482.0" y="461.0" class="value">26/43</text>
+<rect x="550.0" y="448.0" width="58.0" height="16.0" rx="8.0" fill="#f1f5f9"/>
+<rect x="550.0" y="448.0" width="1.4" height="16.0" rx="8.0" fill="#dc2626"/>
+<text x="618.0" y="461.0" class="value">0/6</text>
+<rect x="680.0" y="116.0" width="400.0" height="420.0" rx="12.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="712.0" y="152.0" class="label">What the new cases found</text>
+<rect x="712.0" y="172.0" width="336.0" height="34.0" rx="8.0" fill="#fef3c7"/>
+<text x="728.0" y="188.0" class="value">skill-invocation-trigger-controls</text>
+<text x="728.0" y="205.0" class="small">OpenHands hard-gate win; GLM passes</text>
+<rect x="712.0" y="220.0" width="336.0" height="34.0" rx="8.0" fill="#fef3c7"/>
+<text x="728.0" y="236.0" class="value">characterization-test-before-fix</text>
+<text x="728.0" y="253.0" class="small">Fable hard-gate win</text>
+<rect x="712.0" y="268.0" width="336.0" height="34.0" rx="8.0" fill="#fee2e2"/>
+<text x="728.0" y="284.0" class="value">context-file-overhead-budget</text>
+<text x="728.0" y="301.0" class="small">both-fail watchlist</text>
+<rect x="712.0" y="316.0" width="336.0" height="34.0" rx="8.0" fill="#fee2e2"/>
+<text x="728.0" y="332.0" class="value">adr-violation-evidence</text>
+<text x="728.0" y="349.0" class="small">both-fail watchlist</text>
+<rect x="712.0" y="364.0" width="336.0" height="34.0" rx="8.0" fill="#fee2e2"/>
+<text x="728.0" y="380.0" class="value">architecture-traceability-link-recovery</text>
+<text x="728.0" y="397.0" class="small">both-fail watchlist</text>
+<rect x="712.0" y="412.0" width="336.0" height="34.0" rx="8.0" fill="#fee2e2"/>
+<text x="728.0" y="428.0" class="value">tool-output-prompt-injection-utility-security</text>
+<text x="728.0" y="445.0" class="small">both-fail watchlist</text>
+<text x="72.0" y="570.0" class="label">Read this as: old coverage still holds; new strict cases are a focused improvement backlog.</text>
+<line x1="32.0" y1="602.0" x2="1088.0" y2="602.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="620.0" class="small">Source: evals/cases.jsonl plus 49-case current summaries and reference quality artifacts</text>
+<text x="1088.0" y="620.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>
