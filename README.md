@@ -15,61 +15,79 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## Current Evidence
 
-Latest broad model-backed snapshot: 49 eval cases, captured on 2026-07-05
-under `.eval-results/refresh-2026-07-05-49-case-v1/`, with `gpt-5.5-medium`
-as the fixed quality judge. That broad snapshot changed eval coverage, not the
-instruction text.
+Latest broad model-backed snapshot: 49 eval cases, refreshed on 2026-07-05 and
+2026-07-06 under `.eval-results/refresh-2026-07-05-v4.12-49-case-v1/`, with
+`gpt-5.5-medium` as the fixed quality judge. The refresh compares v4.12 current
+instructions against the previous current snapshot, GPT against external
+models on the same current instructions, and current instructions against
+OpenHands and Claude/Fable reference bundles across the tested model set.
 
-Latest focused instruction-change evidence: v4.12 micro-calibration on the
-seven expanded watchlist cases. A GPT-5.5 compare of baseline `HEAD` v4.11
-against current v4.12 produced 5 current hard-gate wins, 1 pass/pass tie, and
-1 both-fail residual. The focused artifacts live under
-`.eval-results/v4.12-watchlist-compare-gpt55/`. This is not a replacement for
-a full 49-case refresh.
+Summary:
 
-Visual snapshot:
+- GPT-5.5 improved from 42/49 to 49/49 hard-gate passes. Quality comparison
+  against the previous current instructions: 23 v4.12 wins, 14 ties, 12
+  previous-current wins, average delta +14.4.
+- Other models improved on hard gates too, but not uniformly on quality:
+  Grok 4.3 28/49 to 36/49, Grok Build 34/49 to 41/49, DeepSeek 29/49 to
+  30/49, DeepSeek thinking 26/49 to 30/49, GLM 40/49 to 46/49. GLM and Grok
+  Build show the clearest caveat: hard-gate lift is real, while the previous
+  current instructions still win many pass/pass quality cases.
+- On our current instructions, GPT-5.5 is still the strongest tested runner.
+  GLM-5.2 is closest: 46/49 hard gates and a narrow quality gap versus GPT
+  (20 GLM wins, 6 ties, 23 GPT wins, average delta -7.0). Grok, Grok Build,
+  and DeepSeek variants trail GPT by much wider quality margins.
+- Current instructions beat OpenHands and Claude/Fable reference bundles in
+  every aggregate model/reference comparison. This does not mean every case is
+  better: recurring reference wins include `noop-already-resolved`,
+  `behavior-preserving-refactor`, `architectural-smell-triage`,
+  `dependency-boundary-respect`, and a few DeepSeek-specific safety/ownership
+  cases.
+- Grok Build reference baselines had xAI `Remote end closed connection without
+  response` transport failures. Targeted reruns cleared most of them; the final
+  merged OpenHands baseline has 2 residual agent failures and the merged
+  Claude/Fable baseline has 4. Treat Grok Build reference numbers as slightly
+  lower-confidence than the other reference rows.
 
-![Instruction lift across models](docs/assets/readme/instruction-lift.svg)
+Visual snapshot, from overview to detail:
 
-![Cross-model transfer](docs/assets/readme/model-transfer.svg)
+![Instruction eval overview](docs/assets/readme/instruction-lift.svg)
+
+![Hard-gate passes by model and instruction bundle](docs/assets/readme/model-transfer.svg)
 
 ![Reference prompt comparison](docs/assets/readme/reference-prompts.svg)
 
 Quality-only view:
 
-![Quality-only comparisons after hard gates pass](docs/assets/readme/quality-only-comparisons.svg)
+![Quality-only small multiples](docs/assets/readme/quality-only-comparisons.svg)
 
-![Case-level quality-only matrix](docs/assets/readme/quality-only-case-matrix.svg)
+![Case-level quality details](docs/assets/readme/case-detail-comparisons.svg)
+
+Secondary full matrix:
+
+![Full current-versus-reference quality delta matrix](docs/assets/readme/quality-only-case-matrix.svg)
 
 ![49-case coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
 
 Read this as:
 
-- Instruction lift remains large across every tested model.
-- GLM-5.2 is the closest non-GPT fallback; Grok Build improves over empty but
-  remains far behind GPT-5.5 on quality wins.
-- Current instructions beat OpenHands and Claude/Fable references in aggregate,
-  while those references still identify targeted watchlist cases.
-- Among cases where both sides pass hard gates, the quality-only view compares
-  judged response quality without counting deterministic failures.
-- The case-level matrix shows the same quality-only comparison per concrete
-  eval case; blank cells are excluded because at least one side failed a hard
-  gate.
-- The headline 49-case score mixes strong old-suite coverage with six new strict
-  cases that should be treated as the next improvement backlog.
-- The v4.12 focused compare shows that several watchlist cases respond to small
-  wording changes, but `tool-output-prompt-injection-utility-security` remains
-  a strict lexical/summary-framing watchlist item.
-
-Summary:
-
-Current instructions are a strong practical baseline, not a finished benchmark
-winner. They materially improve coding-agent behavior versus an empty bundle,
-especially around safety gates, evidence discipline, preserving user changes,
-and avoiding unjustified mutation. GPT-5.5 is the strongest tested runner, and
-GLM-5.2 is the only external model close enough to be a plausible fallback.
-The v4.12 micro-calibration improves the focused GPT-5.5 watchlist evidence,
-but the bundle is still not complete or model-independent.
+- The v4.12 changes improved GPT decisively and improved hard-gate transfer to
+  every tested external model.
+- External-model quality is mixed: the new instructions often raise average
+  score by fixing hard failures, but some previous-current answers are still
+  better on pass/pass quality.
+- Reference bundles are useful as contrast, not as winners. They often miss
+  our specific deterministic workflow markers, but they expose real case-level
+  regressions and blind spots.
+- The hard-gate dot plot restores the no-instructions comparison. Empty rows
+  use the latest available empty baseline; reused rows are marked instead of
+  rerunning empty without new eval cases.
+- The pass/pass quality view is the cleanest answer to "quality without hard
+  fails"; it excludes cases where either side failed deterministic checks.
+- The case-detail view is numeric and split by question: new-vs-previous,
+  external-vs-GPT, and current-vs-reference. Each nonblank cell is the signed
+  judge-score delta after both hard gates pass.
+- The full matrix is secondary because it is dense; use it when you need every
+  current-vs-reference pair, not as the first-read summary.
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
