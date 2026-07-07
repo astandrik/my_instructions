@@ -47,6 +47,11 @@ def read_summary(path: Path, label: str) -> dict[str, dict[str, Any]]:
         if not isinstance(record, dict) or not isinstance(record.get("case_id"), str):
             raise evals.ValidationError(f"{path}: invalid result record")
         case_id = record["case_id"]
+        if case_id in by_case:
+            raise evals.ValidationError(
+                f"{path}: duplicate case_id {case_id!r}; split combined compare summaries "
+                "with scripts/split_eval_summary.py before saved-quality comparison"
+            )
         copied = dict(record)
         copied["label"] = label
         by_case[case_id] = copied

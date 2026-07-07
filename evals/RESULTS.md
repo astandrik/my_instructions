@@ -17,6 +17,54 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## v4.13 GPT/Codex Candidate Snapshot
+
+Captured on 2026-07-06 during the v4.13 calibration pass. This snapshot changed
+the instruction bundle and the deterministic phrase matcher, then compared the
+working tree against `HEAD` with `gpt-5.5-medium` as both the evaluated model
+and fixed quality judge.
+
+Raw artifacts:
+
+- Full compare:
+  `.eval-results/v4.13-final-gpt55-full-49-v11/compare-HEAD-current/`
+- Changelog entry: `evals/CHANGELOG.md`
+
+Important scope:
+
+- This is a GPT/Codex full-suite result, not an all-model refresh.
+- External model rows below were not rerun after v4.13 and the phrase-matcher
+  change.
+- The root README infographics still reflect the latest publication-style
+  all-model v4.12 snapshot until fresh external-provider rows are approved and
+  regenerated.
+
+### Hard Gates
+
+| Bundle | Passed | Failed | Notes |
+|---|---:|---:|---|
+| Baseline `HEAD` | 49 / 49 | 0 | v4.12 baseline under the updated phrase matcher. |
+| Current worktree | 49 / 49 | 0 | v4.13 candidate plus phrase-matcher fix. |
+
+### Quality
+
+| Scope | Current wins | Baseline wins | Ties | Avg delta |
+|---|---:|---:|---:|---:|
+| 49 pass/pass cases | 33 | 7 | 9 | +1.47 |
+
+Interpretation:
+
+- v4.13 is a clean GPT/Codex full-suite candidate.
+- The improvement is strongest as a regression-stability signal: earlier full
+  calibration runs exposed misses in branch context, proposal selection,
+  traceability, characterization, complexity/resource analysis, small local
+  fixes, eval anti-gaming controls, and tool-output prompt-injection handling;
+  the final v11 run passed all hard gates.
+- The deterministic phrase matcher now normalizes punctuation word separators
+  such as `tool-output` versus `tool output`, for both required and forbidden
+  phrase checks. It is covered by unit tests and does not accept semantic
+  synonyms.
+
 ## 49-Case Refresh Snapshot
 
 Captured on 2026-07-05 after the Fable-era eval coverage expansion. This

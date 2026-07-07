@@ -15,6 +15,23 @@ python3 scripts/run_instruction_evals.py validate
 git diff --check
 ```
 
+When README SVGs are part of the change, check generated-artifact freshness:
+
+```bash
+python3 -B scripts/build_readme_infographics.py --check
+```
+
+When ignored `.eval-results/` artifacts are available, check that published
+GPT/Codex metrics still match the saved JSON, docs keep the GPT-only caveats
+and a pointer to the saved artifact root, `summary.json` and `quality.json`
+describe the same case set, README links every required SVG, README SVGs keep
+their scope footer, and docs do not overclaim all-model v4.13 scope, including
+common phrasing variants such as "all models" and "re-run":
+
+```bash
+python3 -B scripts/check_published_eval_metrics.py
+```
+
 ## Real agent run
 
 Prerequisites:
@@ -449,6 +466,20 @@ The same directory also contains:
 - `quality.md`: side-by-side comparison of baseline/current structured final responses
 - `quality.json`: machine-readable version of the same quality comparison
 - `judge/<case-id>/events.jsonl`, `stderr.txt`, and `final-message.json` when `--quality-judge` is used
+
+`compare` summaries contain both sides in one `summary.json`, distinguished by
+their `label` fields such as `baseline-HEAD` and `current`. Split those files
+before passing them to `scripts/compare_saved_model_quality.py`, which expects
+one side per input summary:
+
+```bash
+python3 -B scripts/split_eval_summary.py \
+  --input .eval-results/compare-HEAD-current/summary.json \
+  --output-dir .eval-results/split/compare-HEAD-current
+```
+
+The saved-quality script rejects duplicate `case_id` values in a single input
+summary so combined compare summaries cannot silently overwrite one side.
 
 Without `--quality-judge`, the quality report is descriptive, not an LLM judge
 score. It compares stable signals from `final-message.json`: pass state,

@@ -52,6 +52,39 @@ class CompareSavedModelQualityTests(unittest.TestCase):
 
         self.assertEqual(records["case-a"]["label"], "DeepSeek")
 
+    def test_read_summary_rejects_duplicate_case_ids(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "summary.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "results": [
+                            {
+                                "case_id": "case-a",
+                                "label": "baseline-HEAD",
+                                "passed": True,
+                                "failure_type": "none",
+                                "details": [],
+                                "final_response": {"summary": "baseline"},
+                            },
+                            {
+                                "case_id": "case-a",
+                                "label": "current",
+                                "passed": True,
+                                "failure_type": "none",
+                                "details": [],
+                                "final_response": {"summary": "current"},
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(module.evals.ValidationError, "split_eval_summary.py"):
+                module.read_summary(path, "combined")
+
     def test_aggregate_pair_counts_winners_and_scores(self):
         module = load_script()
         comparisons = [

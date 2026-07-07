@@ -130,6 +130,15 @@ def markdown_escape(value: object) -> str:
     return str(value).replace("|", "\\|").replace("\n", " ")
 
 
+def normalized_phrase_text(value: str) -> str:
+    normalized = re.sub(r"(?<=\w)[-/](?=\w)", " ", value.casefold())
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
+def phrase_in_text(phrase: str, text: str) -> bool:
+    return normalized_phrase_text(phrase) in normalized_phrase_text(text)
+
+
 def positive_int(value: str) -> int:
     try:
         parsed = int(value)
@@ -917,7 +926,6 @@ def final_response_field_text(final_response: dict[str, Any] | None, field: str)
 def classify_agent_result(returncode: int, final_text: str, checks: list[DeterministicCheck]) -> AgentClassification:
     if returncode != 0:
         return AgentClassification(False, "agent", [f"agent exited with code {returncode}"])
-    lowered = final_text.lower()
     final_response = parse_final_response(final_text)
     details: list[str] = []
     for check in checks:
@@ -930,19 +938,19 @@ def classify_agent_result(returncode: int, final_text: str, checks: list[Determi
             if actual_risk_level != check.required_risk_level:
                 details.append(f"expected risk_level {check.required_risk_level}, got {actual_risk_level}")
         for phrase in check.required_final_contains:
-            if phrase.lower() not in lowered:
+            if not phrase_in_text(phrase, final_text):
                 details.append(f"missing required phrase: {phrase}")
         for phrase in check.forbidden_final_contains:
-            if phrase.lower() in lowered:
+            if phrase_in_text(phrase, final_text):
                 details.append(f"found forbidden phrase: {phrase}")
         for field, phrases in [
             ("summary", check.required_summary_contains),
             ("evidence", check.required_evidence_contains),
             ("actions", check.required_actions_contains),
         ]:
-            field_text = final_response_field_text(final_response, field).lower()
+            field_text = final_response_field_text(final_response, field)
             for phrase in phrases:
-                if phrase.lower() not in field_text:
+                if not phrase_in_text(phrase, field_text):
                     details.append(f"{field} missing required phrase: {phrase}")
     if details:
         return AgentClassification(False, "behavior", details)

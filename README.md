@@ -15,6 +15,14 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## Current Evidence
 
+Latest instruction-candidate check: v4.13 has a clean GPT/Codex 49-case
+compare against `HEAD` in
+`.eval-results/v4.13-final-gpt55-full-49-v11/`: 98/98 hard gates passed, with
+current winning 33 quality comparisons, baseline winning 7, 9 ties, and average
+delta +1.47. This is GPT-only evidence; external model rows and README
+infographics below still reflect the latest publication-style all-model
+snapshot until those providers are rerun or the caveat is accepted.
+
 Latest broad model-backed snapshot: 49 eval cases, refreshed on 2026-07-05 and
 2026-07-06 under `.eval-results/refresh-2026-07-05-v4.12-49-case-v1/`, with
 `gpt-5.5-medium` as the fixed quality judge. The refresh compares v4.12 current
@@ -50,7 +58,12 @@ Summary:
 
 Visual snapshot, from overview to detail:
 
+Each SVG footer labels the snapshot scope as v4.12 all-model evidence; the
+v4.13 GPT/Codex candidate is intentionally not folded into these charts yet.
+
 ![Instruction eval overview](docs/assets/readme/instruction-lift.svg)
+
+![Empty-to-current instruction lift](docs/assets/readme/empty-current-lift.svg)
 
 ![Hard-gate passes by model and instruction bundle](docs/assets/readme/model-transfer.svg)
 
@@ -81,11 +94,15 @@ Read this as:
 - The hard-gate dot plot restores the no-instructions comparison. Empty rows
   use the latest available empty baseline; reused rows are marked instead of
   rerunning empty without new eval cases.
+- The empty-to-current lift chart is the compact baseline view: hard-gate bars
+  use the v4.12 current refresh and latest empty baselines; quality deltas reuse
+  the latest saved empty-vs-current judge aggregates.
 - The pass/pass quality view is the cleanest answer to "quality without hard
   fails"; it excludes cases where either side failed deterministic checks.
 - The case-detail view is numeric and split by question: new-vs-previous,
   external-vs-GPT, and current-vs-reference. Each nonblank cell is the signed
-  judge-score delta after both hard gates pass.
+  judge-score delta after both hard gates pass; each block states its formula
+  and color interpretation.
 - The full matrix is secondary because it is dense; use it when you need every
   current-vs-reference pair, not as the first-read summary.
 
@@ -102,6 +119,23 @@ Run the static contract before changing instructions or eval cases:
 ```bash
 python3 -B scripts/run_instruction_evals.py validate
 git diff --check
+```
+
+Check that tracked README SVGs are fresh:
+
+```bash
+python3 -B scripts/build_readme_infographics.py --check
+```
+
+When `.eval-results/` artifacts are available, check that published GPT/Codex
+numbers still match the saved JSON, the docs keep the GPT-only caveats and a
+pointer to the saved artifact root, `summary.json` and `quality.json` describe
+the same case set, README links every required SVG, README SVGs keep their
+scope footer, and the docs do not overclaim all-model v4.13 scope, including
+common phrasing variants such as "all models" and "re-run":
+
+```bash
+python3 -B scripts/check_published_eval_metrics.py
 ```
 
 Regenerate the README SVG snapshot after refreshing `.eval-results/`:
