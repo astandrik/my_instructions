@@ -16,6 +16,50 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## Version Metric Ledger
+
+Use this table for the compact "where did each instruction version land?"
+view. Rows keep their original eval scope: do not compare a 43-case row with a
+49-case row as if they are the same benchmark. Use the direct common-case block
+below when the question is specifically "v4.11 vs v4.13".
+
+| Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
+|---|---|---|---:|---|---:|---|
+| v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |
+| v4.12 GPT watchlist | 7 focused GPT/Codex cases | `.eval-results/v4.12-watchlist-compare-gpt55/compare-HEAD-current/summary.md` | 6 / 7 | descriptive quality only; current hard-gate wins 5, pass/pass ties 1, both-fail residual 1 | no numeric judge score | v4.11 baseline 1 / 7 |
+| v4.11 single bundle | 43 GPT/Codex cases | `.eval-results/full-single-bundle-v14-anti-overfit-jobs4/compare-origin-main-current/quality.md` | 43 / 43 | current 34, previous split bundle 3, tie 6, avg delta +9.0 | 95.5 | previous 40 / 43, avg 86.4 |
+| v4.11 cross-model refresh, GPT row | 43 GPT/Codex cases | `.eval-results/refresh-2026-07-05-single-bundle-v1/quality-prev-current-vs-gpt55-prev/GPT-5.5-prev-saved-model-quality/pairs/GPT-5.5-current/quality.md` | 43 / 43 | current 30, previous 5, tie 8, avg delta +1.9 | 94.9 | previous 43 / 43, avg 93.0 |
+| v4.7 wrapper-ban coverage | static 26-case validation | `scripts/run_instruction_evals.py validate` | n/a | no model-backed quality snapshot | n/a | n/a |
+
+### Direct v4.11 -> v4.13 Common-Case Comparison
+
+The direct comparison uses saved GPT/Codex outputs only; it does not rerun the
+evaluated models. v4.11 had 43 cases, while v4.13 has 49, so the direct judge
+uses the 43 common case ids and treats the 6 new v4.13 cases as coverage added
+outside this pairwise score.
+
+Artifact:
+
+- `.eval-results/v4.11-v4.13-common-43-saved-quality-v1/quality-openai-codex/v4.11-current-saved-model-quality/model-quality-summary.md`
+
+| Pair | Scope | Hard gates | Quality result | Avg score |
+|---|---|---:|---|---:|
+| v4.11 current -> v4.13 current | 43 common GPT/Codex cases | 43 / 43 -> 43 / 43 | v4.13 wins 27, v4.11 wins 7, ties 9, avg delta +1.4 | 93.2 -> 94.6 |
+
+v4.13 adds these six cases beyond the v4.11 suite:
+`adr-violation-evidence`, `architecture-traceability-link-recovery`,
+`characterization-test-before-fix`, `context-file-overhead-budget`,
+`skill-invocation-trigger-controls`, and
+`tool-output-prompt-injection-utility-security`.
+
+Keep the v4.11 wins visible as a watchlist rather than treating the aggregate
+as uniform improvement:
+`advanced-instruction-eval-trigger`,
+`generated-artifact-freshness-gate`,
+`existing-architecture-decision-check`, `dirty-worktree-user-changes`,
+`question-only-readonly-answer`, `repo-wide-migration-plan`, and
+`select-implementation-proposal`.
+
 ## 2026-07-06 - v4.13 GPT Full-Suite Calibration Candidate
 
 Instruction surface:
