@@ -2,8 +2,8 @@
 """Compare saved model eval artifacts with the existing quality judge.
 
 This does not rerun the evaluated models. It reads saved summary.json files,
-uses deterministic hard-gate shortcuts when one side passed and the other did
-not, and calls the configured judge only for pass/pass or fail/fail pairs.
+uses deterministic hard-gate shortcuts when hard gates differ or both sides
+fail, and calls the configured judge only for pass/pass pairs.
 """
 
 from __future__ import annotations
@@ -204,6 +204,33 @@ def compare_case(
     }
 
 
+def dry_run_candidate_plan(
+    cases: list[dict[str, Any]],
+    *,
+    baseline_label: str,
+    baseline_records: dict[str, dict[str, Any]],
+    candidate_label: str,
+    candidate_records: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    judge_cases: list[str] = []
+    hard_gate_shortcuts = 0
+    for case in cases:
+        case_id = case["id"]
+        baseline_record = require_case_record(baseline_records, baseline_label, case_id)
+        candidate_record = require_case_record(candidate_records, candidate_label, case_id)
+        if evals.quality_gate_judgment(baseline_record, candidate_record) is None:
+            judge_cases.append(case_id)
+        else:
+            hard_gate_shortcuts += 1
+    return {
+        "candidate_label": candidate_label,
+        "total": len(cases),
+        "judge_calls": len(judge_cases),
+        "hard_gate_shortcuts": hard_gate_shortcuts,
+        "judge_cases": judge_cases,
+    }
+
+
 def aggregate_pair(comparisons: list[dict[str, Any]]) -> dict[str, Any]:
     winners = {"baseline": 0, "current": 0, "tie": 0, "inconclusive": 0}
     sources: dict[str, int] = {}
@@ -248,6 +275,7 @@ def write_pair_report(
     baseline_label: str,
     candidate_label: str,
     comparisons: list[dict[str, Any]],
+    judge_metadata: dict[str, str | None],
 ) -> dict[str, Any]:
     summary_dir = output_dir / evals.safe_label(summary_label) / "pairs" / evals.safe_label(candidate_label)
     summary_dir.mkdir(parents=True, exist_ok=True)
@@ -255,6 +283,7 @@ def write_pair_report(
     payload = {
         "baseline_label": baseline_label,
         "candidate_label": candidate_label,
+        "judge": judge_metadata,
         "aggregate": aggregate,
         "comparisons": comparisons,
     }
@@ -266,6 +295,7 @@ def write_pair_report(
         "",
         f"Baseline: `{baseline_label}`",
         f"Candidate: `{candidate_label}`",
+        f"Judge: `{judge_metadata['model']}` (preset `{judge_metadata['preset']}`, reasoning `{judge_metadata['reasoning_effort']}`)",
         "",
         "| Metric | Value |",
         "|---|---:|",
@@ -307,15 +337,28 @@ def write_pair_report(
             + " |"
         )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return {"candidate_label": candidate_label, "aggregate": aggregate, "quality_json": str(json_path), "quality_md": str(md_path)}
+    return {
+        "candidate_label": candidate_label,
+        "judge": judge_metadata,
+        "aggregate": aggregate,
+        "quality_json": str(json_path),
+        "quality_md": str(md_path),
+    }
 
 
-def write_summary_report(output_dir: Path, summary_label: str, baseline_label: str, pair_reports: list[dict[str, Any]]) -> None:
+def write_summary_report(
+    output_dir: Path,
+    summary_label: str,
+    baseline_label: str,
+    pair_reports: list[dict[str, Any]],
+    judge_metadata: dict[str, str | None],
+) -> None:
     summary_dir = output_dir / evals.safe_label(summary_label)
     summary_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "label": summary_label,
         "baseline_label": baseline_label,
+        "judge": judge_metadata,
         "pairs": pair_reports,
     }
     (summary_dir / "model-quality-summary.json").write_text(
@@ -326,6 +369,7 @@ def write_summary_report(output_dir: Path, summary_label: str, baseline_label: s
         f"# Saved Model Quality Summary: {summary_label}",
         "",
         f"Baseline: `{baseline_label}`",
+        f"Judge: `{judge_metadata['model']}` (preset `{judge_metadata['preset']}`, reasoning `{judge_metadata['reasoning_effort']}`)",
         "",
         "| Candidate | Hard passed | Candidate wins | Baseline wins | Ties | Inconclusive | Avg candidate score | Avg delta | Judge calls | Hard-gate shortcuts |",
         "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
@@ -382,6 +426,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--jobs", type=int, default=1, help="Parallel judge calls per candidate.")
     parser.add_argument("--case-timeout-seconds", type=int, default=900)
     parser.add_argument("--output-dir", required=True, help="Output directory.")
+    parser.add_argument("--dry-run", action="store_true", help="Print the saved-quality judge plan without running it.")
     return parser.parse_args(argv)
 
 
@@ -402,6 +447,13 @@ def main(argv: list[str] | None = None) -> int:
             judge_service_tier=args.judge_service_tier,
         )
         judge_model, judge_reasoning_effort, judge_service_tier = evals.resolve_judge_model_config(judge_args, presets)
+        judge_metadata = {
+            "preset": args.judge_preset,
+            "model": judge_model,
+            "reasoning_effort": judge_reasoning_effort,
+            "service_tier": judge_service_tier,
+            "agent_command_mode": args.agent_command_mode,
+        }
         evals.preflight_agent_command(args.agent_command)
         baseline_label, baseline_path = args.baseline
         baseline_records = read_summary(repo_root / baseline_path, baseline_label)
@@ -409,8 +461,36 @@ def main(argv: list[str] | None = None) -> int:
         summary_label = f"{evals.safe_label(baseline_label)}-saved-model-quality"
         pair_reports: list[dict[str, Any]] = []
         case_items = list(enumerate(cases, 1))
+        if args.dry_run:
+            print(
+                "dry_run=true "
+                f"summary_label={summary_label} "
+                f"judge_model={judge_metadata['model']} "
+                f"judge_preset={judge_metadata['preset']} "
+                f"judge_reasoning_effort={judge_metadata['reasoning_effort']} "
+                f"agent_command_mode={judge_metadata['agent_command_mode']} "
+                f"output_dir={output_dir / evals.safe_label(summary_label)}"
+            )
         for candidate_label, candidate_path in args.candidate:
             candidate_records = read_summary(repo_root / candidate_path, candidate_label)
+            if args.dry_run:
+                plan = dry_run_candidate_plan(
+                    cases,
+                    baseline_label=baseline_label,
+                    baseline_records=baseline_records,
+                    candidate_label=candidate_label,
+                    candidate_records=candidate_records,
+                )
+                print(
+                    "dry_run_candidate "
+                    f"candidate={candidate_label} "
+                    f"cases={plan['total']} "
+                    f"judge_calls={plan['judge_calls']} "
+                    f"hard_gate_shortcuts={plan['hard_gate_shortcuts']}"
+                )
+                if plan["judge_cases"]:
+                    print("dry_run_judge_cases " + " ".join(plan["judge_cases"]))
+                continue
 
             def run_one(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
                 return compare_case(
@@ -431,8 +511,12 @@ def main(argv: list[str] | None = None) -> int:
                 )
 
             comparisons = run_ordered(case_items, args.jobs, run_one)
-            pair_reports.append(write_pair_report(output_dir, summary_label, baseline_label, candidate_label, comparisons))
-        write_summary_report(output_dir, summary_label, baseline_label, pair_reports)
+            pair_reports.append(
+                write_pair_report(output_dir, summary_label, baseline_label, candidate_label, comparisons, judge_metadata)
+            )
+        if args.dry_run:
+            return 0
+        write_summary_report(output_dir, summary_label, baseline_label, pair_reports, judge_metadata)
         summary_path = output_dir / evals.safe_label(summary_label) / "model-quality-summary.md"
         print(f"quality_summary={summary_path}")
         return 0

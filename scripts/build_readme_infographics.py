@@ -14,9 +14,12 @@ from typing import Any
 
 DEFAULT_REFRESH_ROOT = Path(".eval-results/refresh-2026-07-05-v4.12-49-case-v1")
 DEFAULT_EMPTY_ROOT = Path(".eval-results/refresh-2026-07-05-49-case-v1")
+DEFAULT_V413_GPT_ROOT = Path(".eval-results/v4.13-final-gpt55-full-49-v11")
+DEFAULT_V413_EXTERNAL_ROOT = Path(".eval-results/refresh-2026-07-07-v4.13-all-model-v1")
+DEFAULT_CANONICAL_QUALITY_ROOT = Path(".eval-results/openai-canonical-judge-2026-07-07-v1")
 DEFAULT_OUTPUT_DIR = Path("docs/assets/readme")
 CASE_FILE = Path("evals/cases.jsonl")
-SNAPSHOT_SCOPE = "Scope: v4.12 all-model snapshot. v4.13 is GPT/Codex-only until external providers rerun."
+SNAPSHOT_SCOPE = "Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots."
 
 INK = "#111827"
 MUTED = "#64748b"
@@ -93,6 +96,44 @@ MODELS = [
         "color": "#0f766e",
     },
 ]
+
+V413_MODELS = [
+    {
+        "label": "GPT-5.5",
+        "short": "GPT",
+        "previous": ("gpt", "split/compare-HEAD-current/baseline-HEAD/summary.json"),
+        "current": ("gpt", "split/compare-HEAD-current/current/summary.json"),
+        "prev_quality": "gpt/previous-saved-model-quality/model-quality-summary.json",
+        "color": "#2563eb",
+    },
+    {
+        "label": "GLM-5.2",
+        "short": "GLM",
+        "previous": ("external", "split/glm-5.2-absolute-v2/baseline-origin-main/summary.json"),
+        "current": ("external", "split/glm-5.2-absolute-v2/current/summary.json"),
+        "prev_quality": "glm/previous-saved-model-quality/model-quality-summary.json",
+        "color": "#16a34a",
+    },
+    {
+        "label": "DeepSeek V4 Flash",
+        "short": "DeepSeek",
+        "previous": ("external", "split/deepseek-v4-flash-absolute-v1/baseline-origin-main/summary.json"),
+        "current": ("external", "split/deepseek-v4-flash-absolute-v1/current/summary.json"),
+        "prev_quality": "deepseek/previous-saved-model-quality/model-quality-summary.json",
+        "color": "#0891b2",
+    },
+    {
+        "label": "DeepSeek V4 thinking",
+        "short": "DS thinking",
+        "previous": ("external", "split/deepseek-v4-flash-thinking-absolute-v1/baseline-origin-main/summary.json"),
+        "current": ("external", "split/deepseek-v4-flash-thinking-absolute-v1/current/summary.json"),
+        "prev_quality": "deepseek-thinking/previous-saved-model-quality/model-quality-summary.json",
+        "color": "#0f766e",
+    },
+]
+
+GPT_VS_EXTERNAL_CURRENT_QUALITY = "gpt-vs-external-current/gpt-current-saved-model-quality/model-quality-summary.json"
+GPT_VS_EXTERNAL_PREVIOUS_QUALITY = "gpt-vs-external-previous/gpt-previous-saved-model-quality/model-quality-summary.json"
 
 GPT_EXTERNAL_QUALITY = "quality-gpt55-vs-external-new-current/GPT-5.5-new-current-saved-model-quality/model-quality-summary.json"
 
@@ -312,6 +353,99 @@ def summary_counts_with_fallback(primary_root: Path, fallback_root: Path, rel_pa
     return summary_counts(fallback_root, rel_path), "reused empty"
 
 
+def v413_source_root(source: str, gpt_root: Path, external_root: Path) -> Path:
+    if source == "gpt":
+        return gpt_root
+    if source == "external":
+        return external_root
+    raise ValueError(f"unknown v4.13 source root: {source}")
+
+
+def v413_summary_counts(gpt_root: Path, external_root: Path, source_path: tuple[str, str]) -> dict[str, int]:
+    source, rel_path = source_path
+    return summary_counts(v413_source_root(source, gpt_root, external_root), rel_path)
+
+
+def v413_model_rows(gpt_root: Path, external_root: Path, quality_root: Path) -> list[dict[str, Any]]:
+    rows = []
+    for model in V413_MODELS:
+        previous = v413_summary_counts(gpt_root, external_root, model["previous"])
+        current = v413_summary_counts(gpt_root, external_root, model["current"])
+        quality = quality_summary(quality_root, model["prev_quality"])
+        aggregate = quality["aggregate"]
+        rows.append(
+            {
+                **model,
+                "total": aggregate["total"],
+                "previous_passed": previous["passed"],
+                "current_passed": current["passed"],
+                "pass_delta": current["passed"] - previous["passed"],
+                "wins": aggregate["winners"]["current"],
+                "losses": aggregate["winners"]["baseline"],
+                "ties": aggregate["winners"]["tie"],
+                "inconclusive": aggregate["winners"]["inconclusive"],
+                "quality_delta": aggregate["average_delta"],
+                "candidate_score": aggregate["average_current_score"],
+                "baseline_score": aggregate["average_baseline_score"],
+                "judge_calls": aggregate["sources"].get("llm_judge", 0),
+                "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
+                "pair_path": quality["pair_path"],
+            }
+        )
+    return rows
+
+
+def v413_gpt_external_rows(quality_root: Path, rel_path: str, prefix: str) -> list[dict[str, Any]]:
+    data = read_json(quality_root / rel_path)
+    labels = {
+        f"{prefix}-glm": "GLM",
+        f"{prefix}-deepseek": "DeepSeek",
+        f"{prefix}-deepseek-thinking": "DS thinking",
+    }
+    rows = []
+    for pair in data["pairs"]:
+        aggregate = pair["aggregate"]
+        winners = aggregate["winners"]
+        rows.append(
+            {
+                "label": labels.get(pair["candidate_label"], pair["candidate_label"]),
+                "candidate_label": pair["candidate_label"],
+                "hard_passed": aggregate["candidate_passed"],
+                "total": aggregate["total"],
+                "wins": winners["current"],
+                "gpt_wins": winners["baseline"],
+                "ties": winners["tie"],
+                "inconclusive": winners["inconclusive"],
+                "delta": aggregate["average_delta"],
+                "score": aggregate["average_current_score"],
+                "judge_calls": aggregate["sources"].get("llm_judge", 0),
+                "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
+                "pair_path": Path(pair["quality_json"]),
+            }
+        )
+    order = ["GLM", "DeepSeek", "DS thinking"]
+    return sorted(rows, key=lambda row: order.index(row["label"]) if row["label"] in order else 999)
+
+
+def v413_model_gap_rows(quality_root: Path) -> list[dict[str, Any]]:
+    previous = {row["label"]: row for row in v413_gpt_external_rows(quality_root, GPT_VS_EXTERNAL_PREVIOUS_QUALITY, "previous")}
+    current = {row["label"]: row for row in v413_gpt_external_rows(quality_root, GPT_VS_EXTERNAL_CURRENT_QUALITY, "current")}
+    rows = []
+    for label in ["GLM", "DeepSeek", "DS thinking"]:
+        prev_row = previous[label]
+        current_row = current[label]
+        rows.append(
+            {
+                "label": label,
+                "previous": prev_row,
+                "current": current_row,
+                "gap_change": current_row["delta"] - prev_row["delta"],
+                "pass_change": current_row["hard_passed"] - prev_row["hard_passed"],
+            }
+        )
+    return rows
+
+
 def model_rows(refresh_root: Path, empty_root: Path) -> list[dict[str, Any]]:
     rows = []
     for model in MODELS:
@@ -419,51 +553,57 @@ def draw_segments(
     lines.append(rect(x, y, width, height, "none", rx=4, stroke="#e5e7eb"))
 
 
-def render_instruction_lift(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
-    rows = model_rows(refresh_root, empty_root)
+def render_instruction_lift(
+    gpt_root: Path,
+    external_root: Path,
+    quality_root: Path,
+    refresh_root: Path,
+    output_dir: Path,
+) -> None:
+    rows = v413_model_rows(gpt_root, external_root, quality_root)
     references = reference_rows(refresh_root)
-    external = gpt_external_rows(refresh_root)
+    gaps = v413_model_gap_rows(quality_root)
     gpt = next(row for row in rows if row["short"] == "GPT")
     non_gpt = [row for row in rows if row["short"] != "GPT"]
-    closest = next(row for row in external if row["label"] == "GLM")
+    glm_gap = next(row for row in gaps if row["label"] == "GLM")
     width = 1120
     height = 560
     lines = svg_start(
         width,
         height,
         "Instruction eval overview",
-        "Headline answers across GPT, external models, empty baseline, and reference instruction bundles.",
+        "Headline answers across fresh v4.13 GPT/GLM/DeepSeek rows plus saved v4.12 context.",
     )
     lines.append(text(40, 56, "Instruction eval overview", "title"))
-    lines.append(text(40, 84, "Read left to right: improvement, transfer, baseline context, and reference-prompt contrast.", "subtitle"))
+    lines.append(text(40, 84, "Read left to right: v4.13 improvement, external transfer, model gap, and reference-prompt context.", "subtitle"))
     card_w = 248
     cards = [
         (
             40,
-            "GPT improved",
-            f"{gpt['old_passed']} -> {gpt['new_passed']} hard gates",
+            "GPT quality improved",
+            f"{gpt['previous_passed']} -> {gpt['current_passed']} hard gates",
             f"quality {gpt['wins']}/{gpt['ties']}/{gpt['losses']}, avg {gpt['quality_delta']:+.1f}",
             CURRENT,
         ),
         (
             310,
-            "Other models improved",
+            "External transfer mixed",
             f"{sum(1 for row in non_gpt if row['pass_delta'] > 0)}/{len(non_gpt)} hard-gate lifts",
-            f"total lift {sum(row['pass_delta'] for row in non_gpt):+d}; quality mixed",
-            GOOD,
+            "GLM slight up; DS up; DSt down",
+            WARN,
         ),
         (
             580,
-            "No-instruction context",
-            f"current beats empty on {sum(1 for row in rows if row['empty_delta'] > 0)}/{len(rows)} models",
-            f"hard-gate lift range +{min(row['empty_delta'] for row in rows)}..+{max(row['empty_delta'] for row in rows)}",
+            "Model gap vs GPT",
+            f"GLM current gap {glm_gap['current']['delta']:+.1f}",
+            f"gap {glm_gap['gap_change']:+.1f}; DS gaps still large",
             TIE,
         ),
         (
             850,
-            "Reference prompts",
+            "Reference context",
             f"{sum(1 for row in references if row['delta'] > 0)}/{len(references)} aggregate pairs",
-            "current wins overall; cases still regress",
+            "saved v4.12 cases expose regressions",
             BASELINE,
         ),
     ]
@@ -475,10 +615,10 @@ def render_instruction_lift(refresh_root: Path, empty_root: Path, output_dir: Pa
         lines.append(text(x + 24, 242, secondary, "small"))
     lines.extend(panel(40, 304, 1040, 150))
     lines.append(text(72, 342, "Bottom line", "label"))
-    lines.append(text(72, 374, f"GPT is the cleanest win: {gpt['new_passed']}/49 hard gates and +{gpt['quality_delta']:.1f} average quality delta versus previous current.", "value"))
-    lines.append(text(72, 402, f"GLM is the closest external model on our current instructions: {closest['hard_passed']}/49 hard gates, {closest['wins']}/{closest['ties']}/{closest['gpt_wins']} quality split vs GPT, avg {closest['delta']:+.1f}.", "value"))
-    lines.append(text(72, 430, "The remaining risk is case-level: references and older instructions still win specific no-op, architecture, dependency, and review cases.", "value"))
-    lines.extend(footer(width, 532, "Source: saved summaries and GPT-5.5 judged quality comparisons"))
+    lines.append(text(72, 374, f"GPT is the cleanest v4.13 win: {gpt['current_passed']}/49 hard gates and {gpt['wins']}/{gpt['ties']}/{gpt['losses']} quality split versus previous.", "value"))
+    lines.append(text(72, 402, "GLM stays close but not better than GPT; DeepSeek Flash improves from previous, while DeepSeek thinking regresses.", "value"))
+    lines.append(text(72, 430, "Grok v4.13 full rows are not included here; existing Grok charts are saved v4.12 empty/current context only.", "value"))
+    lines.extend(footer(width, 532, "Source: v4.13 saved summaries, OpenAI/Codex saved-quality judge, and labeled v4.12 reference context"))
     lines.append("</svg>")
     write_svg(output_dir / "instruction-lift.svg", lines)
 
@@ -537,6 +677,63 @@ def render_empty_current_lift(refresh_root: Path, empty_root: Path, output_dir: 
     lines.extend(footer(width, 632, "Source: v4.12 current summaries, latest empty summaries, and saved empty-vs-current quality aggregates"))
     lines.append("</svg>")
     write_svg(output_dir / "empty-current-lift.svg", lines)
+
+
+def render_model_gap(quality_root: Path, output_dir: Path) -> None:
+    rows = v413_model_gap_rows(quality_root)
+    width = 1120
+    height = 570
+    axis_x = 292
+    axis_w = 620
+    lines = svg_start(
+        width,
+        height,
+        "External model gap versus GPT",
+        "OpenAI/Codex judge comparison of external saved outputs against GPT on previous and current instructions.",
+    )
+    lines.append(text(40, 56, "External model gap versus GPT", "title"))
+    lines.append(text(40, 84, "Same judge, same 49 cases. Delta is external-model score minus GPT score; closer to zero is better for transfer.", "subtitle"))
+    lines.extend(panel(40, 112, 1040, 360))
+    lines.append(text(72, 148, "Model", "axis"))
+    lines.append(text(axis_x, 148, "Average quality delta versus GPT", "axis"))
+    lines.append(text(926, 148, "Quality split", "axis"))
+    for tick in [-60, -40, -20, 0]:
+        x = axis_x + axis_w * pct(tick + 60, 60)
+        lines.append(line(x, 176, x, 394, "#e5e7eb"))
+        lines.append(text(x, 166, tick, "axis", anchor="middle"))
+    zero_x = axis_x + axis_w
+    lines.append(line(zero_x, 170, zero_x, 406, "#94a3b8"))
+    for index, row in enumerate(rows):
+        y = 214 + index * 78
+        if index % 2 == 0:
+            lines.append(rect(64, y - 38, 990, 64, "#f8fafc", rx=0))
+        lines.append(text(72, y - 8, row["label"], "label"))
+        lines.append(text(72, y + 14, f"hard gates {row['previous']['hard_passed']} -> {row['current']['hard_passed']}", "small"))
+        previous_delta = row["previous"]["delta"]
+        current_delta = row["current"]["delta"]
+        previous_x = axis_x + axis_w * pct(previous_delta + 60, 60)
+        current_x = axis_x + axis_w * pct(current_delta + 60, 60)
+        lines.append(rect(axis_x, y - 18, axis_w, 10, TRACK, rx=5))
+        lines.append(line(previous_x, y - 28, current_x, y - 28, "#94a3b8"))
+        lines.append(circle(previous_x, y - 28, 7, "#94a3b8"))
+        lines.append(circle(current_x, y - 28, 8, CURRENT))
+        lines.append(text(previous_x, y - 42, f"{previous_delta:+.1f}", "axis", anchor="middle"))
+        lines.append(text(current_x, y - 2, f"{current_delta:+.1f}", "value", anchor="middle"))
+        change_color = GOOD if row["gap_change"] > 0 else WARN if row["gap_change"] < 0 else TIE
+        lines.append(rect(692, y - 30, 70, 28, change_color, rx=14))
+        lines.append(text(727, y - 11, f"{row['gap_change']:+.1f}", "value", anchor="middle"))
+        current = row["current"]
+        lines.append(text(926, y - 18, f"current {current['wins']}/{current['ties']}/{current['gpt_wins']}", "value"))
+        lines.append(text(926, y + 4, "external / tie / GPT", "small"))
+    legend_y = 510
+    lines.append(circle(78, legend_y, 7, "#94a3b8"))
+    lines.append(text(94, legend_y + 4, "previous instructions", "axis"))
+    lines.append(circle(244, legend_y, 7, CURRENT))
+    lines.append(text(260, legend_y + 4, "current instructions", "axis"))
+    lines.append(text(444, legend_y + 4, "Gap-change chip: positive means the external model moved closer to GPT.", "axis"))
+    lines.extend(footer(width, 548, "Source: v4.13 GPT-vs-external saved-quality summaries judged by OpenAI/Codex"))
+    lines.append("</svg>")
+    write_svg(output_dir / "model-gap.svg", lines)
 
 
 def render_model_transfer(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
@@ -655,16 +852,25 @@ def pass_pass_counts(pair_path: Path) -> dict[str, Any]:
     return {"total": total, "counts": counts, "avg_delta": round(sum(deltas) / len(deltas), 1) if deltas else 0.0}
 
 
-def render_quality_only_comparisons(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
+def render_quality_only_comparisons(
+    refresh_root: Path,
+    gpt_root: Path,
+    external_root: Path,
+    quality_root: Path,
+    output_dir: Path,
+) -> None:
     prev_rows = []
-    for row in model_rows(refresh_root, empty_root):
-        quality = quality_summary(refresh_root, row["prev_quality"])
-        prev_rows.append({"label": row["short"], **pass_pass_counts(quality["pair_path"])})
+    for row in v413_model_rows(gpt_root, external_root, quality_root):
+        prev_rows.append({"label": row["short"], **pass_pass_counts(row["pair_path"])})
+    gap_rows = []
+    for row in v413_model_gap_rows(quality_root):
+        gap_rows.append({"label": f"{row['label']} cur", **pass_pass_counts(row["current"]["pair_path"])})
+        gap_rows.append({"label": f"{row['label']} prev", **pass_pass_counts(row["previous"]["pair_path"])})
     ref_rows = []
     for row in reference_rows(refresh_root):
         ref_rows.append({"label": f"{row['short']}/{compact_reference_label(row['reference'])}", **pass_pass_counts(row["pair_path"])})
-    width = 1120
-    height = 760
+    width = 1360
+    height = 790
     lines = svg_start(
         width,
         height,
@@ -673,26 +879,35 @@ def render_quality_only_comparisons(refresh_root: Path, empty_root: Path, output
     )
     lines.append(text(40, 56, "Quality-only small multiples", "title"))
     lines.append(text(40, 84, "Hard failures are excluded. Triplets are left wins / ties / right wins, with n=pass/pass overlap.", "subtitle"))
-    lines.extend(panel(40, 116, 500, 540))
-    lines.append(text(72, 152, "New current vs previous current", "label"))
+    lines.extend(panel(40, 116, 390, 540))
+    lines.append(text(72, 152, "v4.13 current vs previous", "label"))
     for index, row in enumerate(prev_rows):
         counts = row["counts"]
         y = 188 + index * 62
         lines.append(text(72, y + 14, row["label"], "label"))
-        draw_segments(lines, 190, y, 225, 18, row["total"], [(counts["current"], GOOD), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
-        lines.append(text(430, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
+        draw_segments(lines, 178, y, 150, 18, row["total"], [(counts["current"], GOOD), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
+        lines.append(text(344, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
         lines.append(text(190, y + 40, f"n={row['total']}, avg delta {row['avg_delta']:+.1f}", "small"))
-    lines.extend(panel(580, 116, 500, 540))
-    lines.append(text(612, 152, "Current vs references", "label"))
+    lines.extend(panel(460, 116, 390, 540))
+    lines.append(text(492, 152, "External model vs GPT", "label"))
+    for index, row in enumerate(gap_rows):
+        counts = row["counts"]
+        y = 184 + index * 62
+        lines.append(text(492, y + 14, row["label"], "label"))
+        draw_segments(lines, 614, y, 132, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
+        lines.append(text(762, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
+        lines.append(text(614, y + 40, f"n={row['total']}, avg delta {row['avg_delta']:+.1f}", "small"))
+    lines.extend(panel(880, 116, 440, 540))
+    lines.append(text(912, 152, "Current vs references (v4.12 saved)", "label"))
     for index, row in enumerate(ref_rows):
         counts = row["counts"]
         y = 184 + index * 38
-        lines.append(text(612, y + 14, row["label"], "label"))
-        draw_segments(lines, 748, y, 190, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
-        lines.append(text(954, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
-        lines.append(text(1010, y + 14, f"n={row['total']}", "small"))
-    lines.append(text(72, 692, "Empty quality is intentionally not mixed here: the v4.12 empty quality matrix is incomplete, so empty is shown only in the hard-gate dot plot.", "label"))
-    lines.extend(footer(width, 730, "Source: saved quality pair reports filtered to both sides passed"))
+        lines.append(text(912, y + 14, row["label"], "label"))
+        draw_segments(lines, 1048, y, 150, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
+        lines.append(text(1214, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
+        lines.append(text(1270, y + 14, f"n={row['total']}", "small"))
+    lines.append(text(72, 692, "Triplet meaning changes by panel: current/previous, external/GPT, and current/reference. Use the title before comparing colors.", "label"))
+    lines.extend(footer(width, 758, "Source: OpenAI/Codex saved-quality reports filtered to both sides passed; references are saved v4.12 context"))
     lines.append("</svg>")
     write_svg(output_dir / "quality-only-comparisons.svg", lines)
 
@@ -777,6 +992,21 @@ def gpt_external_case_columns(refresh_root: Path) -> list[dict[str, Any]]:
         label = labels.get(pair["candidate_label"], pair["candidate_label"])
         columns.append({"label": label, "values": pair_delta_map(Path(pair["quality_json"]))})
     return sorted(columns, key=lambda column: order.index(column["label"]) if column["label"] in order else 999)
+
+
+def v413_prev_current_case_columns(gpt_root: Path, external_root: Path, quality_root: Path) -> list[dict[str, Any]]:
+    columns = []
+    for row in v413_model_rows(gpt_root, external_root, quality_root):
+        columns.append({"label": compact_model_label(row["short"]), "values": pair_delta_map(row["pair_path"])})
+    return columns
+
+
+def v413_gpt_external_case_columns(quality_root: Path, rel_path: str, prefix: str) -> list[dict[str, Any]]:
+    rows = v413_gpt_external_rows(quality_root, rel_path, prefix)
+    return [
+        {"label": compact_model_label(row["label"]), "values": pair_delta_map(row["pair_path"])}
+        for row in rows
+    ]
 
 
 def prev_current_case_columns(refresh_root: Path, empty_root: Path) -> list[dict[str, Any]]:
@@ -917,40 +1147,58 @@ def render_explained_delta_table(
     return height
 
 
-def render_case_detail_comparisons(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
-    prev_columns = prev_current_case_columns(refresh_root, empty_root)
-    external_columns = gpt_external_case_columns(refresh_root)
+def render_case_detail_comparisons(
+    refresh_root: Path,
+    gpt_root: Path,
+    external_root: Path,
+    quality_root: Path,
+    output_dir: Path,
+) -> None:
+    prev_columns = v413_prev_current_case_columns(gpt_root, external_root, quality_root)
+    current_gap_columns = v413_gpt_external_case_columns(quality_root, GPT_VS_EXTERNAL_CURRENT_QUALITY, "current")
+    previous_gap_columns = v413_gpt_external_case_columns(quality_root, GPT_VS_EXTERNAL_PREVIOUS_QUALITY, "previous")
     reference_columns = reference_case_columns(refresh_root)
-    prev_cases = select_case_ids(prev_columns, 9, "regression")
-    external_cases = select_case_ids(external_columns, 8, "external")
-    reference_cases = select_case_ids(reference_columns, 10, "regression")
+    prev_cases = select_case_ids(prev_columns, 10, "regression")
+    current_gap_cases = select_case_ids(current_gap_columns, 8, "regression")
+    previous_gap_cases = select_case_ids(previous_gap_columns, 8, "regression")
+    reference_cases = select_case_ids(reference_columns, 8, "regression")
     width = 1400
     y = 136
     blocks = [
         (
-            "New current vs previous current",
-            "v4.12 score - previous-current score",
-            "Read this as instruction-change impact on the same model. Red cells are concrete regressions versus the previous current instructions.",
-            "v4.12 better",
+            "v4.13 current vs previous instructions",
+            "current score - previous score",
+            "Read this as instruction-change impact on the same model. Red cells are concrete regressions versus the previous instructions.",
+            "current better",
             "previous better",
             prev_columns,
             prev_cases,
-            68,
+            86,
         ),
         (
-            "External models vs GPT on our current instructions",
+            "External models vs GPT on current instructions",
             "external-model score - GPT score",
-            "Read this as model quality transfer. Red cells mean GPT's answer was better; blue cells mean the external model beat GPT on that case.",
+            "Read this as current-instruction model gap. Red cells mean GPT's answer was better; blue cells mean the external model beat GPT.",
             "external better",
             "GPT better",
-            external_columns,
-            external_cases,
-            76,
+            current_gap_columns,
+            current_gap_cases,
+            96,
         ),
         (
-            "Current instructions vs reference bundles",
+            "External models vs GPT on previous instructions",
+            "external-model score - GPT score",
+            "Read this as the previous-instruction model gap, so current/previous gap movement can be compared case by case.",
+            "external better",
+            "GPT better",
+            previous_gap_columns,
+            previous_gap_cases,
+            96,
+        ),
+        (
+            "Current instructions vs reference bundles (v4.12 saved)",
             "current-instructions score - reference-bundle score",
-            "Read this as our instructions versus OpenHands or Claude/Fable references. Red cells are reference wins worth inspecting.",
+            "Read this as saved reference context, not fresh v4.13 provider evidence. Red cells are reference wins worth inspecting.",
             "current better",
             "reference better",
             reference_columns,
@@ -1076,16 +1324,28 @@ def render_coverage_watchlist(refresh_root: Path, output_dir: Path) -> None:
     write_svg(output_dir / "coverage-watchlist.svg", lines)
 
 
-def build_all(repo_root: Path, refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
+def build_all(
+    repo_root: Path,
+    refresh_root: Path,
+    empty_root: Path,
+    v413_gpt_root: Path,
+    v413_external_root: Path,
+    canonical_quality_root: Path,
+    output_dir: Path,
+) -> None:
     refresh_root = resolve_path(repo_root, refresh_root)
     empty_root = resolve_path(repo_root, empty_root)
+    v413_gpt_root = resolve_path(repo_root, v413_gpt_root)
+    v413_external_root = resolve_path(repo_root, v413_external_root)
+    canonical_quality_root = resolve_path(repo_root, canonical_quality_root)
     output_dir = resolve_path(repo_root, output_dir)
-    render_instruction_lift(refresh_root, empty_root, output_dir)
+    render_instruction_lift(v413_gpt_root, v413_external_root, canonical_quality_root, refresh_root, output_dir)
     render_empty_current_lift(refresh_root, empty_root, output_dir)
+    render_model_gap(canonical_quality_root, output_dir)
     render_model_transfer(refresh_root, empty_root, output_dir)
     render_reference_prompts(refresh_root, output_dir)
-    render_quality_only_comparisons(refresh_root, empty_root, output_dir)
-    render_case_detail_comparisons(refresh_root, empty_root, output_dir)
+    render_quality_only_comparisons(refresh_root, v413_gpt_root, v413_external_root, canonical_quality_root, output_dir)
+    render_case_detail_comparisons(refresh_root, v413_gpt_root, v413_external_root, canonical_quality_root, output_dir)
     render_quality_only_case_matrix(refresh_root, output_dir)
     render_coverage_watchlist(refresh_root, output_dir)
 
@@ -1105,11 +1365,19 @@ def compare_svg_dirs(expected_dir: Path, output_dir: Path) -> list[str]:
     return problems
 
 
-def check_all(repo_root: Path, refresh_root: Path, empty_root: Path, output_dir: Path) -> list[str]:
+def check_all(
+    repo_root: Path,
+    refresh_root: Path,
+    empty_root: Path,
+    v413_gpt_root: Path,
+    v413_external_root: Path,
+    canonical_quality_root: Path,
+    output_dir: Path,
+) -> list[str]:
     output_dir = resolve_path(repo_root, output_dir)
     with tempfile.TemporaryDirectory(prefix="readme-infographics-check-") as tmp:
         expected_dir = Path(tmp) / "readme"
-        build_all(repo_root, refresh_root, empty_root, expected_dir)
+        build_all(repo_root, refresh_root, empty_root, v413_gpt_root, v413_external_root, canonical_quality_root, expected_dir)
         return compare_svg_dirs(expected_dir, output_dir)
 
 
@@ -1117,6 +1385,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--refresh-root", default=str(DEFAULT_REFRESH_ROOT), help="Saved refresh artifact root.")
     parser.add_argument("--empty-root", default=str(DEFAULT_EMPTY_ROOT), help="Fallback root for reused empty-baseline artifacts.")
+    parser.add_argument("--v413-gpt-root", default=str(DEFAULT_V413_GPT_ROOT), help="Saved GPT v4.13 artifact root.")
+    parser.add_argument("--v413-external-root", default=str(DEFAULT_V413_EXTERNAL_ROOT), help="Saved GLM/DeepSeek v4.13 artifact root.")
+    parser.add_argument("--canonical-quality-root", default=str(DEFAULT_CANONICAL_QUALITY_ROOT), help="OpenAI/Codex saved-quality artifact root.")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Directory for generated README SVGs.")
     parser.add_argument("--check", action="store_true", help="Verify generated README SVGs are fresh without updating them.")
     return parser.parse_args()
@@ -1126,7 +1397,15 @@ def main() -> int:
     args = parse_args()
     repo_root = Path.cwd()
     if args.check:
-        problems = check_all(repo_root, Path(args.refresh_root), Path(args.empty_root), Path(args.output_dir))
+        problems = check_all(
+            repo_root,
+            Path(args.refresh_root),
+            Path(args.empty_root),
+            Path(args.v413_gpt_root),
+            Path(args.v413_external_root),
+            Path(args.canonical_quality_root),
+            Path(args.output_dir),
+        )
         if problems:
             print("README infographics are not fresh:", file=sys.stderr)
             for problem in problems:
@@ -1136,7 +1415,15 @@ def main() -> int:
         print(f"readme infographics fresh: {Path(args.output_dir)}")
         return 0
 
-    build_all(repo_root, Path(args.refresh_root), Path(args.empty_root), Path(args.output_dir))
+    build_all(
+        repo_root,
+        Path(args.refresh_root),
+        Path(args.empty_root),
+        Path(args.v413_gpt_root),
+        Path(args.v413_external_root),
+        Path(args.canonical_quality_root),
+        Path(args.output_dir),
+    )
     print(f"wrote {Path(args.output_dir)}")
     return 0
 

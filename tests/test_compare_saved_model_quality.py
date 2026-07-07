@@ -119,6 +119,113 @@ class CompareSavedModelQualityTests(unittest.TestCase):
         self.assertEqual(aggregate["sources"], {"judge": 1, "hard_gate": 1})
         self.assertEqual(aggregate["average_delta"], -55.0)
 
+    def test_saved_quality_reports_record_judge_metadata(self):
+        module = load_script()
+        comparisons = [
+            {
+                "case_id": "case-a",
+                "baseline": {"passed": True},
+                "candidate": {"passed": True},
+                "quality": {
+                    "winner": "current",
+                    "source": "llm_judge",
+                    "confidence": "high",
+                    "baseline_score": 82,
+                    "current_score": 91,
+                    "reason": "Candidate is more specific.",
+                },
+            }
+        ]
+        judge = {
+            "preset": "glm-5.2-medium",
+            "model": "glm-5.2",
+            "reasoning_effort": "medium",
+            "service_tier": None,
+            "agent_command_mode": "current-codex",
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            pair_report = module.write_pair_report(
+                output_dir,
+                "GLM-5.2-prev-saved-model-quality",
+                "GLM-5.2-prev",
+                "GLM-5.2-current",
+                comparisons,
+                judge,
+            )
+            module.write_summary_report(
+                output_dir,
+                "GLM-5.2-prev-saved-model-quality",
+                "GLM-5.2-prev",
+                [pair_report],
+                judge,
+            )
+
+            pair_json = json.loads(Path(pair_report["quality_json"]).read_text(encoding="utf-8"))
+            self.assertEqual(pair_json["judge"], judge)
+            pair_md = Path(pair_report["quality_md"]).read_text(encoding="utf-8")
+            self.assertIn("Judge: `glm-5.2` (preset `glm-5.2-medium`, reasoning `medium`)", pair_md)
+
+            summary_json = json.loads(
+                (output_dir / "GLM-5.2-prev-saved-model-quality" / "model-quality-summary.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(summary_json["judge"], judge)
+            self.assertEqual(summary_json["pairs"][0]["judge"], judge)
+            summary_md = (output_dir / "GLM-5.2-prev-saved-model-quality" / "model-quality-summary.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("Judge: `glm-5.2` (preset `glm-5.2-medium`, reasoning `medium`)", summary_md)
+
+    def test_dry_run_candidate_plan_counts_judge_calls_and_shortcuts(self):
+        module = load_script()
+        cases = [{"id": "pass-pass"}, {"id": "baseline-only"}, {"id": "fail-fail"}]
+        baseline_records = {
+            "pass-pass": {"passed": True},
+            "baseline-only": {"passed": True, "failure_type": "none"},
+            "fail-fail": {"passed": False, "failure_type": "behavior"},
+        }
+        candidate_records = {
+            "pass-pass": {"passed": True},
+            "baseline-only": {"passed": False, "failure_type": "behavior"},
+            "fail-fail": {"passed": False, "failure_type": "behavior"},
+        }
+
+        plan = module.dry_run_candidate_plan(
+            cases,
+            baseline_label="baseline",
+            baseline_records=baseline_records,
+            candidate_label="candidate",
+            candidate_records=candidate_records,
+        )
+
+        self.assertEqual(plan["candidate_label"], "candidate")
+        self.assertEqual(plan["total"], 3)
+        self.assertEqual(plan["judge_calls"], 1)
+        self.assertEqual(plan["hard_gate_shortcuts"], 2)
+        self.assertEqual(plan["judge_cases"], ["pass-pass"])
+
+    def test_parse_args_accepts_dry_run(self):
+        module = load_script()
+
+        args = module.parse_args(
+            [
+                "--baseline",
+                "baseline=.eval-results/baseline/summary.json",
+                "--candidate",
+                "candidate=.eval-results/candidate/summary.json",
+                "--agent-command",
+                "codex exec",
+                "--output-dir",
+                ".eval-results/quality",
+                "--dry-run",
+            ]
+        )
+
+        self.assertTrue(args.dry_run)
+
 
 if __name__ == "__main__":
     unittest.main()

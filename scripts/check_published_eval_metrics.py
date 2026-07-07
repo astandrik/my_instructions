@@ -13,15 +13,18 @@ from typing import Any
 
 
 DEFAULT_SUMMARY = Path(".eval-results/v4.13-final-gpt55-full-49-v11/compare-HEAD-current/summary.json")
-DEFAULT_QUALITY = Path(".eval-results/v4.13-final-gpt55-full-49-v11/compare-HEAD-current/quality.json")
+DEFAULT_QUALITY = Path(
+    ".eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/pairs/current-gpt/quality.json"
+)
 DEFAULT_DOCS = [Path("README.md"), Path("evals/RESULTS.md"), Path("evals/CHANGELOG.md")]
 DEFAULT_SVG_DIR = Path("docs/assets/readme")
-EXPECTED_SVG_SCOPE = "Scope: v4.12 all-model snapshot. v4.13 is GPT/Codex-only until external providers rerun."
+EXPECTED_SVG_SCOPE = "Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots."
 REQUIRED_README_SVGS = [
     "case-detail-comparisons.svg",
     "coverage-watchlist.svg",
     "empty-current-lift.svg",
     "instruction-lift.svg",
+    "model-gap.svg",
     "model-transfer.svg",
     "quality-only-case-matrix.svg",
     "quality-only-comparisons.svg",
@@ -36,6 +39,13 @@ FORBIDDEN_SCOPE_OVERCLAIMS = [
     "all-model v4.13 comparison",
     "fresh all-model v4.13 refresh",
     "fresh all-model v4.13 evidence",
+    "all-model quality improvement",
+    "improved every tested model",
+    "improves every tested model",
+    "improved all tested models",
+    "external models improved",
+    "external providers improved",
+    "all providers improved",
     "external model rows were rerun after v4.13",
     "external provider rows were rerun after v4.13",
 ]
@@ -43,10 +53,25 @@ FORBIDDEN_SCOPE_OVERCLAIM_PATTERNS = [
     re.compile(r"\bv4\.13 all[- ]models? (?:refresh|evidence|comparison)\b"),
     re.compile(r"\ball[- ]models? v4\.13 (?:refresh|evidence|comparison)\b"),
     re.compile(r"\bv4\.13 (?:refresh|evidence|comparison) across all[- ]models?\b"),
+    re.compile(r"\ball[- ]models? quality (?:improved|improvement)\b"),
+    re.compile(r"\b(?:all|every) tested models? improved\b"),
+    re.compile(r"\bimprov(?:ed|es) (?:all|every) tested models?\b"),
+    re.compile(r"\bexternal (?:models?|providers?) (?:improved|quality improved)\b"),
+    re.compile(r"\b(?:all|every) providers? improved\b"),
+    re.compile(r"\bimprov(?:ed|es) (?:all|every) providers?\b"),
+    re.compile(
+        r"\b(?:glm(?:[- ]?5\.2)?|z\.?ai|deepseek(?: v4 flash)?(?: non[- ]thinking)?) "
+        r"quality (?:improved|improvement)\b"
+    ),
+    re.compile(
+        r"\bquality (?:improved|improvement) for "
+        r"(?:glm(?:[- ]?5\.2)?|z\.?ai|deepseek(?: v4 flash)?(?: non[- ]thinking)?)\b"
+    ),
     re.compile(r"\bexternal (?:model|provider) rows were re[- ]?run after v4\.13\b"),
 ]
 EXPECTED_SUMMARY_LABELS = {"baseline-HEAD", "current"}
 README_SVG_PREFIX = "docs/assets/readme/"
+PROVIDER_SNAPSHOT_TRIGGERS = ("hard-gate snapshot", "hard gate snapshot")
 
 
 @dataclass(frozen=True)
@@ -184,12 +209,12 @@ def expected_doc_snippets(metrics: PublishedMetrics) -> dict[str, list[str]]:
                 f"baseline winning {metrics.baseline_wins}, {metrics.ties} ties, "
                 f"and average delta {metrics.average_delta_text}"
             ),
-            "This is GPT-only evidence",
-            "external model rows and README infographics below still reflect",
+            "This is partial v4.13 evidence",
+            "Grok v4.13 full rows are still pending",
         ],
         "evals/RESULTS.md": [
-            "This is a GPT/Codex full-suite result, not an all-model refresh.",
-            "External model rows below were not rerun after v4.13 and the phrase-matcher change.",
+            "This is partial v4.13 evidence, not a full all-model refresh.",
+            "Grok v4.13 full rows are still pending.",
             f"| Baseline `HEAD` | {metrics.baseline_passed} / {metrics.case_count} | 0 |",
             f"| Current worktree | {metrics.current_passed} / {metrics.case_count} | 0 |",
             (
@@ -198,8 +223,8 @@ def expected_doc_snippets(metrics: PublishedMetrics) -> dict[str, list[str]]:
             ),
         ],
         "evals/CHANGELOG.md": [
-            "This is not publication-grade all-model evidence yet.",
-            "Do not use this entry as all-model README/infographic evidence",
+            "This is partial v4.13 evidence, not a full all-model refresh.",
+            "Grok v4.13 full rows are still pending.",
             f"v11 full compare: {metrics.summary_passed} / {metrics.summary_total} hard gates passed",
             (
                 f"current {metrics.current_wins} wins, baseline {metrics.baseline_wins} wins, "
@@ -238,6 +263,32 @@ def forbidden_scope_overclaims(text: str) -> list[str]:
     return literal_claims + pattern_claims
 
 
+def provider_snapshot_sections(text: str) -> list[str]:
+    sections = re.split(r"\n\s*\n", text)
+    return [
+        section
+        for section in sections
+        if any(trigger in normalize_text(section).casefold() for trigger in PROVIDER_SNAPSHOT_TRIGGERS)
+    ]
+
+
+def partial_provider_snapshot_caveat_problems(text: str) -> list[str]:
+    problems = []
+    for section in provider_snapshot_sections(text):
+        normalized = normalize_text(section).casefold()
+        if ".eval-results/" not in section:
+            problems.append("provider hard-gate snapshot must reference a saved .eval-results artifact root")
+        has_mixed_transfer_caveat = "not uniformly positive" in normalized or "mixed" in normalized
+        if not has_mixed_transfer_caveat:
+            problems.append("provider hard-gate snapshot must describe external transfer as mixed or not uniformly positive")
+        has_quality_pending_caveat = re.search(r"\bquality(?: evidence)? (?:is still )?pending\b|\bpending quality\b", normalized)
+        if not has_quality_pending_caveat:
+            problems.append("provider hard-gate snapshot must mark incomplete quality as pending")
+        if "policy-blocked" not in normalized:
+            problems.append("provider hard-gate snapshot must mention policy-blocked provider rows")
+    return problems
+
+
 def missing_readme_svg_references(text: str, required_names: list[str] | None = None) -> list[str]:
     required = required_names or REQUIRED_README_SVGS
     return [name for name in sorted(required) if f"{README_SVG_PREFIX}{name}" not in text]
@@ -271,6 +322,8 @@ def check_docs(
         for claim in forbidden_scope_overclaims(raw_text):
             problems.append(f"{path}: forbidden v4.13 publication overclaim: {claim}")
         if key == "README.md":
+            for problem in partial_provider_snapshot_caveat_problems(raw_text):
+                problems.append(f"{path}: {problem}")
             for name in missing_readme_svg_references(raw_text):
                 problems.append(f"{path}: missing README SVG reference: {README_SVG_PREFIX}{name}")
     return problems
@@ -295,6 +348,8 @@ def check_svg_scope(svg_dir: Path, required_names: list[str] | None = None) -> l
             continue
         if EXPECTED_SVG_SCOPE not in text:
             problems.append(f"{path}: missing SVG scope footer: {EXPECTED_SVG_SCOPE}")
+        for claim in forbidden_scope_overclaims(text):
+            problems.append(f"{path}: forbidden v4.13 publication overclaim: {claim}")
     return problems
 
 

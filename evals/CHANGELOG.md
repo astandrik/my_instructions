@@ -21,8 +21,10 @@ tables.
 Instruction surface:
 
 - Updated `CRITICAL_INSTRUCTIONS.md` from v4.12 to v4.13.
-- Status: GPT/Codex full-suite candidate. This is not publication-grade
-  all-model evidence yet.
+- Status: partial v4.13 evidence. This is partial v4.13 evidence, not a full
+  all-model refresh. GPT/Codex, GLM-5.2, DeepSeek V4 Flash, and DeepSeek V4
+  Flash thinking saved outputs have OpenAI/Codex saved-quality summaries;
+  Grok v4.13 full rows are still pending.
 - Kept the instruction change narrow: no eval cases, schemas, or references
   changed for this candidate. The eval runner gained a narrowly tested phrase
   normalizer so deterministic checks treat word
@@ -31,19 +33,35 @@ Instruction surface:
 - Added saved-quality tooling guardrails: `scripts/split_eval_summary.py`
   splits combined compare summaries by label, and
   `scripts/compare_saved_model_quality.py` rejects duplicate `case_id` values
-  in one input summary instead of silently overwriting a side.
-- Added README infographic guardrails without changing all-model evidence:
-  generated SVGs now carry a visible v4.12 all-model scope footer, and
-  `scripts/build_readme_infographics.py --check` verifies tracked SVG
-  freshness without silently regenerating files.
+  in one input summary instead of silently overwriting a side. Saved-quality
+  reports now record fixed judge preset/model/reasoning metadata so future
+  all-model quality matrices can be kept single-judge or explicitly split and
+  labeled by judge. The saved-quality script also has a `--dry-run` mode that
+  prints resolved judge identity, output path, candidate rows, judge-call
+  counts, hard-gate shortcuts, and pass/pass case ids before any model-backed
+  judge calls are made. The eval workflow now documents the coverage rule:
+  every row promoted into a published quality matrix needs pass/pass quality
+  judging; smoke runs, transport reruns, and targeted hard-gate diagnostics do
+  not need quality judging unless they are promoted into publication evidence.
+- Added README infographic guardrails: generated SVGs now carry a visible
+  mixed-scope footer, and `scripts/build_readme_infographics.py --check`
+  verifies tracked SVG freshness without silently regenerating files.
 - Added `scripts/check_published_eval_metrics.py` so the published v4.13
   GPT/Codex numbers in README, RESULTS, and CHANGELOG must match the saved
-  `summary.json` and `quality.json` artifacts, docs must keep the GPT-only
-  caveats plus a pointer to the saved artifact root, those artifacts must
-  describe the same paired case set, direct v4.13 all-model overclaims and
-  common wording variants are rejected, README must link every required
-  generated SVG, and that generated SVG set must retain the visible v4.12
-  all-model scope footer.
+  `summary.json` and canonical OpenAI/Codex `quality.json` artifacts, docs
+  must keep the partial-v4.13 caveats plus a pointer to the saved artifact
+  root, those artifacts must describe the same paired case set, direct v4.13
+  all-model overclaims and
+  common wording variants about every-tested-model wins, external
+  model/provider improvement, and single-provider quality improvement for
+  pending rows are rejected, README must link every required generated SVG, and
+  that generated SVG set must retain the visible mixed-scope footer.
+  A future provider hard-gate snapshot in README must also include, in the same
+  snapshot section, pending quality, policy-blocked missing provider rows, a
+  saved `.eval-results/` artifact root, and mixed/not-uniformly-positive
+  external transfer caveats.
+  README SVG text is also scanned for forbidden v4.13 all-model/provider
+  overclaims, not only for the visible scope footer.
 - Refined workflow-selection `no_op` wording after the v4.12 cross-model
   refresh showed pass/pass regressions concentrated in evidence grounding,
   risk handling, and instruction activation for architecture/planning cases.
@@ -87,6 +105,8 @@ Artifacts:
   - `.eval-results/v4.13-final-gpt55-full-49-v9/`
   - `.eval-results/v4.13-final-gpt55-full-49-v10/`
   - `.eval-results/v4.13-final-gpt55-full-49-v11/`
+- Canonical OpenAI/Codex saved-quality root:
+  - `.eval-results/openai-canonical-judge-2026-07-07-v1/`
 - Follow-up targeted artifacts:
   - `.eval-results/v4.13-final-gpt55-regressionfix-branch-context-before-review-v1/`
   - `.eval-results/v4.13-final-gpt55-regressionfix-architecture-traceability-link-recovery-v1/`
@@ -113,8 +133,8 @@ Verification:
 - `python3 -B scripts/build_readme_infographics.py --check` passed with
   `readme infographics fresh: docs/assets/readme`.
 - `python3 -B scripts/check_published_eval_metrics.py` passed with
-  `published eval publication guard ok: 98/98 hard gates, quality current=33
-  baseline=7 ties=9 avg_delta=+1.47, docs=3 svgs=8 scope=checked`.
+  `published eval publication guard ok: 98/98 hard gates, quality current=30
+  baseline=6 ties=13 avg_delta=+1.53, docs=3 svgs=9 scope=checked`.
 - `python3 -B -m unittest tests/test_instruction_eval_runner.py
   tests/test_compare_saved_model_quality.py tests/test_split_eval_summary.py
   tests/test_build_readme_infographics.py
@@ -186,8 +206,9 @@ Full GPT calibration status:
 - Follow-up instruction fix: branch/fork audits that include a possible
   history rewrite are explicitly high risk even when the first step is
   read-only. Targeted `branch-context-before-review` passed baseline/current.
-- v11 full compare: 98 / 98 hard gates passed. Quality comparison over all 49
-  cases: current 33 wins, baseline 7 wins, 9 ties, average delta +1.47.
+- v11 full compare: 98 / 98 hard gates passed. Canonical OpenAI/Codex quality
+  comparison over all 49 cases: current 30 wins, baseline 6 wins, 13 ties,
+  average delta +1.53.
 
 Exploratory external-model notes:
 

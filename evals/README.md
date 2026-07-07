@@ -22,15 +22,29 @@ python3 -B scripts/build_readme_infographics.py --check
 ```
 
 When ignored `.eval-results/` artifacts are available, check that published
-GPT/Codex metrics still match the saved JSON, docs keep the GPT-only caveats
-and a pointer to the saved artifact root, `summary.json` and `quality.json`
-describe the same case set, README links every required SVG, README SVGs keep
-their scope footer, and docs do not overclaim all-model v4.13 scope, including
-common phrasing variants such as "all models" and "re-run":
+GPT/Codex metrics still match the saved JSON, docs keep the partial-v4.13
+caveats and a pointer to the saved artifact root, `summary.json` and
+`quality.json` describe the same case set, README links every required SVG,
+README SVGs keep their scope footer, and docs do not overclaim v4.13 scope,
+including common phrasing variants about "all models", provider "re-run",
+every-tested-model wins, external model/provider improvement claims, and
+single-provider quality improvement claims for rows whose quality evidence is
+still pending:
 
 ```bash
 python3 -B scripts/check_published_eval_metrics.py
 ```
+
+If a future README publishes a provider hard-gate snapshot, the same guard
+requires that snapshot section to mark incomplete quality pending, missing
+provider rows policy-blocked, a saved `.eval-results/` artifact root as the
+source, and external transfer as mixed or not uniformly positive.
+
+The SVG scope check also rejects forbidden v4.13 all-model/provider overclaims
+inside generated README SVG text, so standalone images cannot publish a broader
+claim than the Markdown allows. The current footer is mixed scope: v4.13
+OpenAI-judged GPT/GLM/DeepSeek saved outputs plus labeled v4.12
+Grok/reference/no-instruction context.
 
 ## Real agent run
 
@@ -480,6 +494,32 @@ python3 -B scripts/split_eval_summary.py \
 
 The saved-quality script rejects duplicate `case_id` values in a single input
 summary so combined compare summaries cannot silently overwrite one side.
+Saved-quality reports also record the fixed judge preset/model/reasoning
+metadata in JSON and Markdown. Do not combine quality rows judged by different
+model families in one aggregate matrix unless the rows are explicitly split and
+labeled by judge; for a single all-model matrix, rerun every pair with the same
+judge.
+
+Quality judging is required for every pass/pass case in each row that is
+published as a quality comparison or README quality infographic. It is not
+required for smoke runs, transport reruns, or targeted hard-gate diagnostics
+unless those runs are promoted into a published quality matrix. A provider
+snapshot without complete quality coverage must stay labeled as hard-gate-only
+with quality pending.
+
+Before sending saved outputs to a model-backed judge, use the saved-quality
+dry-run to review the resolved judge identity, output path, candidate rows,
+number of judge calls, hard-gate shortcuts, and pass/pass case ids:
+
+```bash
+python3 -B scripts/compare_saved_model_quality.py \
+  --baseline "GLM-5.2 previous=.eval-results/split/glm-5.2/baseline-HEAD/summary.json" \
+  --candidate "GLM-5.2 current=.eval-results/split/glm-5.2/current/summary.json" \
+  --agent-command "python3 scripts/zai_eval_agent.py" \
+  --judge-preset glm-5.2-medium \
+  --output-dir .eval-results/quality-glm-judge \
+  --dry-run
+```
 
 Without `--quality-judge`, the quality report is descriptive, not an LLM judge
 score. It compares stable signals from `final-message.json`: pass state,
