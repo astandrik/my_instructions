@@ -17,6 +17,62 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## v4.13 Partial OpenAI-Judged Snapshot
+
+Captured on 2026-07-06 and rejudged on 2026-07-07 during the v4.13
+calibration pass. This snapshot changed the instruction bundle and the
+deterministic phrase matcher, compared the GPT/Codex working tree against
+`HEAD`, and then used the same OpenAI/Codex saved-output judge for GPT,
+GLM-5.2, and DeepSeek saved summaries.
+
+Raw artifacts:
+
+- Full compare:
+  `.eval-results/v4.13-final-gpt55-full-49-v11/compare-HEAD-current/`
+- Canonical OpenAI/Codex saved-quality root:
+  `.eval-results/openai-canonical-judge-2026-07-07-v1/`
+- Changelog entry: `evals/CHANGELOG.md`
+
+Important scope:
+
+- This is partial v4.13 evidence, not a full all-model refresh.
+- GPT/Codex, GLM-5.2, DeepSeek V4 Flash, and DeepSeek V4 Flash thinking rows
+  have OpenAI/Codex saved-quality summaries under the canonical quality root.
+- Grok v4.13 full rows are still pending.
+- Saved Grok, empty-baseline, and reference-bundle charts remain labeled v4.12
+  context.
+
+### Hard Gates
+
+| Bundle | Passed | Failed | Notes |
+|---|---:|---:|---|
+| Baseline `HEAD` | 49 / 49 | 0 | v4.12 baseline under the updated phrase matcher. |
+| Current worktree | 49 / 49 | 0 | v4.13 candidate plus phrase-matcher fix. |
+
+### Quality
+
+| Scope | Current wins | Baseline wins | Ties | Avg delta |
+|---|---:|---:|---:|---:|
+| 49 pass/pass cases | 30 | 6 | 13 | +1.53 |
+
+Interpretation:
+
+- v4.13 is a clean GPT/Codex full-suite candidate: 98 / 98 hard gates passed.
+- The improvement is strongest as a regression-stability signal: earlier full
+  calibration runs exposed misses in branch context, proposal selection,
+  traceability, characterization, complexity/resource analysis, small local
+  fixes, eval anti-gaming controls, and tool-output prompt-injection handling;
+  the final v11 run passed all hard gates.
+- GLM-5.2 is close but mixed under the same judge: 46 / 49 hard gates before
+  and after, average quality delta +0.6 versus previous.
+- DeepSeek V4 Flash benefits from current instructions: 25 / 49 to 35 / 49
+  hard gates, average quality delta +20.1. DeepSeek V4 Flash thinking regresses:
+  33 / 49 to 28 / 49 hard gates, average quality delta -10.2.
+- The deterministic phrase matcher now normalizes punctuation word separators
+  such as `tool-output` versus `tool output`, for both required and forbidden
+  phrase checks. It is covered by unit tests and does not accept semantic
+  synonyms.
+
 ## 49-Case Refresh Snapshot
 
 Captured on 2026-07-05 after the Fable-era eval coverage expansion. This

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="650" viewBox="0 0 1120 650" role="img" aria-labelledby="title desc">
+<title id="title">Instruction lift across models</title>
+<desc id="desc">Hard-gate lift from empty bundle to current instructions across tested models.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="1120" height="650" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Instruction lift across models</text>
+<text x="40.0" y="84.0" class="subtitle">49 cases. Hard-gate passes improve for every tested model; quality deltas use latest saved empty-vs-current aggregates.</text>
+<rect x="40.0" y="110.0" width="1040.0" height="430.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="144.0" class="axis">Model</text>
+<text x="260.0" y="144.0" class="axis">Hard-gate passes out of 49</text>
+<text x="794.0" y="144.0" class="axis">Pass lift</text>
+<text x="994.0" y="144.0" class="axis">Quality delta*</text>
+<line x1="260.0" y1="176.0" x2="260.0" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="260.0" y="166.0" class="axis" text-anchor="middle">0</text>
+<line x1="366.1" y1="176.0" x2="366.1" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="366.1" y="166.0" class="axis" text-anchor="middle">10</text>
+<line x1="472.2" y1="176.0" x2="472.2" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="472.2" y="166.0" class="axis" text-anchor="middle">20</text>
+<line x1="578.4" y1="176.0" x2="578.4" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="578.4" y="166.0" class="axis" text-anchor="middle">30</text>
+<line x1="684.5" y1="176.0" x2="684.5" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="684.5" y="166.0" class="axis" text-anchor="middle">40</text>
+<line x1="780.0" y1="176.0" x2="780.0" y2="506.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="780.0" y="166.0" class="axis" text-anchor="middle">49</text>
+<rect x="64.0" y="174.0" width="990.0" height="48.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="208.0" class="label">GPT-5.5</text>
+<rect x="260.0" y="190.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="190.0" width="435.1" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="208.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="208.0" width="520.0" height="13.0" rx="7.0" fill="#2563eb"/>
+<text x="794.0" y="196.0" class="small">empty 41/49</text>
+<text x="794.0" y="216.0" class="value">current 49/49</text>
+<rect x="892.0" y="186.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="205.0" class="value" text-anchor="middle">+8</text>
+<text x="994.0" y="205.0" class="value">+30.8</text>
+<text x="72.0" y="266.0" class="label">GLM-5.2</text>
+<rect x="260.0" y="248.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="248.0" width="180.4" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="266.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="266.0" width="488.2" height="13.0" rx="7.0" fill="#16a34a"/>
+<text x="794.0" y="254.0" class="small">empty 17/49</text>
+<text x="794.0" y="274.0" class="value">current 46/49</text>
+<rect x="892.0" y="244.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="263.0" class="value" text-anchor="middle">+29</text>
+<text x="994.0" y="263.0" class="value">+50.9</text>
+<rect x="64.0" y="290.0" width="990.0" height="48.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="324.0" class="label">Grok Build 0.1</text>
+<rect x="260.0" y="306.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="306.0" width="148.6" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="324.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="324.0" width="435.1" height="13.0" rx="7.0" fill="#7c3aed"/>
+<text x="794.0" y="312.0" class="small">empty 14/49</text>
+<text x="794.0" y="332.0" class="value">current 41/49</text>
+<rect x="892.0" y="302.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="321.0" class="value" text-anchor="middle">+27</text>
+<text x="994.0" y="321.0" class="value">+49.7</text>
+<text x="72.0" y="382.0" class="label">DeepSeek V4 Flash</text>
+<rect x="260.0" y="364.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="364.0" width="95.5" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="382.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="382.0" width="318.4" height="13.0" rx="7.0" fill="#0891b2"/>
+<text x="794.0" y="370.0" class="small">empty 9/49</text>
+<text x="794.0" y="390.0" class="value">current 30/49</text>
+<rect x="892.0" y="360.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="379.0" class="value" text-anchor="middle">+21</text>
+<text x="994.0" y="379.0" class="value">+36.5</text>
+<rect x="64.0" y="406.0" width="990.0" height="48.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="440.0" class="label">Grok 4.3</text>
+<rect x="260.0" y="422.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="422.0" width="84.9" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="440.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="440.0" width="382.0" height="13.0" rx="7.0" fill="#ea580c"/>
+<text x="794.0" y="428.0" class="small">empty 8/49</text>
+<text x="794.0" y="448.0" class="value">current 36/49</text>
+<rect x="892.0" y="418.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="437.0" class="value" text-anchor="middle">+28</text>
+<text x="994.0" y="437.0" class="value">+40.6</text>
+<text x="72.0" y="498.0" class="label">DeepSeek V4 thinking</text>
+<rect x="260.0" y="480.0" width="520.0" height="11.0" rx="6.0" fill="#eef2f7"/>
+<rect x="260.0" y="480.0" width="63.7" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="260.0" y="498.0" width="520.0" height="13.0" rx="7.0" fill="#eef2f7"/>
+<rect x="260.0" y="498.0" width="318.4" height="13.0" rx="7.0" fill="#0f766e"/>
+<text x="794.0" y="486.0" class="small">empty 6/49</text>
+<text x="794.0" y="506.0" class="value">current 30/49</text>
+<rect x="892.0" y="476.0" width="56.0" height="28.0" rx="14.0" fill="#d1fae5"/>
+<text x="920.0" y="495.0" class="value" text-anchor="middle">+24</text>
+<text x="994.0" y="495.0" class="value">+41.4</text>
+<circle cx="78.0" cy="575.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<text x="94.0" y="579.0" class="axis">Empty bundle</text>
+<circle cx="204.0" cy="575.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
+<text x="220.0" y="579.0" class="axis">Current instructions</text>
+<text x="72.0" y="610.0" class="small">*Quality delta is the latest saved empty-vs-current judge aggregate; hard gates use the v4.12 current refresh plus latest available empty baselines.</text>
+<line x1="32.0" y1="602.0" x2="1088.0" y2="602.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="620.0" class="small">Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots.</text>
+<text x="32.0" y="632.0" class="small">Source: v4.12 current summaries, latest empty summaries, and saved empty-vs-current quality aggregates</text>
+<text x="1088.0" y="632.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

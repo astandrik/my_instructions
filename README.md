@@ -15,42 +15,51 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## Current Evidence
 
-Latest broad model-backed snapshot: 49 eval cases, refreshed on 2026-07-05 and
-2026-07-06 under `.eval-results/refresh-2026-07-05-v4.12-49-case-v1/`, with
-`gpt-5.5-medium` as the fixed quality judge. The refresh compares v4.12 current
-instructions against the previous current snapshot, GPT against external
-models on the same current instructions, and current instructions against
-OpenHands and Claude/Fable reference bundles across the tested model set.
+Latest instruction-candidate check: v4.13 has a clean GPT/Codex 49-case
+compare against `HEAD` in `.eval-results/v4.13-final-gpt55-full-49-v11/`:
+98/98 hard gates passed. Rejudged with the same OpenAI/Codex saved-output
+judge in `.eval-results/openai-canonical-judge-2026-07-07-v1/`, current
+winning 30 quality comparisons, baseline winning 6, 13 ties, and average delta
++1.53. This is partial v4.13 evidence: GPT/Codex plus saved GLM-5.2 and
+DeepSeek V4 Flash rows judged by the same OpenAI/Codex judge. Grok v4.13 full
+rows are still pending.
 
-Summary:
+The saved 49-case context is split by scope:
 
-- GPT-5.5 improved from 42/49 to 49/49 hard-gate passes. Quality comparison
-  against the previous current instructions: 23 v4.12 wins, 14 ties, 12
-  previous-current wins, average delta +14.4.
-- Other models improved on hard gates too, but not uniformly on quality:
-  Grok 4.3 28/49 to 36/49, Grok Build 34/49 to 41/49, DeepSeek 29/49 to
-  30/49, DeepSeek thinking 26/49 to 30/49, GLM 40/49 to 46/49. GLM and Grok
-  Build show the clearest caveat: hard-gate lift is real, while the previous
-  current instructions still win many pass/pass quality cases.
-- On our current instructions, GPT-5.5 is still the strongest tested runner.
-  GLM-5.2 is closest: 46/49 hard gates and a narrow quality gap versus GPT
-  (20 GLM wins, 6 ties, 23 GPT wins, average delta -7.0). Grok, Grok Build,
-  and DeepSeek variants trail GPT by much wider quality margins.
-- Current instructions beat OpenHands and Claude/Fable reference bundles in
-  every aggregate model/reference comparison. This does not mean every case is
-  better: recurring reference wins include `noop-already-resolved`,
+- v4.13 current-vs-previous quality, same judge:
+  GPT-5.5 stays 49/49 hard gates and improves on quality
+  (30 current wins, 13 ties, 6 previous wins, average delta +1.53).
+  GLM-5.2 stays 46/49 and is close but mixed
+  (28 current wins, 5 ties, 15 previous wins, 1 inconclusive, average +0.6).
+  DeepSeek V4 Flash improves hard gates from 25/49 to 35/49 and average
+  quality by +20.1, mostly by fixing hard failures. DeepSeek V4 thinking
+  regresses from 33/49 to 28/49 and average quality -10.2.
+- On current instructions, GPT-5.5 remains the strongest runner. GLM-5.2 is
+  the closest external row: 46/49 hard gates and a narrow quality gap versus
+  GPT (21 GLM wins, 5 ties, 23 GPT wins, average delta -7.1). DeepSeek V4
+  Flash narrows its previous gap to GPT (-53.6 to -35.3) but remains far
+  behind; DeepSeek V4 thinking widens its gap (-39.2 to -48.1).
+- Saved Grok context is still v4.12 empty-vs-current, not fresh v4.13
+  current-vs-previous evidence. With the same OpenAI/Codex judge, saved Grok
+  4.3 current beats empty by +59.8 average quality and saved Grok Build 0.1
+  merged current beats empty by +58.5. Treat these as baseline context only.
+- Saved OpenHands and Claude/Fable reference comparisons are still useful
+  contrast. They do not overturn the aggregate current-instruction result, but
+  recurring reference wins remain in `noop-already-resolved`,
   `behavior-preserving-refactor`, `architectural-smell-triage`,
-  `dependency-boundary-respect`, and a few DeepSeek-specific safety/ownership
-  cases.
-- Grok Build reference baselines had xAI `Remote end closed connection without
-  response` transport failures. Targeted reruns cleared most of them; the final
-  merged OpenHands baseline has 2 residual agent failures and the merged
-  Claude/Fable baseline has 4. Treat Grok Build reference numbers as slightly
-  lower-confidence than the other reference rows.
+  `dependency-boundary-respect`, and several DeepSeek-specific ownership or
+  review cases.
 
 Visual snapshot, from overview to detail:
 
+Each SVG footer labels the mixed scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek
+saved outputs, plus labeled v4.12 Grok/reference/no-instruction context.
+
 ![Instruction eval overview](docs/assets/readme/instruction-lift.svg)
+
+![Empty-to-current instruction lift](docs/assets/readme/empty-current-lift.svg)
+
+![External model gap versus GPT](docs/assets/readme/model-gap.svg)
 
 ![Hard-gate passes by model and instruction bundle](docs/assets/readme/model-transfer.svg)
 
@@ -70,22 +79,26 @@ Secondary full matrix:
 
 Read this as:
 
-- The v4.12 changes improved GPT decisively and improved hard-gate transfer to
-  every tested external model.
-- External-model quality is mixed: the new instructions often raise average
-  score by fixing hard failures, but some previous-current answers are still
-  better on pass/pass quality.
+- The v4.13 GPT/Codex change is a real quality improvement even though GPT was
+  already 49/49 on hard gates.
+- GLM-5.2 is stable and close to GPT, but the case-level table still has many
+  GPT wins. DeepSeek V4 Flash benefits from current instructions; DeepSeek V4
+  thinking does not.
+- The model-gap chart answers a different question from instruction lift: it
+  compares each external row against GPT on previous and current instructions.
+- The hard-gate dot plot and empty-to-current lift chart restore the
+  no-instructions comparison from saved v4.12 context; they are not fresh Grok
+  v4.13 evidence.
 - Reference bundles are useful as contrast, not as winners. They often miss
   our specific deterministic workflow markers, but they expose real case-level
   regressions and blind spots.
-- The hard-gate dot plot restores the no-instructions comparison. Empty rows
-  use the latest available empty baseline; reused rows are marked instead of
-  rerunning empty without new eval cases.
 - The pass/pass quality view is the cleanest answer to "quality without hard
   fails"; it excludes cases where either side failed deterministic checks.
-- The case-detail view is numeric and split by question: new-vs-previous,
-  external-vs-GPT, and current-vs-reference. Each nonblank cell is the signed
-  judge-score delta after both hard gates pass.
+- The case-detail view is numeric and split by question: v4.13
+  current-vs-previous, external-vs-GPT on current instructions,
+  external-vs-GPT on previous instructions, and saved current-vs-reference.
+  Each nonblank cell is the signed judge-score delta after both hard gates
+  pass; each block states its formula and color interpretation.
 - The full matrix is secondary because it is dense; use it when you need every
   current-vs-reference pair, not as the first-read summary.
 
@@ -102,6 +115,23 @@ Run the static contract before changing instructions or eval cases:
 ```bash
 python3 -B scripts/run_instruction_evals.py validate
 git diff --check
+```
+
+Check that tracked README SVGs are fresh:
+
+```bash
+python3 -B scripts/build_readme_infographics.py --check
+```
+
+When `.eval-results/` artifacts are available, check that published GPT/Codex
+numbers still match the saved JSON, the docs keep the partial-v4.13 caveats and
+a pointer to the saved artifact root, `summary.json` and `quality.json`
+describe the same case set, README links every required SVG, README SVGs keep
+their scope footer, and the docs do not overclaim v4.13 scope, including common
+phrasing variants such as "all models" and "re-run":
+
+```bash
+python3 -B scripts/check_published_eval_metrics.py
 ```
 
 Regenerate the README SVG snapshot after refreshing `.eval-results/`:

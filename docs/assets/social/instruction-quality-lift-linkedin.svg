@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">Instruction quality lift versus empty baselines</title>
+<desc id="desc">Saved eval metrics comparing current instructions to empty baselines across GPT and external models.</desc>
+<style>
+text{font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill:#0f172a}
+.eyebrow{font-size:24px;font-weight:700;fill:#475569}
+.title{font-size:58px;font-weight:800}
+.subtitle{font-size:26px;font-weight:500;fill:#475569}
+.label{font-size:24px;font-weight:760}
+.small{font-size:18px;font-weight:560;fill:#64748b}
+.axis{font-size:17px;font-weight:650;fill:#64748b}
+.metric{font-size:20px;font-weight:760;fill:#334155}
+.value{font-size:26px;font-weight:820}
+.big{font-size:44px;font-weight:850}
+.chip{font-size:18px;font-weight:800}
+</style>
+<rect x="0.0" y="0.0" width="1600.0" height="900.0" rx="0.0" fill="#f8fafc"/>
+<rect x="36.0" y="36.0" width="1528.0" height="828.0" rx="28.0" fill="#ffffff" stroke="#dbe3ee"/>
+<text x="78.0" y="98.0" class="eyebrow" text-anchor="start">49-case instruction eval snapshot</text>
+<text x="78.0" y="158.0" class="title" text-anchor="start">Instructions improve quality vs empty baselines</text>
+<text x="78.0" y="202.0" class="subtitle" text-anchor="start">Current instruction bundle compared with no instruction bundle across six tested model rows.</text>
+<rect x="78.0" y="250.0" width="320.0" height="126.0" rx="22.0" fill="#dcfce7"/>
+<text x="106.0" y="291.0" class="label" text-anchor="start">Avg quality score</text>
+<text x="106.0" y="339.0" class="big" fill="#166534">66.8 vs 25.2</text>
+<text x="106.0" y="362.0" class="small" text-anchor="start">current vs empty, /100</text>
+<rect x="434.0" y="250.0" width="320.0" height="126.0" rx="22.0" fill="#dbeafe"/>
+<text x="462.0" y="291.0" class="label" text-anchor="start">Head-to-head wins</text>
+<text x="462.0" y="339.0" class="big" fill="#1d4ed8">188 vs 12</text>
+<text x="462.0" y="362.0" class="small" text-anchor="start">current better vs empty better</text>
+<rect x="790.0" y="250.0" width="320.0" height="126.0" rx="22.0" fill="#fef3c7"/>
+<text x="818.0" y="291.0" class="label" text-anchor="start">Hard-gate lift</text>
+<text x="818.0" y="339.0" class="big" fill="#92400e">+118</text>
+<text x="818.0" y="362.0" class="small" text-anchor="start">passed cases across models</text>
+<rect x="78.0" y="408.0" width="1444.0" height="410.0" rx="22.0" fill="#ffffff" stroke="#dbe3ee"/>
+<text x="108.0" y="442.0" class="label" text-anchor="start">Average judge score by model</text>
+<rect x="948.0" y="425.0" width="16.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="972.0" y="439.0" class="axis" text-anchor="start">empty bundle</text>
+<rect x="1112.0" y="425.0" width="16.0" height="16.0" rx="8.0" fill="#2563eb"/>
+<text x="1136.0" y="439.0" class="axis" text-anchor="start">current instructions</text>
+<line x1="420.0" y1="470.0" x2="420.0" y2="784.0" stroke="#e2e8f0" stroke-width="1.0"/>
+<text x="420.0" y="460.0" class="axis" text-anchor="middle">0</text>
+<line x1="556.2" y1="470.0" x2="556.2" y2="784.0" stroke="#e2e8f0" stroke-width="1.0"/>
+<text x="556.2" y="460.0" class="axis" text-anchor="middle">25</text>
+<line x1="692.5" y1="470.0" x2="692.5" y2="784.0" stroke="#e2e8f0" stroke-width="1.0"/>
+<text x="692.5" y="460.0" class="axis" text-anchor="middle">50</text>
+<line x1="828.8" y1="470.0" x2="828.8" y2="784.0" stroke="#e2e8f0" stroke-width="1.0"/>
+<text x="828.8" y="460.0" class="axis" text-anchor="middle">75</text>
+<line x1="965.0" y1="470.0" x2="965.0" y2="784.0" stroke="#e2e8f0" stroke-width="1.0"/>
+<text x="965.0" y="460.0" class="axis" text-anchor="middle">100</text>
+<text x="108.0" y="500.0" class="label" text-anchor="start">GPT-5.5</text>
+<rect x="420.0" y="472.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="472.0" width="284.5" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="497.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="497.0" width="452.3" height="13.0" rx="6.5" fill="#2563eb"/>
+<text x="987.0" y="485.0" class="metric" text-anchor="start">52.2</text>
+<text x="987.0" y="510.0" class="metric" text-anchor="start">83.0</text>
+<text x="1059.0" y="485.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="511.0" class="metric" text-anchor="start">41 vs 1</text>
+<text x="1155.0" y="485.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="511.0" class="metric" text-anchor="start">28 -&gt; 42</text>
+<rect x="1315.0" y="470.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="495.0" class="value" text-anchor="middle">+30.8</text>
+<rect x="96.0" y="524.0" width="1408.0" height="60.0" rx="12.0" fill="#f8fafc"/>
+<text x="108.0" y="556.0" class="label" text-anchor="start">GLM-5.2</text>
+<rect x="420.0" y="528.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="528.0" width="164.6" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="553.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="553.0" width="442.0" height="13.0" rx="6.5" fill="#16a34a"/>
+<text x="987.0" y="541.0" class="metric" text-anchor="start">30.2</text>
+<text x="987.0" y="566.0" class="metric" text-anchor="start">81.1</text>
+<text x="1059.0" y="541.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="567.0" class="metric" text-anchor="start">38 vs 1</text>
+<text x="1155.0" y="541.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="567.0" class="metric" text-anchor="start">17 -&gt; 41</text>
+<rect x="1315.0" y="526.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="551.0" class="value" text-anchor="middle">+50.9</text>
+<text x="108.0" y="612.0" class="label" text-anchor="start">Grok Build 0.1</text>
+<rect x="420.0" y="584.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="584.0" width="119.4" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="609.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="609.0" width="390.2" height="13.0" rx="6.5" fill="#7c3aed"/>
+<text x="987.0" y="597.0" class="metric" text-anchor="start">21.9</text>
+<text x="987.0" y="622.0" class="metric" text-anchor="start">71.6</text>
+<text x="1059.0" y="597.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="623.0" class="metric" text-anchor="start">34 vs 4</text>
+<text x="1155.0" y="597.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="623.0" class="metric" text-anchor="start">13 -&gt; 36</text>
+<rect x="1315.0" y="582.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="607.0" class="value" text-anchor="middle">+49.7</text>
+<rect x="96.0" y="636.0" width="1408.0" height="60.0" rx="12.0" fill="#f8fafc"/>
+<text x="108.0" y="668.0" class="label" text-anchor="start">Grok 4.3</text>
+<rect x="420.0" y="640.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="640.0" width="83.4" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="665.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="665.0" width="304.7" height="13.0" rx="6.5" fill="#ea580c"/>
+<text x="987.0" y="653.0" class="metric" text-anchor="start">15.3</text>
+<text x="987.0" y="678.0" class="metric" text-anchor="start">55.9</text>
+<text x="1059.0" y="653.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="679.0" class="metric" text-anchor="start">28 vs 1</text>
+<text x="1155.0" y="653.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="679.0" class="metric" text-anchor="start">9 -&gt; 28</text>
+<rect x="1315.0" y="638.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="663.0" class="value" text-anchor="middle">+40.6</text>
+<text x="108.0" y="724.0" class="label" text-anchor="start">DeepSeek V4 Flash</text>
+<rect x="420.0" y="696.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="696.0" width="111.2" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="721.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="721.0" width="310.1" height="13.0" rx="6.5" fill="#0891b2"/>
+<text x="987.0" y="709.0" class="metric" text-anchor="start">20.4</text>
+<text x="987.0" y="734.0" class="metric" text-anchor="start">56.9</text>
+<text x="1059.0" y="709.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="735.0" class="metric" text-anchor="start">23 vs 4</text>
+<text x="1155.0" y="709.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="735.0" class="metric" text-anchor="start">11 -&gt; 29</text>
+<rect x="1315.0" y="694.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="719.0" class="value" text-anchor="middle">+36.5</text>
+<rect x="96.0" y="748.0" width="1408.0" height="60.0" rx="12.0" fill="#f8fafc"/>
+<text x="108.0" y="780.0" class="label" text-anchor="start">DeepSeek V4 thinking</text>
+<rect x="420.0" y="752.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="752.0" width="60.0" height="13.0" rx="6.5" fill="#94a3b8"/>
+<rect x="420.0" y="777.0" width="545.0" height="13.0" rx="6.5" fill="#eef2f7"/>
+<rect x="420.0" y="777.0" width="285.6" height="13.0" rx="6.5" fill="#0f766e"/>
+<text x="987.0" y="765.0" class="metric" text-anchor="start">11.0</text>
+<text x="987.0" y="790.0" class="metric" text-anchor="start">52.4</text>
+<text x="1059.0" y="765.0" class="axis" text-anchor="start">wins</text>
+<text x="1059.0" y="791.0" class="metric" text-anchor="start">24 vs 1</text>
+<text x="1155.0" y="765.0" class="axis" text-anchor="start">hard gates</text>
+<text x="1155.0" y="791.0" class="metric" text-anchor="start">6 -&gt; 26</text>
+<rect x="1315.0" y="750.0" width="104.0" height="36.0" rx="18.0" fill="#ecfdf5"/>
+<text x="1367.0" y="775.0" class="value" text-anchor="middle">+41.4</text>
+<text x="78.0" y="850.0" class="axis" text-anchor="start">Source: saved empty-vs-current quality aggregates, 49 cases. Wins are head-to-head judge choices; ties 9, inconclusive 85.</text>
+</svg>

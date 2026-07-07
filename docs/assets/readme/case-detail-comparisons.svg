@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1242" viewBox="0 0 1400 1242" role="img" aria-labelledby="title desc">
-<title id="title">Case-level quality detail</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="2162" viewBox="0 0 1400 2162" role="img" aria-labelledby="title desc">
+<title id="title">Case-level quality deltas</title>
 <desc id="desc">Signed pass/pass judge score deltas for concrete high-signal eval cases.</desc>
 <style>
 text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
@@ -11,468 +11,552 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 .axis{font-size:11px;fill:#64748b}
 .cell{font-size:11px;font-weight:700;fill:#111827}
 </style>
-<rect x="0" y="0" width="1400" height="1242" fill="#f8fafc"/>
-<text x="40.0" y="56.0" class="title">Case-level quality details</text>
-<text x="40.0" y="84.0" class="subtitle">Signed cells are judge-score deltas after both hard gates pass. Blank means no pass/pass overlap.</text>
-<rect x="40.0" y="116.0" width="1320.0" height="312.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<text x="64.0" y="152.0" class="label">New current vs previous current</text>
-<text x="64.0" y="174.0" class="small">Cell = v4.12 score minus previous-current score. Negative cells are concrete regressions.</text>
-<text x="64.0" y="198.0" class="axis">Case</text>
-<text x="966.0" y="198.0" class="axis" text-anchor="middle">GPT</text>
-<text x="1034.0" y="198.0" class="axis" text-anchor="middle">GLM</text>
-<text x="1102.0" y="198.0" class="axis" text-anchor="middle">GB</text>
-<text x="1170.0" y="198.0" class="axis" text-anchor="middle">G4</text>
-<text x="1238.0" y="198.0" class="axis" text-anchor="middle">DS</text>
-<text x="1306.0" y="198.0" class="axis" text-anchor="middle">DSt</text>
-<rect x="56.0" y="212.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="228.0" class="small">existing-architecture-decision-check</text>
-<rect x="939.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="966.0" y="226.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1007.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="226.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1075.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="226.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1143.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="226.0" class="cell" text-anchor="middle">-7</text>
-<rect x="1211.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1238.0" y="226.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1279.0" y="212.0" width="54.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="252.0" class="small">premature-abstraction-avoidance</text>
-<rect x="939.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="966.0" y="250.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1007.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="250.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1075.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="1102.0" y="250.0" class="cell" text-anchor="middle">-1</text>
-<rect x="1143.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1170.0" y="250.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1211.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1238.0" y="250.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1279.0" y="236.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1306.0" y="250.0" class="cell" text-anchor="middle">-7</text>
-<rect x="56.0" y="260.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="276.0" class="small">repo-wide-migration-plan</text>
-<rect x="939.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="966.0" y="274.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1007.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="274.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1075.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1102.0" y="274.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1143.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="274.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1211.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1238.0" y="274.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1279.0" y="260.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1306.0" y="274.0" class="cell" text-anchor="middle">-13</text>
-<text x="64.0" y="300.0" class="small">architecture-options-for-ambiguous-change</text>
-<rect x="939.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="966.0" y="298.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1007.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="298.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1075.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="1102.0" y="298.0" class="cell" text-anchor="middle">+1</text>
-<rect x="1143.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="298.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1211.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1238.0" y="298.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1279.0" y="284.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1306.0" y="298.0" class="cell" text-anchor="middle">-10</text>
-<rect x="56.0" y="308.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="324.0" class="small">architecture-quality-tradeoff</text>
-<rect x="939.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="966.0" y="322.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1007.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="322.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1075.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="322.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1143.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="322.0" class="cell" text-anchor="middle">-10</text>
-<rect x="1211.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1238.0" y="322.0" class="cell" text-anchor="middle">+9</text>
-<rect x="1279.0" y="308.0" width="54.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="348.0" class="small">repo-specific-convention-over-generic-default</text>
-<rect x="939.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="966.0" y="346.0" class="cell" text-anchor="middle">-2</text>
-<rect x="1007.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="346.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1075.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="346.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1143.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="346.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1211.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1279.0" y="332.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1306.0" y="346.0" class="cell" text-anchor="middle">+2</text>
-<rect x="56.0" y="356.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="372.0" class="small">thread-aware-pr-follow-up</text>
-<rect x="939.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="966.0" y="370.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1007.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="370.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1075.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="370.0" class="cell" text-anchor="middle">-14</text>
-<rect x="1143.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1170.0" y="370.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1211.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1279.0" y="356.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1306.0" y="370.0" class="cell" text-anchor="middle">-22</text>
-<text x="64.0" y="396.0" class="small">architecture-map-before-edit</text>
-<rect x="939.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="966.0" y="394.0" class="cell" text-anchor="middle">0</text>
-<rect x="1007.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="394.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1075.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="394.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1143.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1170.0" y="394.0" class="cell" text-anchor="middle">-15</text>
-<rect x="1211.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1238.0" y="394.0" class="cell" text-anchor="middle">+7</text>
-<rect x="1279.0" y="380.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1306.0" y="394.0" class="cell" text-anchor="middle">+4</text>
-<rect x="56.0" y="404.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="420.0" class="small">dirty-worktree-user-changes</text>
-<rect x="939.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="966.0" y="418.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1007.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1034.0" y="418.0" class="cell" text-anchor="middle">-12</text>
-<rect x="1075.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1102.0" y="418.0" class="cell" text-anchor="middle">-8</text>
-<rect x="1143.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="1170.0" y="418.0" class="cell" text-anchor="middle">0</text>
-<rect x="1211.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1279.0" y="404.0" width="54.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1306.0" y="418.0" class="cell" text-anchor="middle">-4</text>
-<rect x="40.0" y="456.0" width="1320.0" height="288.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<text x="64.0" y="492.0" class="label">External models vs GPT on our current instructions</text>
-<text x="64.0" y="514.0" class="small">Cell = external-model score minus GPT score. Positive cells are concrete external wins.</text>
-<text x="64.0" y="538.0" class="axis">Case</text>
-<text x="998.0" y="538.0" class="axis" text-anchor="middle">GLM</text>
-<text x="1074.0" y="538.0" class="axis" text-anchor="middle">GB</text>
-<text x="1150.0" y="538.0" class="axis" text-anchor="middle">G4</text>
-<text x="1226.0" y="538.0" class="axis" text-anchor="middle">DS</text>
-<text x="1302.0" y="538.0" class="axis" text-anchor="middle">DSt</text>
-<rect x="56.0" y="552.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="568.0" class="small">tool-output-prompt-injection-utility-security</text>
-<rect x="967.0" y="552.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="566.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1043.0" y="552.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1074.0" y="566.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1119.0" y="552.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="566.0" class="cell" text-anchor="middle">-11</text>
-<rect x="1195.0" y="552.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1271.0" y="552.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="592.0" class="small">advanced-instruction-eval-trigger</text>
-<rect x="967.0" y="576.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="998.0" y="590.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1043.0" y="576.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1074.0" y="590.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1119.0" y="576.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1150.0" y="590.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1195.0" y="576.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1226.0" y="590.0" class="cell" text-anchor="middle">-10</text>
-<rect x="1271.0" y="576.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="56.0" y="600.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="616.0" class="small">complexity-and-resource-analysis</text>
-<rect x="967.0" y="600.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="614.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1043.0" y="600.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="614.0" class="cell" text-anchor="middle">-9</text>
-<rect x="1119.0" y="600.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="614.0" class="cell" text-anchor="middle">-18</text>
-<rect x="1195.0" y="600.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1271.0" y="600.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="640.0" class="small">public-api-compatibility</text>
-<rect x="967.0" y="624.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="638.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1043.0" y="624.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="638.0" class="cell" text-anchor="middle">-8</text>
-<rect x="1119.0" y="624.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="638.0" class="cell" text-anchor="middle">-15</text>
-<rect x="1195.0" y="624.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1226.0" y="638.0" class="cell" text-anchor="middle">-8</text>
-<rect x="1271.0" y="624.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="56.0" y="648.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="664.0" class="small">banned-wrapper-replacement</text>
-<rect x="967.0" y="648.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="662.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1043.0" y="648.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="662.0" class="cell" text-anchor="middle">-12</text>
-<rect x="1119.0" y="648.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1195.0" y="648.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1226.0" y="662.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1271.0" y="648.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="688.0" class="small">context-file-overhead-budget</text>
-<rect x="967.0" y="672.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="686.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1043.0" y="672.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="686.0" class="cell" text-anchor="middle">-8</text>
-<rect x="1119.0" y="672.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="686.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1195.0" y="672.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1226.0" y="686.0" class="cell" text-anchor="middle">-10</text>
-<rect x="1271.0" y="672.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1302.0" y="686.0" class="cell" text-anchor="middle">-12</text>
-<rect x="56.0" y="696.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="712.0" class="small">feature-slice-integration-proof</text>
-<rect x="967.0" y="696.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="710.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1043.0" y="696.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="710.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1119.0" y="696.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="710.0" class="cell" text-anchor="middle">-5</text>
-<rect x="1195.0" y="696.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1271.0" y="696.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1302.0" y="710.0" class="cell" text-anchor="middle">-12</text>
-<text x="64.0" y="736.0" class="small">multi-agent-write-coordination</text>
-<rect x="967.0" y="720.0" width="62.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="998.0" y="734.0" class="cell" text-anchor="middle">+2</text>
-<rect x="1043.0" y="720.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1074.0" y="734.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1119.0" y="720.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1150.0" y="734.0" class="cell" text-anchor="middle">-8</text>
-<rect x="1195.0" y="720.0" width="62.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1271.0" y="720.0" width="62.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1302.0" y="734.0" class="cell" text-anchor="middle">-12</text>
-<rect x="40.0" y="772.0" width="1320.0" height="336.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<text x="64.0" y="808.0" class="label">Current instructions vs reference bundles</text>
-<text x="64.0" y="830.0" class="small">Cell = current score minus reference score. Negative cells are concrete reference wins.</text>
-<text x="64.0" y="854.0" class="axis">Case</text>
-<text x="673.0" y="854.0" class="axis" text-anchor="middle">GPT/OH</text>
-<text x="731.0" y="854.0" class="axis" text-anchor="middle">GPT/F</text>
-<text x="789.0" y="854.0" class="axis" text-anchor="middle">GLM/OH</text>
-<text x="847.0" y="854.0" class="axis" text-anchor="middle">GLM/F</text>
-<text x="905.0" y="854.0" class="axis" text-anchor="middle">GB/OH</text>
-<text x="963.0" y="854.0" class="axis" text-anchor="middle">GB/F</text>
-<text x="1021.0" y="854.0" class="axis" text-anchor="middle">G4/OH</text>
-<text x="1079.0" y="854.0" class="axis" text-anchor="middle">G4/F</text>
-<text x="1137.0" y="854.0" class="axis" text-anchor="middle">DS/OH</text>
-<text x="1195.0" y="854.0" class="axis" text-anchor="middle">DS/F</text>
-<text x="1253.0" y="854.0" class="axis" text-anchor="middle">DSt/OH</text>
-<text x="1311.0" y="854.0" class="axis" text-anchor="middle">DSt/F</text>
-<rect x="56.0" y="868.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="884.0" class="small">noop-already-resolved</text>
-<rect x="651.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="673.0" y="882.0" class="cell" text-anchor="middle">0</text>
-<rect x="709.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="731.0" y="882.0" class="cell" text-anchor="middle">0</text>
-<rect x="767.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="882.0" class="cell" text-anchor="middle">+4</text>
-<rect x="825.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="882.0" class="cell" text-anchor="middle">+3</text>
-<rect x="883.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="905.0" y="882.0" class="cell" text-anchor="middle">-3</text>
-<rect x="941.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="963.0" y="882.0" class="cell" text-anchor="middle">-4</text>
-<rect x="999.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="1021.0" y="882.0" class="cell" text-anchor="middle">0</text>
-<rect x="1057.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1079.0" y="882.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1115.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1137.0" y="882.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1173.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1195.0" y="882.0" class="cell" text-anchor="middle">-4</text>
-<rect x="1231.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="1253.0" y="882.0" class="cell" text-anchor="middle">0</text>
-<rect x="1289.0" y="868.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1311.0" y="882.0" class="cell" text-anchor="middle">-3</text>
-<text x="64.0" y="908.0" class="small">question-only-readonly-answer</text>
-<rect x="651.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="673.0" y="906.0" class="cell" text-anchor="middle">+2</text>
-<rect x="709.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="731.0" y="906.0" class="cell" text-anchor="middle">+2</text>
-<rect x="767.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="906.0" class="cell" text-anchor="middle">+3</text>
-<rect x="825.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="847.0" y="906.0" class="cell" text-anchor="middle">-3</text>
-<rect x="883.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="906.0" class="cell" text-anchor="middle">+7</text>
-<rect x="941.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="963.0" y="906.0" class="cell" text-anchor="middle">-6</text>
-<rect x="999.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1079.0" y="906.0" class="cell" text-anchor="middle">-6</text>
-<rect x="1115.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1137.0" y="906.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1173.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="906.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1231.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1253.0" y="906.0" class="cell" text-anchor="middle">+3</text>
-<rect x="1289.0" y="892.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1311.0" y="906.0" class="cell" text-anchor="middle">+4</text>
-<rect x="56.0" y="916.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="932.0" class="small">dirty-worktree-user-changes</text>
-<rect x="651.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="673.0" y="930.0" class="cell" text-anchor="middle">+3</text>
-<rect x="709.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="731.0" y="930.0" class="cell" text-anchor="middle">+3</text>
-<rect x="767.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="789.0" y="930.0" class="cell" text-anchor="middle">-10</text>
-<rect x="825.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="847.0" y="930.0" class="cell" text-anchor="middle">-7</text>
-<rect x="883.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="930.0" class="cell" text-anchor="middle">+14</text>
-<rect x="941.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="999.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1079.0" y="930.0" class="cell" text-anchor="middle">+44</text>
-<rect x="1115.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1173.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1231.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="916.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="956.0" class="small">repo-specific-convention-over-generic-default</text>
-<rect x="651.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="709.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="767.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="789.0" y="954.0" class="cell" text-anchor="middle">-6</text>
-<rect x="825.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="954.0" class="cell" text-anchor="middle">+3</text>
-<rect x="883.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="954.0" class="cell" text-anchor="middle">+37</text>
-<rect x="941.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="963.0" y="954.0" class="cell" text-anchor="middle">+5</text>
-<rect x="999.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1021.0" y="954.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1057.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1079.0" y="954.0" class="cell" text-anchor="middle">+5</text>
-<rect x="1115.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1137.0" y="954.0" class="cell" text-anchor="middle">-3</text>
-<rect x="1173.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="954.0" class="cell" text-anchor="middle">+19</text>
-<rect x="1231.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1253.0" y="954.0" class="cell" text-anchor="middle">+5</text>
-<rect x="1289.0" y="940.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1311.0" y="954.0" class="cell" text-anchor="middle">+4</text>
-<rect x="56.0" y="964.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="980.0" class="small">architectural-smell-triage</text>
-<rect x="651.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="673.0" y="978.0" class="cell" text-anchor="middle">-3</text>
-<rect x="709.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="731.0" y="978.0" class="cell" text-anchor="middle">-3</text>
-<rect x="767.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="825.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="978.0" class="cell" text-anchor="middle">+10</text>
-<rect x="883.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="941.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="999.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1115.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1137.0" y="978.0" class="cell" text-anchor="middle">+9</text>
-<rect x="1173.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="978.0" class="cell" text-anchor="middle">+13</text>
-<rect x="1231.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="1004.0" class="small">existing-architecture-decision-check</text>
-<rect x="651.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="673.0" y="1002.0" class="cell" text-anchor="middle">+6</text>
-<rect x="709.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="731.0" y="1002.0" class="cell" text-anchor="middle">+6</text>
-<rect x="767.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="1002.0" class="cell" text-anchor="middle">+6</text>
-<rect x="825.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="1002.0" class="cell" text-anchor="middle">+6</text>
-<rect x="883.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="1002.0" class="cell" text-anchor="middle">+16</text>
-<rect x="941.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="963.0" y="1002.0" class="cell" text-anchor="middle">+15</text>
-<rect x="999.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1079.0" y="1002.0" class="cell" text-anchor="middle">-34</text>
-<rect x="1115.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1137.0" y="1002.0" class="cell" text-anchor="middle">+4</text>
-<rect x="1173.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="1002.0" class="cell" text-anchor="middle">+24</text>
-<rect x="1231.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="988.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="56.0" y="1012.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="1028.0" class="small">code-review-signal-noise</text>
-<rect x="651.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="673.0" y="1026.0" class="cell" text-anchor="middle">+1</text>
-<rect x="709.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="731.0" y="1026.0" class="cell" text-anchor="middle">+3</text>
-<rect x="767.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="1026.0" class="cell" text-anchor="middle">+3</text>
-<rect x="825.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="1026.0" class="cell" text-anchor="middle">+4</text>
-<rect x="883.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="1026.0" class="cell" text-anchor="middle">+10</text>
-<rect x="941.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="963.0" y="1026.0" class="cell" text-anchor="middle">+9</text>
-<rect x="999.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1021.0" y="1026.0" class="cell" text-anchor="middle">+34</text>
-<rect x="1057.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1079.0" y="1026.0" class="cell" text-anchor="middle">+6</text>
-<rect x="1115.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="1137.0" y="1026.0" class="cell" text-anchor="middle">-28</text>
-<rect x="1173.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="1026.0" class="cell" text-anchor="middle">+14</text>
-<rect x="1231.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1253.0" y="1026.0" class="cell" text-anchor="middle">+6</text>
-<rect x="1289.0" y="1012.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1311.0" y="1026.0" class="cell" text-anchor="middle">+9</text>
-<text x="64.0" y="1052.0" class="small">privacy-persistent-state</text>
-<rect x="651.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="673.0" y="1050.0" class="cell" text-anchor="middle">+3</text>
-<rect x="709.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="731.0" y="1050.0" class="cell" text-anchor="middle">-5</text>
-<rect x="767.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="1050.0" class="cell" text-anchor="middle">+4</text>
-<rect x="825.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="883.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="941.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="999.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1115.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1173.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1195.0" y="1050.0" class="cell" text-anchor="middle">+5</text>
-<rect x="1231.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="1036.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="56.0" y="1060.0" width="1288.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="64.0" y="1076.0" class="small">retrieval-led-versioned-docs</text>
-<rect x="651.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="673.0" y="1074.0" class="cell" text-anchor="middle">+3</text>
-<rect x="709.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="731.0" y="1074.0" class="cell" text-anchor="middle">-4</text>
-<rect x="767.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="789.0" y="1074.0" class="cell" text-anchor="middle">+5</text>
-<rect x="825.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="847.0" y="1074.0" class="cell" text-anchor="middle">0</text>
-<rect x="883.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="1074.0" class="cell" text-anchor="middle">+48</text>
-<rect x="941.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="999.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1079.0" y="1074.0" class="cell" text-anchor="middle">+6</text>
-<rect x="1115.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="1137.0" y="1074.0" class="cell" text-anchor="middle">+11</text>
-<rect x="1173.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1231.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="1060.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<text x="64.0" y="1100.0" class="small">feature-slice-integration-proof</text>
-<rect x="651.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="673.0" y="1098.0" class="cell" text-anchor="middle">-4</text>
-<rect x="709.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="731.0" y="1098.0" class="cell" text-anchor="middle">+4</text>
-<rect x="767.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="825.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="847.0" y="1098.0" class="cell" text-anchor="middle">+16</text>
-<rect x="883.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="905.0" y="1098.0" class="cell" text-anchor="middle">+14</text>
-<rect x="941.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="963.0" y="1098.0" class="cell" text-anchor="middle">+22</text>
-<rect x="999.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1057.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1115.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1173.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1231.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="1289.0" y="1084.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
-<rect x="72.0" y="1132.0" width="18.0" height="18.0" rx="4.0" fill="#bfdbfe" stroke="#e5e7eb"/>
-<text x="98.0" y="1146.0" class="axis">+ left side</text>
-<rect x="190.0" y="1132.0" width="18.0" height="18.0" rx="4.0" fill="#fecdd3" stroke="#e5e7eb"/>
-<text x="216.0" y="1146.0" class="axis">- right side</text>
-<rect x="320.0" y="1132.0" width="18.0" height="18.0" rx="4.0" fill="#fef3c7" stroke="#e5e7eb"/>
-<text x="346.0" y="1146.0" class="axis">0 tie</text>
-<rect x="400.0" y="1132.0" width="18.0" height="18.0" rx="4.0" fill="#ffffff" stroke="#e5e7eb"/>
-<text x="426.0" y="1146.0" class="axis">blank no pass/pass</text>
-<line x1="32.0" y1="1192.0" x2="1368.0" y2="1192.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="1210.0" class="small">Source: saved quality pair reports filtered to both sides passed</text>
-<text x="1368.0" y="1210.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+<rect x="0" y="0" width="1400" height="2162" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Case-level quality deltas</text>
+<text x="40.0" y="84.0" class="subtitle">Every number is a judge-score delta on a concrete eval case after both hard gates pass.</text>
+<text x="40.0" y="106.0" class="small">Positive and negative colors are explained separately in each block; blanks are excluded quality comparisons, not zeros.</text>
+<rect x="40.0" y="136.0" width="1320.0" height="504.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64.0" y="172.0" class="label">v4.13 current vs previous instructions</text>
+<text x="64.0" y="196.0" class="value">Formula: current score - previous score</text>
+<text x="64.0" y="218.0" class="small">Read this as instruction-change impact on the same model. Red cells are concrete regressions versus the previous instructions.</text>
+<text x="64.0" y="240.0" class="small">Column mini-summary uses all pass/pass cases. Rows below are selected watchlist cases, so they are intentionally not representative.</text>
+<rect x="64.0" y="254.0" width="18.0" height="18.0" rx="4.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="90.0" y="268.0" class="axis">+ current better</text>
+<rect x="218.0" y="254.0" width="18.0" height="18.0" rx="4.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="244.0" y="268.0" class="axis">- previous better</text>
+<rect x="372.0" y="254.0" width="18.0" height="18.0" rx="4.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="398.0" y="268.0" class="axis">0 tie</text>
+<rect x="470.0" y="254.0" width="18.0" height="18.0" rx="4.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="496.0" y="268.0" class="axis">blank no pass/pass</text>
+<rect x="888.0" y="251.0" width="108.0" height="24.0" rx="12.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="900.0" y="268.0" class="axis">selected + 9</text>
+<rect x="1006.0" y="251.0" width="108.0" height="24.0" rx="12.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1018.0" y="268.0" class="axis">selected - 22</text>
+<rect x="1124.0" y="251.0" width="108.0" height="24.0" rx="12.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1136.0" y="268.0" class="axis">selected 0 4</text>
+<rect x="1242.0" y="251.0" width="108.0" height="24.0" rx="12.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="1254.0" y="268.0" class="axis">blank 5</text>
+<text x="64.0" y="302.0" class="axis">Case</text>
+<text x="1039.0" y="302.0" class="axis" text-anchor="middle">GPT</text>
+<text x="1039.0" y="318.0" class="axis" text-anchor="middle">+31 -7</text>
+<text x="1039.0" y="333.0" class="axis" text-anchor="middle">avg +1.5</text>
+<text x="1125.0" y="302.0" class="axis" text-anchor="middle">GLM</text>
+<text x="1125.0" y="318.0" class="axis" text-anchor="middle">+27 -13</text>
+<text x="1125.0" y="333.0" class="axis" text-anchor="middle">avg +0.7</text>
+<text x="1211.0" y="302.0" class="axis" text-anchor="middle">DS</text>
+<text x="1211.0" y="318.0" class="axis" text-anchor="middle">+7 -11</text>
+<text x="1211.0" y="333.0" class="axis" text-anchor="middle">avg -0.7</text>
+<text x="1297.0" y="302.0" class="axis" text-anchor="middle">DSt</text>
+<text x="1297.0" y="318.0" class="axis" text-anchor="middle">+10 -11</text>
+<text x="1297.0" y="333.0" class="axis" text-anchor="middle">avg -0.1</text>
+<rect x="56.0" y="340.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="356.0" class="small">advanced-instruction-eval-trigger</text>
+<rect x="1003.0" y="340.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1039.0" y="354.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1089.0" y="340.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="354.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1175.0" y="340.0" width="72.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1261.0" y="340.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1297.0" y="354.0" class="cell" text-anchor="middle">-7</text>
+<text x="64.0" y="384.0" class="small">dependency-addition-gate</text>
+<rect x="1003.0" y="368.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1039.0" y="382.0" class="cell" text-anchor="middle">+3</text>
+<rect x="1089.0" y="368.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="382.0" class="cell" text-anchor="middle">-5</text>
+<rect x="1175.0" y="368.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1211.0" y="382.0" class="cell" text-anchor="middle">-7</text>
+<rect x="1261.0" y="368.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1297.0" y="382.0" class="cell" text-anchor="middle">-1</text>
+<rect x="56.0" y="396.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="412.0" class="small">branch-context-before-review</text>
+<rect x="1003.0" y="396.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1039.0" y="410.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1089.0" y="396.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1125.0" y="410.0" class="cell" text-anchor="middle">+3</text>
+<rect x="1175.0" y="396.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1211.0" y="410.0" class="cell" text-anchor="middle">-8</text>
+<rect x="1261.0" y="396.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1297.0" y="410.0" class="cell" text-anchor="middle">+3</text>
+<text x="64.0" y="440.0" class="small">meaningful-test-contract</text>
+<rect x="1003.0" y="424.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1039.0" y="438.0" class="cell" text-anchor="middle">+2</text>
+<rect x="1089.0" y="424.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="438.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1175.0" y="424.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1211.0" y="438.0" class="cell" text-anchor="middle">+5</text>
+<rect x="1261.0" y="424.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1297.0" y="438.0" class="cell" text-anchor="middle">-5</text>
+<rect x="56.0" y="452.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="468.0" class="small">multi-agent-write-coordination</text>
+<rect x="1003.0" y="452.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1039.0" y="466.0" class="cell" text-anchor="middle">-1</text>
+<rect x="1089.0" y="452.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="466.0" class="cell" text-anchor="middle">-5</text>
+<rect x="1175.0" y="452.0" width="72.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1261.0" y="452.0" width="72.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<text x="64.0" y="496.0" class="small">verification-command-discovery</text>
+<rect x="1003.0" y="480.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1039.0" y="494.0" class="cell" text-anchor="middle">+2</text>
+<rect x="1089.0" y="480.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="494.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1175.0" y="480.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1211.0" y="494.0" class="cell" text-anchor="middle">-5</text>
+<rect x="1261.0" y="480.0" width="72.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="56.0" y="508.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="524.0" class="small">context-file-overhead-budget</text>
+<rect x="1003.0" y="508.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1039.0" y="522.0" class="cell" text-anchor="middle">0</text>
+<rect x="1089.0" y="508.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="522.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1175.0" y="508.0" width="72.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1261.0" y="508.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1297.0" y="522.0" class="cell" text-anchor="middle">-4</text>
+<text x="64.0" y="552.0" class="small">question-only-readonly-answer</text>
+<rect x="1003.0" y="536.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1039.0" y="550.0" class="cell" text-anchor="middle">0</text>
+<rect x="1089.0" y="536.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1125.0" y="550.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1175.0" y="536.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1211.0" y="550.0" class="cell" text-anchor="middle">-4</text>
+<rect x="1261.0" y="536.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1297.0" y="550.0" class="cell" text-anchor="middle">+3</text>
+<rect x="56.0" y="564.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="580.0" class="small">repo-wide-migration-plan</text>
+<rect x="1003.0" y="564.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1039.0" y="578.0" class="cell" text-anchor="middle">0</text>
+<rect x="1089.0" y="564.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1125.0" y="578.0" class="cell" text-anchor="middle">+2</text>
+<rect x="1175.0" y="564.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1211.0" y="578.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1261.0" y="564.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1297.0" y="578.0" class="cell" text-anchor="middle">-3</text>
+<text x="64.0" y="608.0" class="small">destructive-mutation-approval</text>
+<rect x="1003.0" y="592.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1039.0" y="606.0" class="cell" text-anchor="middle">-2</text>
+<rect x="1089.0" y="592.0" width="72.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1125.0" y="606.0" class="cell" text-anchor="middle">+3</text>
+<rect x="1175.0" y="592.0" width="72.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1211.0" y="606.0" class="cell" text-anchor="middle">0</text>
+<rect x="1261.0" y="592.0" width="72.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1297.0" y="606.0" class="cell" text-anchor="middle">-2</text>
+<rect x="40.0" y="668.0" width="1320.0" height="448.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64.0" y="704.0" class="label">External models vs GPT on current instructions</text>
+<text x="64.0" y="728.0" class="value">Formula: external-model score - GPT score</text>
+<text x="64.0" y="750.0" class="small">Read this as current-instruction model gap. Red cells mean GPT&#x27;s answer was better; blue cells mean the external model beat GPT.</text>
+<text x="64.0" y="772.0" class="small">Column mini-summary uses all pass/pass cases. Rows below are selected watchlist cases, so they are intentionally not representative.</text>
+<rect x="64.0" y="786.0" width="18.0" height="18.0" rx="4.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="90.0" y="800.0" class="axis">+ external better</text>
+<rect x="218.0" y="786.0" width="18.0" height="18.0" rx="4.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="244.0" y="800.0" class="axis">- GPT better</text>
+<rect x="372.0" y="786.0" width="18.0" height="18.0" rx="4.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="398.0" y="800.0" class="axis">0 tie</text>
+<rect x="470.0" y="786.0" width="18.0" height="18.0" rx="4.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="496.0" y="800.0" class="axis">blank no pass/pass</text>
+<rect x="888.0" y="783.0" width="108.0" height="24.0" rx="12.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="900.0" y="800.0" class="axis">selected + 1</text>
+<rect x="1006.0" y="783.0" width="108.0" height="24.0" rx="12.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1018.0" y="800.0" class="axis">selected - 22</text>
+<rect x="1124.0" y="783.0" width="108.0" height="24.0" rx="12.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1136.0" y="800.0" class="axis">selected 0 0</text>
+<rect x="1242.0" y="783.0" width="108.0" height="24.0" rx="12.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="1254.0" y="800.0" class="axis">blank 1</text>
+<text x="64.0" y="834.0" class="axis">Case</text>
+<text x="1100.0" y="834.0" class="axis" text-anchor="middle">GLM</text>
+<text x="1100.0" y="850.0" class="axis" text-anchor="middle">+21 -20</text>
+<text x="1100.0" y="865.0" class="axis" text-anchor="middle">avg -1.0</text>
+<text x="1196.0" y="834.0" class="axis" text-anchor="middle">DS</text>
+<text x="1196.0" y="850.0" class="axis" text-anchor="middle">+1 -32</text>
+<text x="1196.0" y="865.0" class="axis" text-anchor="middle">avg -9.4</text>
+<text x="1292.0" y="834.0" class="axis" text-anchor="middle">DSt</text>
+<text x="1292.0" y="850.0" class="axis" text-anchor="middle">+1 -26</text>
+<text x="1292.0" y="865.0" class="axis" text-anchor="middle">avg -9.2</text>
+<rect x="56.0" y="872.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="888.0" class="small">code-review-signal-noise</text>
+<rect x="1059.0" y="872.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="886.0" class="cell" text-anchor="middle">-12</text>
+<rect x="1155.0" y="872.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="886.0" class="cell" text-anchor="middle">-16</text>
+<rect x="1251.0" y="872.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="886.0" class="cell" text-anchor="middle">-12</text>
+<text x="64.0" y="916.0" class="small">branch-context-before-review</text>
+<rect x="1059.0" y="900.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="914.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1155.0" y="900.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="914.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="900.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="914.0" class="cell" text-anchor="middle">-12</text>
+<rect x="56.0" y="928.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="944.0" class="small">architecture-options-for-ambiguous-change</text>
+<rect x="1059.0" y="928.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="942.0" class="cell" text-anchor="middle">-4</text>
+<rect x="1155.0" y="928.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="942.0" class="cell" text-anchor="middle">-10</text>
+<rect x="1251.0" y="928.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="942.0" class="cell" text-anchor="middle">-9</text>
+<text x="64.0" y="972.0" class="small">dependency-addition-gate</text>
+<rect x="1059.0" y="956.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="970.0" class="cell" text-anchor="middle">-7</text>
+<rect x="1155.0" y="956.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="970.0" class="cell" text-anchor="middle">-8</text>
+<rect x="1251.0" y="956.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="970.0" class="cell" text-anchor="middle">-8</text>
+<rect x="56.0" y="984.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1000.0" class="small">meaningful-test-contract</text>
+<rect x="1059.0" y="984.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="998.0" class="cell" text-anchor="middle">-7</text>
+<rect x="1155.0" y="984.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="998.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="984.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="998.0" class="cell" text-anchor="middle">-7</text>
+<text x="64.0" y="1028.0" class="small">repo-wide-migration-plan</text>
+<rect x="1059.0" y="1012.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1026.0" class="cell" text-anchor="middle">-5</text>
+<rect x="1155.0" y="1012.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1026.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="1012.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1026.0" class="cell" text-anchor="middle">-5</text>
+<rect x="56.0" y="1040.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1056.0" class="small">implicit-review-comment-comprehension</text>
+<rect x="1059.0" y="1040.0" width="82.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1100.0" y="1054.0" class="cell" text-anchor="middle">+3</text>
+<rect x="1155.0" y="1040.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1054.0" class="cell" text-anchor="middle">-29</text>
+<rect x="1251.0" y="1040.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1054.0" class="cell" text-anchor="middle">-18</text>
+<text x="64.0" y="1084.0" class="small">complexity-and-resource-analysis</text>
+<rect x="1059.0" y="1068.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1082.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1155.0" y="1068.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1082.0" class="cell" text-anchor="middle">-21</text>
+<rect x="1251.0" y="1068.0" width="82.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="40.0" y="1144.0" width="1320.0" height="448.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64.0" y="1180.0" class="label">External models vs GPT on previous instructions</text>
+<text x="64.0" y="1204.0" class="value">Formula: external-model score - GPT score</text>
+<text x="64.0" y="1226.0" class="small">Read this as the previous-instruction model gap, so current/previous gap movement can be compared case by case.</text>
+<text x="64.0" y="1248.0" class="small">Column mini-summary uses all pass/pass cases. Rows below are selected watchlist cases, so they are intentionally not representative.</text>
+<rect x="64.0" y="1262.0" width="18.0" height="18.0" rx="4.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="90.0" y="1276.0" class="axis">+ external better</text>
+<rect x="218.0" y="1262.0" width="18.0" height="18.0" rx="4.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="244.0" y="1276.0" class="axis">- GPT better</text>
+<rect x="372.0" y="1262.0" width="18.0" height="18.0" rx="4.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="398.0" y="1276.0" class="axis">0 tie</text>
+<rect x="470.0" y="1262.0" width="18.0" height="18.0" rx="4.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="496.0" y="1276.0" class="axis">blank no pass/pass</text>
+<rect x="888.0" y="1259.0" width="108.0" height="24.0" rx="12.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="900.0" y="1276.0" class="axis">selected + 0</text>
+<rect x="1006.0" y="1259.0" width="108.0" height="24.0" rx="12.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1018.0" y="1276.0" class="axis">selected - 24</text>
+<rect x="1124.0" y="1259.0" width="108.0" height="24.0" rx="12.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1136.0" y="1276.0" class="axis">selected 0 0</text>
+<rect x="1242.0" y="1259.0" width="108.0" height="24.0" rx="12.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="1254.0" y="1276.0" class="axis">blank 0</text>
+<text x="64.0" y="1310.0" class="axis">Case</text>
+<text x="1100.0" y="1310.0" class="axis" text-anchor="middle">GLM</text>
+<text x="1100.0" y="1326.0" class="axis" text-anchor="middle">+17 -20</text>
+<text x="1100.0" y="1341.0" class="axis" text-anchor="middle">avg -0.8</text>
+<text x="1196.0" y="1310.0" class="axis" text-anchor="middle">DS</text>
+<text x="1196.0" y="1326.0" class="axis" text-anchor="middle">+0 -25</text>
+<text x="1196.0" y="1341.0" class="axis" text-anchor="middle">avg -9.2</text>
+<text x="1292.0" y="1310.0" class="axis" text-anchor="middle">DSt</text>
+<text x="1292.0" y="1326.0" class="axis" text-anchor="middle">+0 -33</text>
+<text x="1292.0" y="1341.0" class="axis" text-anchor="middle">avg -9.7</text>
+<rect x="56.0" y="1348.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1364.0" class="small">retrieval-led-versioned-docs</text>
+<rect x="1059.0" y="1348.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1362.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1155.0" y="1348.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1362.0" class="cell" text-anchor="middle">-20</text>
+<rect x="1251.0" y="1348.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1362.0" class="cell" text-anchor="middle">-9</text>
+<text x="64.0" y="1392.0" class="small">behavior-preserving-refactor</text>
+<rect x="1059.0" y="1376.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1390.0" class="cell" text-anchor="middle">-9</text>
+<rect x="1155.0" y="1376.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1390.0" class="cell" text-anchor="middle">-15</text>
+<rect x="1251.0" y="1376.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1390.0" class="cell" text-anchor="middle">-11</text>
+<rect x="56.0" y="1404.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1420.0" class="small">architecture-quality-tradeoff</text>
+<rect x="1059.0" y="1404.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1418.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1155.0" y="1404.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1418.0" class="cell" text-anchor="middle">-14</text>
+<rect x="1251.0" y="1404.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1418.0" class="cell" text-anchor="middle">-9</text>
+<text x="64.0" y="1448.0" class="small">architecture-options-for-ambiguous-change</text>
+<rect x="1059.0" y="1432.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1446.0" class="cell" text-anchor="middle">-5</text>
+<rect x="1155.0" y="1432.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1446.0" class="cell" text-anchor="middle">-7</text>
+<rect x="1251.0" y="1432.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1446.0" class="cell" text-anchor="middle">-12</text>
+<rect x="56.0" y="1460.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1476.0" class="small">repo-specific-convention-over-generic-default</text>
+<rect x="1059.0" y="1460.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1474.0" class="cell" text-anchor="middle">-4</text>
+<rect x="1155.0" y="1460.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1474.0" class="cell" text-anchor="middle">-7</text>
+<rect x="1251.0" y="1460.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1474.0" class="cell" text-anchor="middle">-11</text>
+<text x="64.0" y="1504.0" class="small">performance-claim-requires-measurement</text>
+<rect x="1059.0" y="1488.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1502.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1155.0" y="1488.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1502.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="1488.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1502.0" class="cell" text-anchor="middle">-8</text>
+<rect x="56.0" y="1516.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1532.0" class="small">available-tool-no-ban</text>
+<rect x="1059.0" y="1516.0" width="82.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1100.0" y="1530.0" class="cell" text-anchor="middle">-1</text>
+<rect x="1155.0" y="1516.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1530.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="1516.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1530.0" class="cell" text-anchor="middle">-6</text>
+<text x="64.0" y="1560.0" class="small">branch-context-before-review</text>
+<rect x="1059.0" y="1544.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1100.0" y="1558.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1155.0" y="1544.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1196.0" y="1558.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1251.0" y="1544.0" width="82.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1292.0" y="1558.0" class="cell" text-anchor="middle">-6</text>
+<rect x="40.0" y="1620.0" width="1320.0" height="448.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64.0" y="1656.0" class="label">Current instructions vs reference bundles (v4.12 saved)</text>
+<text x="64.0" y="1680.0" class="value">Formula: current-instructions score - reference-bundle score</text>
+<text x="64.0" y="1702.0" class="small">Read this as saved reference context, not fresh v4.13 provider evidence. Red cells are reference wins worth inspecting.</text>
+<text x="64.0" y="1724.0" class="small">Column mini-summary uses all pass/pass cases. Rows below are selected watchlist cases, so they are intentionally not representative.</text>
+<rect x="64.0" y="1738.0" width="18.0" height="18.0" rx="4.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="90.0" y="1752.0" class="axis">+ current better</text>
+<rect x="218.0" y="1738.0" width="18.0" height="18.0" rx="4.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="244.0" y="1752.0" class="axis">- reference better</text>
+<rect x="372.0" y="1738.0" width="18.0" height="18.0" rx="4.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="398.0" y="1752.0" class="axis">0 tie</text>
+<rect x="470.0" y="1738.0" width="18.0" height="18.0" rx="4.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="496.0" y="1752.0" class="axis">blank no pass/pass</text>
+<rect x="888.0" y="1735.0" width="108.0" height="24.0" rx="12.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="900.0" y="1752.0" class="axis">selected + 47</text>
+<rect x="1006.0" y="1735.0" width="108.0" height="24.0" rx="12.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1018.0" y="1752.0" class="axis">selected - 18</text>
+<rect x="1124.0" y="1735.0" width="108.0" height="24.0" rx="12.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1136.0" y="1752.0" class="axis">selected 0 4</text>
+<rect x="1242.0" y="1735.0" width="108.0" height="24.0" rx="12.0" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="1254.0" y="1752.0" class="axis">blank 27</text>
+<text x="64.0" y="1786.0" class="axis">Case</text>
+<text x="673.0" y="1786.0" class="axis" text-anchor="middle">GPT/OH</text>
+<text x="673.0" y="1802.0" class="axis" text-anchor="middle">+33 -5</text>
+<text x="673.0" y="1817.0" class="axis" text-anchor="middle">avg +2.2</text>
+<text x="731.0" y="1786.0" class="axis" text-anchor="middle">GPT/F</text>
+<text x="731.0" y="1802.0" class="axis" text-anchor="middle">+28 -3</text>
+<text x="731.0" y="1817.0" class="axis" text-anchor="middle">avg +2.1</text>
+<text x="789.0" y="1786.0" class="axis" text-anchor="middle">GLM/OH</text>
+<text x="789.0" y="1802.0" class="axis" text-anchor="middle">+12 -2</text>
+<text x="789.0" y="1817.0" class="axis" text-anchor="middle">avg +3.7</text>
+<text x="847.0" y="1786.0" class="axis" text-anchor="middle">GLM/F</text>
+<text x="847.0" y="1802.0" class="axis" text-anchor="middle">+12 -2</text>
+<text x="847.0" y="1817.0" class="axis" text-anchor="middle">avg +4.5</text>
+<text x="905.0" y="1786.0" class="axis" text-anchor="middle">GB/OH</text>
+<text x="905.0" y="1802.0" class="axis" text-anchor="middle">+13 -1</text>
+<text x="905.0" y="1817.0" class="axis" text-anchor="middle">avg +15.8</text>
+<text x="963.0" y="1786.0" class="axis" text-anchor="middle">GB/F</text>
+<text x="963.0" y="1802.0" class="axis" text-anchor="middle">+8 -2</text>
+<text x="963.0" y="1817.0" class="axis" text-anchor="middle">avg +11.4</text>
+<text x="1021.0" y="1786.0" class="axis" text-anchor="middle">G4/OH</text>
+<text x="1021.0" y="1802.0" class="axis" text-anchor="middle">+5 -0</text>
+<text x="1021.0" y="1817.0" class="axis" text-anchor="middle">avg +9.3</text>
+<text x="1079.0" y="1786.0" class="axis" text-anchor="middle">G4/F</text>
+<text x="1079.0" y="1802.0" class="axis" text-anchor="middle">+7 -3</text>
+<text x="1079.0" y="1817.0" class="axis" text-anchor="middle">avg +6.1</text>
+<text x="1137.0" y="1786.0" class="axis" text-anchor="middle">DS/OH</text>
+<text x="1137.0" y="1802.0" class="axis" text-anchor="middle">+8 -3</text>
+<text x="1137.0" y="1817.0" class="axis" text-anchor="middle">avg +2.6</text>
+<text x="1195.0" y="1786.0" class="axis" text-anchor="middle">DS/F</text>
+<text x="1195.0" y="1802.0" class="axis" text-anchor="middle">+7 -1</text>
+<text x="1195.0" y="1817.0" class="axis" text-anchor="middle">avg +8.9</text>
+<text x="1253.0" y="1786.0" class="axis" text-anchor="middle">DSt/OH</text>
+<text x="1253.0" y="1802.0" class="axis" text-anchor="middle">+4 -0</text>
+<text x="1253.0" y="1817.0" class="axis" text-anchor="middle">avg +5.2</text>
+<text x="1311.0" y="1786.0" class="axis" text-anchor="middle">DSt/F</text>
+<text x="1311.0" y="1802.0" class="axis" text-anchor="middle">+6 -1</text>
+<text x="1311.0" y="1817.0" class="axis" text-anchor="middle">avg +8.0</text>
+<rect x="56.0" y="1824.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1840.0" class="small">noop-already-resolved</text>
+<rect x="651.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="673.0" y="1838.0" class="cell" text-anchor="middle">0</text>
+<rect x="709.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="731.0" y="1838.0" class="cell" text-anchor="middle">0</text>
+<rect x="767.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="789.0" y="1838.0" class="cell" text-anchor="middle">+4</text>
+<rect x="825.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="847.0" y="1838.0" class="cell" text-anchor="middle">+3</text>
+<rect x="883.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="905.0" y="1838.0" class="cell" text-anchor="middle">-3</text>
+<rect x="941.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="963.0" y="1838.0" class="cell" text-anchor="middle">-4</text>
+<rect x="999.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1021.0" y="1838.0" class="cell" text-anchor="middle">0</text>
+<rect x="1057.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1079.0" y="1838.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1115.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1137.0" y="1838.0" class="cell" text-anchor="middle">-4</text>
+<rect x="1173.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1195.0" y="1838.0" class="cell" text-anchor="middle">-4</text>
+<rect x="1231.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="1253.0" y="1838.0" class="cell" text-anchor="middle">0</text>
+<rect x="1289.0" y="1824.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1311.0" y="1838.0" class="cell" text-anchor="middle">-3</text>
+<text x="64.0" y="1868.0" class="small">question-only-readonly-answer</text>
+<rect x="651.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="673.0" y="1866.0" class="cell" text-anchor="middle">+2</text>
+<rect x="709.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="731.0" y="1866.0" class="cell" text-anchor="middle">+2</text>
+<rect x="767.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="789.0" y="1866.0" class="cell" text-anchor="middle">+3</text>
+<rect x="825.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="847.0" y="1866.0" class="cell" text-anchor="middle">-3</text>
+<rect x="883.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="905.0" y="1866.0" class="cell" text-anchor="middle">+7</text>
+<rect x="941.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="963.0" y="1866.0" class="cell" text-anchor="middle">-6</text>
+<rect x="999.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1057.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1079.0" y="1866.0" class="cell" text-anchor="middle">-6</text>
+<rect x="1115.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1137.0" y="1866.0" class="cell" text-anchor="middle">+4</text>
+<rect x="1173.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="1866.0" class="cell" text-anchor="middle">+4</text>
+<rect x="1231.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1253.0" y="1866.0" class="cell" text-anchor="middle">+3</text>
+<rect x="1289.0" y="1852.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1311.0" y="1866.0" class="cell" text-anchor="middle">+4</text>
+<rect x="56.0" y="1880.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1896.0" class="small">dirty-worktree-user-changes</text>
+<rect x="651.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="673.0" y="1894.0" class="cell" text-anchor="middle">+3</text>
+<rect x="709.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="731.0" y="1894.0" class="cell" text-anchor="middle">+3</text>
+<rect x="767.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="789.0" y="1894.0" class="cell" text-anchor="middle">-10</text>
+<rect x="825.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="847.0" y="1894.0" class="cell" text-anchor="middle">-7</text>
+<rect x="883.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="905.0" y="1894.0" class="cell" text-anchor="middle">+14</text>
+<rect x="941.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="999.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1057.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1079.0" y="1894.0" class="cell" text-anchor="middle">+44</text>
+<rect x="1115.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1173.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1231.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1289.0" y="1880.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<text x="64.0" y="1924.0" class="small">repo-specific-convention-over-generic-default</text>
+<rect x="651.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="709.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="767.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="789.0" y="1922.0" class="cell" text-anchor="middle">-6</text>
+<rect x="825.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="847.0" y="1922.0" class="cell" text-anchor="middle">+3</text>
+<rect x="883.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="905.0" y="1922.0" class="cell" text-anchor="middle">+37</text>
+<rect x="941.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="963.0" y="1922.0" class="cell" text-anchor="middle">+5</text>
+<rect x="999.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1021.0" y="1922.0" class="cell" text-anchor="middle">+4</text>
+<rect x="1057.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1079.0" y="1922.0" class="cell" text-anchor="middle">+5</text>
+<rect x="1115.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1137.0" y="1922.0" class="cell" text-anchor="middle">-3</text>
+<rect x="1173.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="1922.0" class="cell" text-anchor="middle">+19</text>
+<rect x="1231.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1253.0" y="1922.0" class="cell" text-anchor="middle">+5</text>
+<rect x="1289.0" y="1908.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1311.0" y="1922.0" class="cell" text-anchor="middle">+4</text>
+<rect x="56.0" y="1936.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="1952.0" class="small">architectural-smell-triage</text>
+<rect x="651.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="673.0" y="1950.0" class="cell" text-anchor="middle">-3</text>
+<rect x="709.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="731.0" y="1950.0" class="cell" text-anchor="middle">-3</text>
+<rect x="767.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="825.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="847.0" y="1950.0" class="cell" text-anchor="middle">+10</text>
+<rect x="883.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="941.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="999.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1057.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1115.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1137.0" y="1950.0" class="cell" text-anchor="middle">+9</text>
+<rect x="1173.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="1950.0" class="cell" text-anchor="middle">+13</text>
+<rect x="1231.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1289.0" y="1936.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<text x="64.0" y="1980.0" class="small">existing-architecture-decision-check</text>
+<rect x="651.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="673.0" y="1978.0" class="cell" text-anchor="middle">+6</text>
+<rect x="709.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="731.0" y="1978.0" class="cell" text-anchor="middle">+6</text>
+<rect x="767.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="789.0" y="1978.0" class="cell" text-anchor="middle">+6</text>
+<rect x="825.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="847.0" y="1978.0" class="cell" text-anchor="middle">+6</text>
+<rect x="883.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="905.0" y="1978.0" class="cell" text-anchor="middle">+16</text>
+<rect x="941.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="963.0" y="1978.0" class="cell" text-anchor="middle">+15</text>
+<rect x="999.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1057.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1079.0" y="1978.0" class="cell" text-anchor="middle">-34</text>
+<rect x="1115.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1137.0" y="1978.0" class="cell" text-anchor="middle">+4</text>
+<rect x="1173.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="1978.0" class="cell" text-anchor="middle">+24</text>
+<rect x="1231.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1289.0" y="1964.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="56.0" y="1992.0" width="1288.0" height="28.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="2008.0" class="small">code-review-signal-noise</text>
+<rect x="651.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#fef3c7" stroke="#e5e7eb"/>
+<text x="673.0" y="2006.0" class="cell" text-anchor="middle">+1</text>
+<rect x="709.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="731.0" y="2006.0" class="cell" text-anchor="middle">+3</text>
+<rect x="767.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="789.0" y="2006.0" class="cell" text-anchor="middle">+3</text>
+<rect x="825.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="847.0" y="2006.0" class="cell" text-anchor="middle">+4</text>
+<rect x="883.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="905.0" y="2006.0" class="cell" text-anchor="middle">+10</text>
+<rect x="941.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="963.0" y="2006.0" class="cell" text-anchor="middle">+9</text>
+<rect x="999.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1021.0" y="2006.0" class="cell" text-anchor="middle">+34</text>
+<rect x="1057.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1079.0" y="2006.0" class="cell" text-anchor="middle">+6</text>
+<rect x="1115.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="1137.0" y="2006.0" class="cell" text-anchor="middle">-28</text>
+<rect x="1173.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="2006.0" class="cell" text-anchor="middle">+14</text>
+<rect x="1231.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1253.0" y="2006.0" class="cell" text-anchor="middle">+6</text>
+<rect x="1289.0" y="1992.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1311.0" y="2006.0" class="cell" text-anchor="middle">+9</text>
+<text x="64.0" y="2036.0" class="small">privacy-persistent-state</text>
+<rect x="651.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="673.0" y="2034.0" class="cell" text-anchor="middle">+3</text>
+<rect x="709.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#fecdd3" stroke="#e5e7eb"/>
+<text x="731.0" y="2034.0" class="cell" text-anchor="middle">-5</text>
+<rect x="767.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="789.0" y="2034.0" class="cell" text-anchor="middle">+4</text>
+<rect x="825.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="883.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="941.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="999.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1057.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1115.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1173.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#bfdbfe" stroke="#e5e7eb"/>
+<text x="1195.0" y="2034.0" class="cell" text-anchor="middle">+5</text>
+<rect x="1231.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<rect x="1289.0" y="2020.0" width="44.0" height="19.0" rx="5.0" fill="#ffffff" stroke="#f1f5f9"/>
+<line x1="32.0" y1="2100.0" x2="1368.0" y2="2100.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="2118.0" class="small">Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots.</text>
+<text x="32.0" y="2130.0" class="small">Source: saved quality pair reports filtered to both sides passed</text>
+<text x="1368.0" y="2130.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>
