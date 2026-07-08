@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="430" viewBox="0 0 1120 430" role="img" aria-labelledby="title desc">
+<title id="title">50-case hard-gate snapshot</title>
+<desc id="desc">Hard-gate pass counts for the current 50-case instruction eval suite.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="1120" height="430" fill="#f8fafc"/>
+<rect x="32.0" y="28.0" width="1056.0" height="374.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="56.0" y="68.0" class="title">50-case hard-gate snapshot</text>
+<text x="56.0" y="94.0" class="subtitle">Current eval contract after Agent Data Injection coverage; saved quality rows are available separately.</text>
+<text x="56.0" y="132.0" class="axis">Model / runner</text>
+<text x="340.0" y="132.0" class="axis">Current instructed</text>
+<text x="682.0" y="132.0" class="axis">Empty bundle</text>
+<text x="934.0" y="132.0" class="axis">Notes</text>
+<text x="56.0" y="168.0" class="label">GPT-5.5</text>
+<rect x="340.0" y="156.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="156.0" width="300.0" height="16.0" rx="8.0" fill="#2563eb"/>
+<text x="652.0" y="169.0" class="value">50/50</text>
+<rect x="682.0" y="156.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="156.0" width="222.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="169.0" class="value">37/50</text>
+<text x="934.0" y="192.0" class="small">anchor row</text>
+<text x="56.0" y="212.0" class="label">GLM-5.2</text>
+<rect x="340.0" y="200.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="200.0" width="276.0" height="16.0" rx="8.0" fill="#16a34a"/>
+<text x="652.0" y="213.0" class="value">46/50</text>
+<rect x="682.0" y="200.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="200.0" width="96.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="213.0" class="value">16/50</text>
+<text x="934.0" y="236.0" class="small">closest external row</text>
+<text x="56.0" y="256.0" class="label">Grok 4.3</text>
+<rect x="340.0" y="244.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="244.0" width="198.0" height="16.0" rx="8.0" fill="#ea580c"/>
+<text x="652.0" y="257.0" class="value">33/50</text>
+<rect x="682.0" y="244.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="244.0" width="30.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="257.0" class="value">5/50</text>
+<text x="934.0" y="280.0" class="small">ADI failed in full run</text>
+<text x="56.0" y="300.0" class="label">Grok Build 0.1</text>
+<rect x="340.0" y="288.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="288.0" width="186.0" height="16.0" rx="8.0" fill="#7c3aed"/>
+<text x="652.0" y="301.0" class="value">31/50</text>
+<rect x="682.0" y="288.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="288.0" width="66.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="301.0" class="value">11/50</text>
+<text x="934.0" y="324.0" class="small">adapter row</text>
+<text x="56.0" y="344.0" class="label">DeepSeek V4 Flash</text>
+<rect x="340.0" y="332.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="332.0" width="186.0" height="16.0" rx="8.0" fill="#0891b2"/>
+<text x="652.0" y="345.0" class="value">31/50</text>
+<rect x="682.0" y="332.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="332.0" width="30.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="345.0" class="value">5/50</text>
+<text x="934.0" y="368.0" class="small">non-thinking</text>
+<text x="56.0" y="388.0" class="label">DeepSeek V4 thinking</text>
+<rect x="340.0" y="376.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="340.0" y="376.0" width="204.0" height="16.0" rx="8.0" fill="#0f766e"/>
+<text x="652.0" y="389.0" class="value">34/50</text>
+<rect x="682.0" y="376.0" width="300.0" height="16.0" rx="8.0" fill="#e2e8f0"/>
+<rect x="682.0" y="376.0" width="48.0" height="16.0" rx="8.0" fill="#94a3b8"/>
+<text x="994.0" y="389.0" class="value">8/50</text>
+<text x="934.0" y="412.0" class="small">thinking mode</text>
+<line x1="32.0" y1="384.0" x2="1088.0" y2="384.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="402.0" class="small">Scope: 50-case saved hard-gate and quality snapshot; all-model reference rows included.</text>
+<text x="32.0" y="414.0" class="small">Source: .eval-results/refresh-2026-07-08-50-case-* summaries.</text>
+<text x="1088.0" y="414.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

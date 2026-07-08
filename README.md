@@ -10,19 +10,42 @@ eval harness for checking whether those instructions actually change behavior.
 - `evals/`: deterministic and model-backed evals for the instruction bundle.
 - `scripts/run_instruction_evals.py`: the main validation, run, and compare
   harness.
-- `scripts/build_readme_infographics.py`: deterministic SVG generator for the
-  README evidence snapshot.
+- `scripts/build_readme_infographics.py`: deterministic SVG and social-card
+  PNG generator for the public evidence snapshot.
 
 ## Current Evidence
 
-Latest instruction-candidate check: v4.13 has a clean GPT/Codex 49-case
-compare against `HEAD` in `.eval-results/v4.13-final-gpt55-full-49-v11/`:
-98/98 hard gates passed. Rejudged with the same OpenAI/Codex saved-output
-judge in `.eval-results/openai-canonical-judge-2026-07-07-v1/`, current
-winning 30 quality comparisons, baseline winning 6, 13 ties, and average delta
-+1.53. This is partial v4.13 evidence: GPT/Codex plus saved GLM-5.2 and
-DeepSeek V4 Flash rows judged by the same OpenAI/Codex judge. Grok v4.13 full
-rows are still pending.
+Current eval contract: `evals/cases.jsonl` contains 50 cases. The 2026-07-08
+addition covers Agent Data Injection where forged trusted/action metadata
+appears inside an untrusted data field. The promoted 50-case saved quality
+snapshot covers hard gates, current-vs-empty saved-output quality for all six
+tested runners, GPT-vs-external current quality, and all-model reference
+comparisons. GPT/Codex passed 50/50 current and 37/50 empty; GLM-5.2 reached
+46/50 current; Grok 4.3 reached 33/50 current; Grok Build 0.1 reached 31/50
+current; DeepSeek V4 Flash non-thinking reached 31/50 current; DeepSeek V4
+Flash thinking reached 34/50 current.
+
+current-vs-empty saved quality is positive for all six tested runners. External
+transfer is mixed, not uniformly positive: GLM-5.2 is closest to GPT on the
+current-output quality comparison, while the other external rows remain far
+behind GPT. all-model reference rows are now included for OpenHands and
+Claude/Fable; Grok Build reference rows include observed adapter/provider
+agent failures from the saved runs rather than smoothed reruns. Source
+artifacts live under
+`.eval-results/refresh-2026-07-08-50-case-public-v1/`,
+`.eval-results/refresh-2026-07-08-50-case-v1/`,
+`.eval-results/refresh-2026-07-08-50-case-v2/`, and
+`.eval-results/refresh-2026-07-08-50-case-quality-v1/`.
+
+![50-case eval passes](docs/assets/readme/hard-gates-50.svg)
+
+Archived context: v4.13 had a clean GPT/Codex 49-case compare against `HEAD` in
+`.eval-results/v4.13-final-gpt55-full-49-v11/`: 98/98 hard gates passed.
+Rejudged with the same OpenAI/Codex saved-output judge in
+`.eval-results/openai-canonical-judge-2026-07-07-v1/`, current won 30 quality
+comparisons, baseline won 6, there were 13 ties, and average delta was +1.53.
+This remains useful historical context, but the headline snapshot above is the
+current 50-case publication artifact.
 
 The saved 49-case context is split by scope:
 
@@ -50,10 +73,10 @@ The saved 49-case context is split by scope:
   `dependency-boundary-respect`, and several DeepSeek-specific ownership or
   review cases.
 
-Visual snapshot, from overview to detail:
+50-case visual snapshot, from overview to detail:
 
-Each SVG footer labels the mixed scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek
-saved outputs, plus labeled v4.12 Grok/reference/no-instruction context.
+Each SVG footer labels the current scope: 50-case saved hard-gate and quality
+snapshot with all-model reference rows included.
 
 ![Instruction eval overview](docs/assets/readme/instruction-lift.svg)
 
@@ -75,28 +98,27 @@ Secondary full matrix:
 
 ![Full current-versus-reference quality delta matrix](docs/assets/readme/quality-only-case-matrix.svg)
 
-![49-case coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
+![50-case coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
 
 Read this as:
 
-- The v4.13 GPT/Codex change is a real quality improvement even though GPT was
-  already 49/49 on hard gates.
-- GLM-5.2 is stable and close to GPT, but the case-level table still has many
-  GPT wins. DeepSeek V4 Flash benefits from current instructions; DeepSeek V4
-  thinking does not.
+- The 50-case refresh is a current publication snapshot, not a model
+  leaderboard or proof that every runner improved in quality.
+- GLM-5.2 is the closest external quality row versus GPT. Other external rows
+  still trail GPT materially despite positive current-vs-empty instruction lift.
 - The model-gap chart answers a different question from instruction lift: it
-  compares each external row against GPT on previous and current instructions.
-- The hard-gate dot plot and empty-to-current lift chart restore the
-  no-instructions comparison from saved v4.12 context; they are not fresh Grok
-  v4.13 evidence.
-- Reference bundles are useful as contrast, not as winners. They often miss
-  our specific deterministic workflow markers, but they expose real case-level
-  regressions and blind spots.
+  compares each external current row against GPT current output on the same
+  cases.
+- The hard-gate dot plot and empty-to-current lift chart use fresh 50-case
+  current and empty artifacts.
+- Reference bundles are useful as contrast, not as winners. The promoted
+  reference snapshot now covers all six saved current runners against both
+  reference bundles.
 - The pass/pass quality view is the cleanest answer to "quality without hard
   fails"; it excludes cases where either side failed deterministic checks.
-- The case-detail view is numeric and split by question: v4.13
-  current-vs-previous, external-vs-GPT on current instructions,
-  external-vs-GPT on previous instructions, and saved current-vs-reference.
+- The case-detail view is numeric and split by concrete 50-case saved-quality
+  comparisons: GPT-vs-empty, external-vs-GPT, and all-model
+  current-vs-reference.
   Each nonblank cell is the signed judge-score delta after both hard gates
   pass; each block states its formula and color interpretation.
 - The full matrix is secondary because it is dense; use it when you need every
@@ -117,24 +139,24 @@ python3 -B scripts/run_instruction_evals.py validate
 git diff --check
 ```
 
-Check that tracked README SVGs are fresh:
+Check that tracked README SVGs and the social-card PNG are fresh:
 
 ```bash
 python3 -B scripts/build_readme_infographics.py --check
 ```
 
-When `.eval-results/` artifacts are available, check that published GPT/Codex
-numbers still match the saved JSON, the docs keep the partial-v4.13 caveats and
-a pointer to the saved artifact root, `summary.json` and `quality.json`
-describe the same case set, README links every required SVG, README SVGs keep
-their scope footer, and the docs do not overclaim v4.13 scope, including common
-phrasing variants such as "all models" and "re-run":
+When `.eval-results/` artifacts are available, check that published 50-case
+numbers still match the saved JSON, docs point to the saved artifact roots,
+README links every required SVG, README SVGs keep their scope footer, and the
+docs do not overclaim full external-reference coverage or revert to stale
+pending-quality language:
 
 ```bash
 python3 -B scripts/check_published_eval_metrics.py
 ```
 
-Regenerate the README SVG snapshot after refreshing `.eval-results/`:
+Regenerate the README SVG and social-card snapshot after refreshing
+`.eval-results/`:
 
 ```bash
 python3 -B scripts/build_readme_infographics.py
@@ -184,6 +206,7 @@ for benchmark evidence.
 | [evals/cases.jsonl](evals/cases.jsonl) | Canonical eval cases and deterministic checks. |
 | [evals/model-presets.json](evals/model-presets.json) | Model preset names used by the harness. |
 | [docs/assets/readme/](docs/assets/readme/) | Generated SVG infographics for the root README evidence snapshot. |
+| [docs/assets/social/](docs/assets/social/) | Generated social-card PNGs for public metric snapshots. |
 
 ## Maintenance Rules
 
@@ -192,8 +215,8 @@ for benchmark evidence.
 - Put benchmark snapshots in `evals/RESULTS.md`.
 - Put chronological instruction/eval deltas in `evals/CHANGELOG.md`.
 - Keep `.eval-results/` ignored and out of commits.
-- Regenerate `docs/assets/readme/*.svg` from the latest saved eval artifacts
-  after publication-grade metric refreshes.
+- Regenerate `docs/assets/readme/*.svg` and `docs/assets/social/*.png` from
+  the latest saved eval artifacts after publication-grade metric refreshes.
 - Do not commit private reference material unless redistribution is explicitly
   approved.
 - For meaningful instruction changes, update eval cases and rerun the smallest

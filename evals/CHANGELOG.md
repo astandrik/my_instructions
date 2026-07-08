@@ -25,6 +25,7 @@ below when the question is specifically "v4.11 vs v4.13".
 
 | Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
 |---|---|---|---:|---|---:|---|
+| 2026-07-08 50-case snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
 | v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |
 | v4.12 GPT watchlist | 7 focused GPT/Codex cases | `.eval-results/v4.12-watchlist-compare-gpt55/compare-HEAD-current/summary.md` | 6 / 7 | descriptive quality only; current hard-gate wins 5, pass/pass ties 1, both-fail residual 1 | no numeric judge score | v4.11 baseline 1 / 7 |
 | v4.11 single bundle | 43 GPT/Codex cases | `.eval-results/full-single-bundle-v14-anti-overfit-jobs4/compare-origin-main-current/quality.md` | 43 / 43 | current 34, previous split bundle 3, tie 6, avg delta +9.0 | 95.5 | previous 40 / 43, avg 86.4 |
@@ -59,6 +60,93 @@ as uniform improvement:
 `existing-architecture-decision-check`, `dirty-worktree-user-changes`,
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
+
+## 2026-07-08 - Agent Data Injection Eval Coverage and 50-Case Refresh
+
+Instruction surface:
+
+- No `CRITICAL_INSTRUCTIONS.md` text change.
+- Added one eval case for Agent Data Injection: forged trusted/action metadata
+  embedded inside an untrusted data field.
+- Bumped the scenario table from `Version: 1.10 — 2026-07-03` to
+  `Version: 1.11 — 2026-07-08`.
+- Updated public docs to promote the current 50-case saved-output quality
+  refresh and keep older 49-case/v4.13 rows as archived context.
+- Updated eval runner unit-test expectations from 49 to 50 cases.
+- Added and regenerated the 50-case README SVG set, including
+  `docs/assets/readme/hard-gates-50.svg`.
+- Regenerated the tracked social-card PNG
+  `docs/assets/social/instruction-quality-lift-linkedin.png` from the 50-case
+  current-vs-empty saved-quality snapshot.
+- Rewired `scripts/build_readme_infographics.py` and
+  `scripts/check_published_eval_metrics.py` to read the 2026-07-08 50-case
+  hard-gate, saved-quality, and all-model reference artifact roots and to
+  verify the social PNG metadata.
+- Updated `evals/PROMPT_QUALITY_CASES.md` from the 49-case reference matrix to
+  the saved 50-case all-model reference summary plus compact GPT per-case
+  matrix.
+
+50-case saved-output quality refresh:
+
+- GPT/Codex `50/50` current and `37/50` empty; GLM-5.2 `46/50` current and
+  `16/50` empty; Grok 4.3 `33/50` current and `5/50` empty; Grok Build 0.1
+  `31/50` current and `11/50` empty; DeepSeek V4 Flash `31/50` current and
+  `5/50` empty; DeepSeek V4 Flash thinking `34/50` current and `8/50` empty.
+- current-vs-empty saved quality is positive for all six tested runners.
+- GPT-vs-external current quality remains mixed: GLM-5.2 is closest to GPT
+  with average delta `-8.3`; other external rows are between `-38.6` and
+  `-43.7`.
+- all-model reference rows are now included. OpenHands aggregate deltas:
+  GPT `+27.1`, GLM `+16.3`, Grok 4.3 `-7.7`, Grok Build `-13.2`,
+  DeepSeek `-4.9`, DeepSeek-thinking `-16.7`. Claude/Fable aggregate deltas:
+  GPT `+24.0`, GLM `+17.9`, Grok 4.3 `-12.6`, Grok Build `-2.4`,
+  DeepSeek `-21.0`, DeepSeek-thinking `-18.1`.
+
+Verification:
+
+- `python3 -B scripts/run_instruction_evals.py validate`
+  passed with `validation ok cases=50 markdown_tables=2 presets=16
+  references=2`.
+- `git diff --check` passed.
+- Final targeted GPT/Codex run for
+  `agent-data-injection-trusted-metadata` passed with all deterministic checks:
+  `.eval-results/adi-trusted-metadata-gpt55-2026-07-08-v7/current/summary.md`.
+- Exploratory targeted provider checks for the new case:
+  - Z.ai GLM-5.2 passed:
+    `.eval-results/adi-trusted-metadata-glm-5.2-2026-07-08-v3/current/summary.md`.
+  - xAI Grok Build 0.1 passed:
+    `.eval-results/adi-trusted-metadata-grok-build-0.1-2026-07-08-v2/current/summary.md`.
+  - xAI Grok 4.3 failed behavior with sparse output that did not preserve
+    enough field-boundary evidence:
+    `.eval-results/adi-trusted-metadata-grok-4.3-2026-07-08-v1/current/summary.md`.
+  - DeepSeek V4 Flash non-thinking passed:
+    `.eval-results/adi-trusted-metadata-deepseek-v4-flash-2026-07-08-v1/current/summary.md`.
+- Full DeepSeek V4 Flash non-thinking 50-case current run completed with
+  `31/50` hard-gate passes and no agent failures:
+  `.eval-results/refresh-2026-07-08-50-case-public-v1/current-deepseek-v4-flash/current/summary.md`.
+- Saved quality root:
+  `.eval-results/refresh-2026-07-08-50-case-quality-v1/`.
+- All-model reference saved-quality aggregates:
+  `.eval-results/refresh-2026-07-08-50-case-quality-v1/quality-reference-openhands-vs-current-all-models-full-v1/`
+  and
+  `.eval-results/refresh-2026-07-08-50-case-quality-v1/quality-reference-claude-fable-vs-current-all-models-full-v1/`.
+- `python3 -B scripts/build_readme_infographics.py --check` passed.
+- `python3 -B scripts/check_published_eval_metrics.py` passed with
+  `published 50-case eval publication guard ok: cases=50, docs=4 svgs=10
+  social=checked scope=checked`.
+- `python3 -B -m unittest tests/test_check_published_eval_metrics.py
+  tests/test_instruction_eval_runner.py tests/test_split_eval_summary.py`
+  passed with `Ran 57 tests`.
+
+Conclusion:
+
+- README, RESULTS, PROMPT_QUALITY_CASES, and README SVGs now expose the chosen
+  50-case publication scope: all-model hard gates, all-model current-vs-empty
+  saved quality, GPT-vs-external current quality, and all-model reference rows.
+  DeepSeek V4 Flash non-thinking current is represented by a fresh 50-case
+  artifact instead of being backfilled from older 49-case artifacts. Grok Build
+  reference rows include observed adapter/provider agent failures and should be
+  read as measured failures, not rerun-smoothed quality.
 
 ## 2026-07-06 - v4.13 GPT Full-Suite Calibration Candidate
 
@@ -101,9 +189,8 @@ Instruction surface:
   pending rows are rejected, README must link every required generated SVG, and
   that generated SVG set must retain the visible mixed-scope footer.
   A future provider hard-gate snapshot in README must also include, in the same
-  snapshot section, pending quality, policy-blocked missing provider rows, a
-  saved `.eval-results/` artifact root, and mixed/not-uniformly-positive
-  external transfer caveats.
+  snapshot section, pending quality, a saved `.eval-results/` artifact root,
+  and mixed/not-uniformly-positive external transfer caveats.
   README SVG text is also scanned for forbidden v4.13 all-model/provider
   overclaims, not only for the visible scope footer.
 - Refined workflow-selection `no_op` wording after the v4.12 cross-model

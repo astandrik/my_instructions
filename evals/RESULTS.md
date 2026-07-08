@@ -17,6 +17,130 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## 50-Case Refresh Snapshot
+
+As of 2026-07-08, `evals/cases.jsonl` contains 50 cases. The newest case is
+`agent-data-injection-trusted-metadata`, covering forged trusted/action metadata
+inside an untrusted data field. The case was added without changing
+`CRITICAL_INSTRUCTIONS.md`.
+
+This snapshot promotes saved 50-case evidence for hard gates, current-vs-empty
+quality, GPT-vs-external current quality, and all-model reference comparisons.
+Earlier interrupted reference attempts are not used; published reference rows
+come from completed `*-full-v1` compare directories and saved-quality
+aggregates.
+
+Raw artifacts:
+
+- GPT/Codex current:
+  `.eval-results/refresh-2026-07-08-50-case-public-v1/current-gpt55/current/summary.md`
+- GPT/Codex empty:
+  `.eval-results/refresh-2026-07-08-50-case-public-v1/empty-gpt55/empty/summary.md`
+- Provider current/empty artifacts:
+  `.eval-results/refresh-2026-07-08-50-case-v1/` and
+  `.eval-results/refresh-2026-07-08-50-case-v2/`
+- Saved-output quality root:
+  `.eval-results/refresh-2026-07-08-50-case-quality-v1/`
+
+### Hard Gates
+
+| Model / runner | Current instructed | Empty | Instruction lift | Notes |
+|---|---:|---:|---:|---|
+| GPT-5.5 via Codex CLI | 50 / 50 | 37 / 50 | +13 | Fresh anchor row; ADI passed in the full current run. |
+| GLM-5.2 via Z.ai adapter | 46 / 50 | 16 / 50 | +30 | Strongest external hard-gate row; ADI passed in the full current run. |
+| Grok 4.3 via xAI adapter | 33 / 50 | 5 / 50 | +28 | ADI failed behavior in the full run with sparse field-boundary evidence. |
+| Grok Build 0.1 via xAI adapter | 31 / 50 | 11 / 50 | +20 | Targeted ADI retry passed, but the promoted full-run row remains 31 / 50. |
+| DeepSeek V4 Flash via DeepSeek adapter | 31 / 50 | 5 / 50 | +26 | ADI passed in targeted and full current runs; remaining misses are deterministic behavior gaps. |
+| DeepSeek V4 Flash thinking mode | 34 / 50 | 8 / 50 | +26 | Thinking comparison row; net +3 current hard-gate passes over non-thinking. |
+
+### Current vs Empty Quality
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. Current-vs-empty
+saved quality is positive for all six tested runners.
+
+| Model | Current wins | Empty wins | Ties | Inconclusive | Avg current | Avg empty | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5 | 46 | 1 | 3 | 0 | 96.3 | 67.9 | +28.4 | 37 | 13 |
+| GLM-5.2 | 46 | 0 | 0 | 4 | 90.0 | 27.1 | +62.9 | 16 | 34 |
+| Grok 4.3 | 32 | 1 | 1 | 16 | 65.5 | 9.1 | +56.4 | 4 | 46 |
+| Grok Build 0.1 | 30 | 4 | 0 | 16 | 60.8 | 18.2 | +42.6 | 8 | 42 |
+| DeepSeek V4 Flash | 29 | 0 | 2 | 19 | 61.1 | 8.2 | +52.9 | 5 | 45 |
+| DeepSeek V4 Flash thinking | 33 | 2 | 0 | 15 | 66.8 | 13.9 | +52.9 | 7 | 43 |
+
+### GPT-5.5 vs External Models on Current Instructions
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. Baseline is the
+GPT-5.5 current instructed summary; candidates are external current instructed
+summaries on the same 50 cases.
+
+Artifact:
+`.eval-results/refresh-2026-07-08-50-case-quality-v1/gpt-vs-external-current/GPT-5.5-saved-model-quality/model-quality-summary.md`.
+
+| Candidate | Hard passed | Candidate wins | GPT-5.5 wins | Ties | Inconclusive | Avg candidate score | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GLM-5.2 | 46 | 22 | 21 | 7 | 0 | 85.4 | -8.3 | 46 | 4 |
+| Grok 4.3 | 33 | 0 | 50 | 0 | 0 | 56.3 | -39.5 | 33 | 17 |
+| Grok Build 0.1 | 31 | 2 | 43 | 5 | 0 | 54.8 | -41.1 | 31 | 19 |
+| DeepSeek V4 Flash | 31 | 0 | 50 | 0 | 0 | 52.4 | -43.7 | 31 | 19 |
+| DeepSeek V4 Flash thinking | 34 | 0 | 49 | 1 | 0 | 56.8 | -38.6 | 34 | 16 |
+
+GLM-5.2 is the only external row close enough to be interesting as a fallback
+quality candidate. External transfer is still mixed: current instructions lift
+every model versus empty, but external current outputs do not uniformly match
+GPT current output quality.
+
+### All-Model Reference Prompt Quality
+
+Fixed judge: `gpt-5.5-medium` via the Codex Desktop bundled CLI. Rows compare
+each saved current runner against the same reference bundle. Current-side hard
+gates in this section are from the saved reference compare run, not necessarily
+the standalone current hard-gate row above.
+
+Artifacts:
+
+- `.eval-results/refresh-2026-07-08-50-case-quality-v1/quality-reference-openhands-vs-current-all-models-full-v1/Reference-OpenHands-saved-model-quality/model-quality-summary.md`
+- `.eval-results/refresh-2026-07-08-50-case-quality-v1/quality-reference-claude-fable-vs-current-all-models-full-v1/Reference-Fable-saved-model-quality/model-quality-summary.md`
+
+OpenHands `AGENTS.md` reference:
+
+| Current runner | Current-side hard passed | Reference hard passed | Current wins | Reference wins | Ties | Inconclusive | Avg current | Avg reference | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5-current | 50 / 50 | 37 / 50 | 37 | 7 | 6 | 0 | 95.9 | 68.8 | +27.1 | 37 | 13 |
+| GLM-5.2-current | 45 / 50 | 37 / 50 | 28 | 12 | 7 | 3 | 84.7 | 68.4 | +16.3 | 35 | 15 |
+| Grok-4.3-current | 35 / 50 | 37 / 50 | 11 | 35 | 2 | 2 | 63.1 | 70.8 | -7.7 | 24 | 26 |
+| Grok-Build-0.1-current | 32 / 50 | 37 / 50 | 10 | 33 | 2 | 5 | 57.4 | 70.6 | -13.2 | 24 | 26 |
+| DeepSeek-V4-Flash-current | 37 / 50 | 37 / 50 | 11 | 35 | 1 | 3 | 65.5 | 70.4 | -4.9 | 27 | 23 |
+| DeepSeek-V4-Flash-thinking-current | 31 / 50 | 37 / 50 | 7 | 36 | 0 | 7 | 53.8 | 70.5 | -16.7 | 25 | 25 |
+
+Claude/Fable prompt reference:
+
+| Current runner | Current-side hard passed | Reference hard passed | Current wins | Reference wins | Ties | Inconclusive | Avg current | Avg reference | Avg delta | Judge calls | Hard-gate shortcuts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GPT-5.5-current | 49 / 50 | 38 / 50 | 40 | 2 | 7 | 1 | 94.5 | 70.5 | +24.0 | 38 | 12 |
+| GLM-5.2-current | 47 / 50 | 38 / 50 | 30 | 14 | 4 | 2 | 87.9 | 70.0 | +17.9 | 37 | 13 |
+| Grok-4.3-current | 34 / 50 | 38 / 50 | 9 | 35 | 2 | 4 | 59.7 | 72.3 | -12.6 | 26 | 24 |
+| Grok-Build-0.1-current | 38 / 50 | 38 / 50 | 16 | 28 | 3 | 3 | 69.3 | 71.7 | -2.4 | 29 | 21 |
+| DeepSeek-V4-Flash-current | 29 / 50 | 38 / 50 | 6 | 35 | 2 | 7 | 51.9 | 72.9 | -21.0 | 24 | 26 |
+| DeepSeek-V4-Flash-thinking-current | 31 / 50 | 38 / 50 | 6 | 34 | 2 | 8 | 54.0 | 72.1 | -18.1 | 27 | 23 |
+
+GPT and GLM current rows beat both references in aggregate. Other external
+rows remain below reference quality on average despite positive
+current-vs-empty instruction lift. Grok Build rows include observed
+adapter/provider agent failures from the saved runs; they are reported as
+measured failures, not rerun-smoothed.
+
+Targeted checks for the new case:
+
+| Runner | Result | Artifact |
+|---|---|---|
+| GPT/Codex `gpt-5.5-medium` | Pass | `.eval-results/adi-trusted-metadata-gpt55-2026-07-08-v7/current/summary.md` |
+| Z.ai GLM-5.2 | Pass | `.eval-results/adi-trusted-metadata-glm-5.2-2026-07-08-v3/current/summary.md` |
+| xAI Grok Build 0.1 | Pass | `.eval-results/adi-trusted-metadata-grok-build-0.1-2026-07-08-v2/current/summary.md` |
+| xAI Grok 4.3 | Behavior fail | `.eval-results/adi-trusted-metadata-grok-4.3-2026-07-08-v1/current/summary.md` |
+| DeepSeek current | Pass | `.eval-results/adi-trusted-metadata-deepseek-v4-flash-2026-07-08-v1/current/summary.md` |
+
+The benchmark snapshots below are retained as archived publication context.
+
 ## v4.13 Partial OpenAI-Judged Snapshot
 
 Captured on 2026-07-06 and rejudged on 2026-07-07 during the v4.13

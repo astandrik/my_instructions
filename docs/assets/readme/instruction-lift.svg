@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
-<title id="title">Instruction eval overview</title>
-<desc id="desc">Headline answers across fresh v4.13 GPT/GLM/DeepSeek rows plus saved v4.12 context.</desc>
+<title id="title">50-case instruction eval overview</title>
+<desc id="desc">Headline answers from the 50-case hard-gate, saved quality, and GPT reference snapshots.</desc>
 <style>
 text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
 .title{font-size:30px;font-weight:700;fill:#111827}
@@ -12,35 +12,35 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 .cell{font-size:11px;font-weight:700;fill:#111827}
 </style>
 <rect x="0" y="0" width="1120" height="560" fill="#f8fafc"/>
-<text x="40.0" y="56.0" class="title">Instruction eval overview</text>
-<text x="40.0" y="84.0" class="subtitle">Read left to right: v4.13 improvement, external transfer, model gap, and reference-prompt context.</text>
+<text x="40.0" y="56.0" class="title">50-case instruction eval overview</text>
+<text x="40.0" y="84.0" class="subtitle">Read left to right: current-vs-empty lift, external model gap, GPT reference contrast, and scope caveat.</text>
 <rect x="40.0" y="122.0" width="248.0" height="150.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <rect x="64.0" y="146.0" width="38.0" height="8.0" rx="4.0" fill="#2563eb"/>
-<text x="64.0" y="180.0" class="label">GPT quality improved</text>
-<text x="64.0" y="214.0" class="value">49 -&gt; 49 hard gates</text>
-<text x="64.0" y="242.0" class="small">quality 30/13/6, avg +1.5</text>
+<text x="64.0" y="180.0" class="label">GPT clears hard gates</text>
+<text x="64.0" y="214.0" class="value">50/50 current vs 37/50 empty</text>
+<text x="64.0" y="242.0" class="small">quality split 46/3/1, avg +28.4</text>
 <rect x="310.0" y="122.0" width="248.0" height="150.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<rect x="334.0" y="146.0" width="38.0" height="8.0" rx="4.0" fill="#dc2626"/>
-<text x="334.0" y="180.0" class="label">External transfer mixed</text>
-<text x="334.0" y="214.0" class="value">1/3 hard-gate lifts</text>
-<text x="334.0" y="242.0" class="small">GLM slight up; DS up; DSt down</text>
+<rect x="334.0" y="146.0" width="38.0" height="8.0" rx="4.0" fill="#16a34a"/>
+<text x="334.0" y="180.0" class="label">Instruction lift transfers</text>
+<text x="334.0" y="214.0" class="value">6/6 models improve hard gates</text>
+<text x="334.0" y="242.0" class="small">saved quality deltas all positive; GLM +62.9</text>
 <rect x="580.0" y="122.0" width="248.0" height="150.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <rect x="604.0" y="146.0" width="38.0" height="8.0" rx="4.0" fill="#f59e0b"/>
-<text x="604.0" y="180.0" class="label">Model gap vs GPT</text>
-<text x="604.0" y="214.0" class="value">GLM current gap -7.1</text>
-<text x="604.0" y="242.0" class="small">gap -0.2; DS gaps still large</text>
+<text x="604.0" y="180.0" class="label">External gap remains</text>
+<text x="604.0" y="214.0" class="value">GLM gap vs GPT -8.3</text>
+<text x="604.0" y="242.0" class="small">GLM split 22/7/21; others trail heavily</text>
 <rect x="850.0" y="122.0" width="248.0" height="150.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <rect x="874.0" y="146.0" width="38.0" height="8.0" rx="4.0" fill="#be123c"/>
-<text x="874.0" y="180.0" class="label">Reference context</text>
-<text x="874.0" y="214.0" class="value">12/12 aggregate pairs</text>
-<text x="874.0" y="242.0" class="small">saved v4.12 cases expose regressions</text>
+<text x="874.0" y="180.0" class="label">References now all-model</text>
+<text x="874.0" y="214.0" class="value">211 current wins across 600 compares</text>
+<text x="874.0" y="242.0" class="small">two references x six runners</text>
 <rect x="40.0" y="304.0" width="1040.0" height="150.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <text x="72.0" y="342.0" class="label">Bottom line</text>
-<text x="72.0" y="374.0" class="value">GPT is the cleanest v4.13 win: 49/49 hard gates and 30/13/6 quality split versus previous.</text>
-<text x="72.0" y="402.0" class="value">GLM stays close but not better than GPT; DeepSeek Flash improves from previous, while DeepSeek thinking regresses.</text>
-<text x="72.0" y="430.0" class="value">Grok v4.13 full rows are not included here; existing Grok charts are saved v4.12 empty/current context only.</text>
+<text x="72.0" y="374.0" class="value">The 50-case refresh is publication-ready for hard gates, current-vs-empty saved quality, and all-model reference comparisons.</text>
+<text x="72.0" y="402.0" class="value">Reference rows are observed saved-output comparisons for two reference bundles across six runners.</text>
+<text x="72.0" y="430.0" class="value">Treat external transfer as mixed: instructions lift every tested model versus empty, but GPT remains the quality anchor.</text>
 <line x1="32.0" y1="502.0" x2="1088.0" y2="502.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="520.0" class="small">Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots.</text>
-<text x="32.0" y="532.0" class="small">Source: v4.13 saved summaries, OpenAI/Codex saved-quality judge, and labeled v4.12 reference context</text>
+<text x="32.0" y="520.0" class="small">Scope: 50-case saved hard-gate and quality snapshot; all-model reference rows included.</text>
+<text x="32.0" y="532.0" class="small">Source: 2026-07-08 50-case saved summaries and OpenAI/Codex quality judge.</text>
 <text x="1088.0" y="532.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>

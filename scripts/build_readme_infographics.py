@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build README SVG infographics from saved instruction-eval artifacts."""
+"""Build README SVG and social-card infographics from saved 50-case eval artifacts."""
 
 from __future__ import annotations
 
@@ -12,14 +12,23 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_REFRESH_ROOT = Path(".eval-results/refresh-2026-07-05-v4.12-49-case-v1")
-DEFAULT_EMPTY_ROOT = Path(".eval-results/refresh-2026-07-05-49-case-v1")
-DEFAULT_V413_GPT_ROOT = Path(".eval-results/v4.13-final-gpt55-full-49-v11")
-DEFAULT_V413_EXTERNAL_ROOT = Path(".eval-results/refresh-2026-07-07-v4.13-all-model-v1")
-DEFAULT_CANONICAL_QUALITY_ROOT = Path(".eval-results/openai-canonical-judge-2026-07-07-v1")
 DEFAULT_OUTPUT_DIR = Path("docs/assets/readme")
+DEFAULT_SOCIAL_IMAGE = Path("docs/assets/social/instruction-quality-lift-linkedin.png")
 CASE_FILE = Path("evals/cases.jsonl")
-SNAPSHOT_SCOPE = "Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots."
+PUBLIC_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-public-v1")
+PROVIDER_ROOT_V1 = Path(".eval-results/refresh-2026-07-08-50-case-v1")
+PROVIDER_ROOT_V2 = Path(".eval-results/refresh-2026-07-08-50-case-v2")
+QUALITY_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-quality-v1")
+SNAPSHOT_SCOPE = (
+    "Scope: 50-case saved hard-gate and quality snapshot; "
+    "all-model reference rows included."
+)
+SOCIAL_PNG_METADATA = {
+    "instruction_snapshot_cases": "50",
+    "instruction_snapshot_scope": SNAPSHOT_SCOPE,
+    "instruction_snapshot_quality_root": str(QUALITY_ROOT),
+    "generated_by": "scripts/build_readme_infographics.py",
+}
 
 INK = "#111827"
 MUTED = "#64748b"
@@ -34,7 +43,6 @@ TIE = "#f59e0b"
 INCONCLUSIVE = "#cbd5e1"
 GOOD = "#16a34a"
 WARN = "#dc2626"
-GPT = "#334155"
 CURRENT_FILL = "#bfdbfe"
 BASELINE_FILL = "#fecdd3"
 TIE_FILL = "#fef3c7"
@@ -44,187 +52,94 @@ MODELS = [
     {
         "label": "GPT-5.5",
         "short": "GPT",
-        "current": "current-gpt55/current/summary.json",
-        "empty": "empty-gpt55/empty/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-gpt55/GPT-5.5-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-gpt55/GPT-5.5-empty-saved-model-quality/model-quality-summary.json",
         "color": "#2563eb",
+        "current": PUBLIC_ROOT / "current-gpt55/current/summary.json",
+        "empty": PUBLIC_ROOT / "empty-gpt55/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-gpt55/GPT-5.5-empty-saved-model-quality/model-quality-summary.json",
+        "note": "anchor row",
     },
     {
         "label": "GLM-5.2",
         "short": "GLM",
-        "current": "merged/current-glm-5.2-merged/summary.json",
-        "empty": "merged/empty-glm-5.2-merged/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-external/GLM-5.2-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-glm-5.2/GLM-5.2-empty-saved-model-quality/model-quality-summary.json",
         "color": "#16a34a",
-    },
-    {
-        "label": "Grok Build 0.1",
-        "short": "Grok Build",
-        "current": "merged/current-grok-build-0.1-merged/summary.json",
-        "empty": "merged/empty-grok-build-0.1-merged/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-external/Grok-Build-0.1-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-grok-build-0.1/Grok-Build-0.1-empty-saved-model-quality/model-quality-summary.json",
-        "color": "#7c3aed",
+        "current": PROVIDER_ROOT_V2 / "current-glm-5.2/current/summary.json",
+        "empty": PROVIDER_ROOT_V2 / "empty-glm-5.2/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-glm-5.2/GLM-5.2-empty-saved-model-quality/model-quality-summary.json",
+        "note": "closest external row",
     },
     {
         "label": "Grok 4.3",
         "short": "Grok 4.3",
-        "current": "current-grok-4.3/current/summary.json",
-        "empty": "empty-grok-4.3/empty/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-external/Grok-4.3-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-grok-4.3/Grok-4.3-empty-saved-model-quality/model-quality-summary.json",
         "color": "#ea580c",
+        "current": PROVIDER_ROOT_V1 / "current-grok-4.3/current/summary.json",
+        "empty": PROVIDER_ROOT_V1 / "empty-grok-4.3/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-grok-4.3/Grok-4.3-empty-saved-model-quality/model-quality-summary.json",
+        "note": "ADI failed in full run",
+    },
+    {
+        "label": "Grok Build 0.1",
+        "short": "Grok Build",
+        "color": "#7c3aed",
+        "current": PROVIDER_ROOT_V1 / "current-grok-build-0.1/current/summary.json",
+        "empty": PROVIDER_ROOT_V1 / "empty-grok-build-0.1/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-grok-build-0.1/Grok-Build-0.1-empty-saved-model-quality/model-quality-summary.json",
+        "note": "adapter row",
     },
     {
         "label": "DeepSeek V4 Flash",
         "short": "DeepSeek",
-        "current": "current-deepseek-v4-flash/current/summary.json",
-        "empty": "empty-deepseek-v4-flash/empty/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-external/DeepSeek-V4-Flash-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-deepseek-v4-flash/DeepSeek-V4-Flash-empty-saved-model-quality/model-quality-summary.json",
         "color": "#0891b2",
+        "current": PUBLIC_ROOT / "current-deepseek-v4-flash/current/summary.json",
+        "empty": PROVIDER_ROOT_V1 / "empty-deepseek-v4-flash/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-deepseek-v4-flash/DeepSeek-V4-Flash-empty-saved-model-quality/model-quality-summary.json",
+        "note": "non-thinking",
     },
     {
         "label": "DeepSeek V4 thinking",
         "short": "DS thinking",
-        "current": "current-deepseek-v4-flash-thinking/current/summary.json",
-        "empty": "empty-deepseek-v4-flash-thinking/empty/summary.json",
-        "prev_quality": "quality-prev-current-vs-new-current-external/DeepSeek-V4-Flash-thinking-old-current-saved-model-quality/model-quality-summary.json",
-        "empty_quality": "quality-empty-vs-current-deepseek-v4-flash-thinking/DeepSeek-V4-Flash-thinking-empty-saved-model-quality/model-quality-summary.json",
         "color": "#0f766e",
+        "current": PROVIDER_ROOT_V1 / "current-deepseek-v4-flash-thinking/current/summary.json",
+        "empty": PROVIDER_ROOT_V1 / "empty-deepseek-v4-flash-thinking/empty/summary.json",
+        "quality": QUALITY_ROOT
+        / "empty-vs-current-deepseek-v4-flash-thinking/DeepSeek-V4-Flash-thinking-empty-saved-model-quality/model-quality-summary.json",
+        "note": "thinking mode",
     },
 ]
 
-V413_MODELS = [
+GPT_EXTERNAL_QUALITY = (
+    QUALITY_ROOT / "gpt-vs-external-current/GPT-5.5-saved-model-quality/model-quality-summary.json"
+)
+
+REFERENCE_QUALITY_SUMMARIES = [
     {
-        "label": "GPT-5.5",
-        "short": "GPT",
-        "previous": ("gpt", "split/compare-HEAD-current/baseline-HEAD/summary.json"),
-        "current": ("gpt", "split/compare-HEAD-current/current/summary.json"),
-        "prev_quality": "gpt/previous-saved-model-quality/model-quality-summary.json",
-        "color": "#2563eb",
+        "reference": "OpenHands",
+        "short": "OH",
+        "color": OPENHANDS,
+        "quality": QUALITY_ROOT
+        / "quality-reference-openhands-vs-current-all-models-full-v1/Reference-OpenHands-saved-model-quality/model-quality-summary.json",
     },
     {
-        "label": "GLM-5.2",
-        "short": "GLM",
-        "previous": ("external", "split/glm-5.2-absolute-v2/baseline-origin-main/summary.json"),
-        "current": ("external", "split/glm-5.2-absolute-v2/current/summary.json"),
-        "prev_quality": "glm/previous-saved-model-quality/model-quality-summary.json",
-        "color": "#16a34a",
-    },
-    {
-        "label": "DeepSeek V4 Flash",
-        "short": "DeepSeek",
-        "previous": ("external", "split/deepseek-v4-flash-absolute-v1/baseline-origin-main/summary.json"),
-        "current": ("external", "split/deepseek-v4-flash-absolute-v1/current/summary.json"),
-        "prev_quality": "deepseek/previous-saved-model-quality/model-quality-summary.json",
-        "color": "#0891b2",
-    },
-    {
-        "label": "DeepSeek V4 thinking",
-        "short": "DS thinking",
-        "previous": ("external", "split/deepseek-v4-flash-thinking-absolute-v1/baseline-origin-main/summary.json"),
-        "current": ("external", "split/deepseek-v4-flash-thinking-absolute-v1/current/summary.json"),
-        "prev_quality": "deepseek-thinking/previous-saved-model-quality/model-quality-summary.json",
-        "color": "#0f766e",
+        "reference": "Claude/Fable",
+        "short": "Fable",
+        "color": FABLE,
+        "quality": QUALITY_ROOT
+        / "quality-reference-claude-fable-vs-current-all-models-full-v1/Reference-Fable-saved-model-quality/model-quality-summary.json",
     },
 ]
 
-GPT_VS_EXTERNAL_CURRENT_QUALITY = "gpt-vs-external-current/gpt-current-saved-model-quality/model-quality-summary.json"
-GPT_VS_EXTERNAL_PREVIOUS_QUALITY = "gpt-vs-external-previous/gpt-previous-saved-model-quality/model-quality-summary.json"
-
-GPT_EXTERNAL_QUALITY = "quality-gpt55-vs-external-new-current/GPT-5.5-new-current-saved-model-quality/model-quality-summary.json"
-
-REFERENCES = [
-    {
-        "model": "GPT-5.5",
-        "short": "GPT",
-        "reference": "OpenHands",
-        "summary": "reference-openhands-gpt55/reference-openhands-agents/summary.json",
-        "quality": "quality-reference-openhands-vs-current-gpt55/OpenHands-GPT-5.5-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "GPT-5.5",
-        "short": "GPT",
-        "reference": "Fable",
-        "summary": "reference-claude-fable-gpt55/reference-claude-fable-5/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-gpt55/Claude-Fable-GPT-5.5-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "GLM-5.2",
-        "short": "GLM",
-        "reference": "OpenHands",
-        "summary": "reference-openhands-glm-5.2-zai/reference-openhands-agents/summary.json",
-        "quality": "quality-reference-openhands-vs-current-glm-5.2/OpenHands-GLM-5.2-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "GLM-5.2",
-        "short": "GLM",
-        "reference": "Fable",
-        "summary": "reference-claude-fable-glm-5.2-zai/reference-claude-fable-5/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-glm-5.2/Claude-Fable-GLM-5.2-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "Grok Build 0.1",
-        "short": "Grok Build",
-        "reference": "OpenHands",
-        "summary": "merged/reference-openhands-grok-build-0.1-merged/summary.json",
-        "quality": "quality-reference-openhands-vs-current-grok-build-0.1/OpenHands-Grok-Build-0.1-saved-model-quality/model-quality-summary.json",
-        "caveat": "2 provider residuals",
-    },
-    {
-        "model": "Grok Build 0.1",
-        "short": "Grok Build",
-        "reference": "Fable",
-        "summary": "merged/reference-claude-fable-grok-build-0.1-merged/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-grok-build-0.1/Claude-Fable-Grok-Build-0.1-saved-model-quality/model-quality-summary.json",
-        "caveat": "4 provider residuals",
-    },
-    {
-        "model": "Grok 4.3",
-        "short": "Grok 4.3",
-        "reference": "OpenHands",
-        "summary": "reference-openhands-grok-4.3-xai/reference-openhands-agents/summary.json",
-        "quality": "quality-reference-openhands-vs-current-grok-4.3/OpenHands-Grok-4.3-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "Grok 4.3",
-        "short": "Grok 4.3",
-        "reference": "Fable",
-        "summary": "reference-claude-fable-grok-4.3-xai/reference-claude-fable-5/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-grok-4.3/Claude-Fable-Grok-4.3-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "DeepSeek V4 Flash",
-        "short": "DeepSeek",
-        "reference": "OpenHands",
-        "summary": "reference-openhands-deepseek-v4-flash/reference-openhands-agents/summary.json",
-        "quality": "quality-reference-openhands-vs-current-deepseek-v4-flash/OpenHands-DeepSeek-V4-Flash-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "DeepSeek V4 Flash",
-        "short": "DeepSeek",
-        "reference": "Fable",
-        "summary": "reference-claude-fable-deepseek-v4-flash/reference-claude-fable-5/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-deepseek-v4-flash/Claude-Fable-DeepSeek-V4-Flash-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "DeepSeek V4 thinking",
-        "short": "DS thinking",
-        "reference": "OpenHands",
-        "summary": "reference-openhands-deepseek-v4-flash-thinking/reference-openhands-agents/summary.json",
-        "quality": "quality-reference-openhands-vs-current-deepseek-v4-flash-thinking/OpenHands-DeepSeek-V4-Flash-thinking-saved-model-quality/model-quality-summary.json",
-    },
-    {
-        "model": "DeepSeek V4 thinking",
-        "short": "DS thinking",
-        "reference": "Fable",
-        "summary": "reference-claude-fable-deepseek-v4-flash-thinking/reference-claude-fable-5/summary.json",
-        "quality": "quality-reference-claude-fable-vs-current-deepseek-v4-flash-thinking/Claude-Fable-DeepSeek-V4-Flash-thinking-saved-model-quality/model-quality-summary.json",
-    },
-]
+REFERENCE_MODEL_LABELS = {
+    "GPT-5.5-current": ("GPT", "#2563eb"),
+    "GLM-5.2-current": ("GLM", "#16a34a"),
+    "Grok-4.3-current": ("Grok 4.3", "#ea580c"),
+    "Grok-Build-0.1-current": ("Grok Build", "#7c3aed"),
+    "DeepSeek-V4-Flash-current": ("DeepSeek", "#0891b2"),
+    "DeepSeek-V4-Flash-thinking-current": ("DS thinking", "#0f766e"),
+}
 
 
 def read_json(path: Path) -> Any:
@@ -302,6 +217,128 @@ def write_svg(path: Path, lines: list[str]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def rgb(hex_color: str) -> tuple[int, int, int]:
+    value = hex_color.lstrip("#")
+    return int(value[0:2], 16), int(value[2:4], 16), int(value[4:6], 16)
+
+
+def load_font(size: int, *, bold: bool = False) -> Any:
+    from PIL import ImageFont
+
+    candidates = [
+        "/System/Library/Fonts/SFNS.ttf",
+        "/System/Library/Fonts/HelveticaNeue.ttc",
+        "/Library/Fonts/Arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    for candidate in candidates:
+        path = Path(candidate)
+        if path.exists():
+            try:
+                return ImageFont.truetype(str(path), size=size)
+            except OSError:
+                continue
+    return ImageFont.load_default(size=size)
+
+
+def fit_font(draw: Any, value: str, size: int, max_width: int, *, bold: bool = False, min_size: int = 12) -> Any:
+    while size > min_size:
+        font = load_font(size, bold=bold)
+        bbox = draw.textbbox((0, 0), value, font=font)
+        if bbox[2] - bbox[0] <= max_width:
+            return font
+        size -= 1
+    return load_font(min_size, bold=bold)
+
+
+def social_metric_card(draw: Any, x: int, y: int, width: int, title: str, value: str, caption: str, fill: str) -> None:
+    draw.rounded_rectangle((x, y, x + width, y + 128), radius=22, fill=rgb(fill))
+    draw.text((x + 30, y + 22), title, font=load_font(24, bold=True), fill=rgb(INK))
+    draw.text((x + 30, y + 55), value, font=load_font(44, bold=True), fill=rgb(INK))
+    draw.text((x + 30, y + 100), caption, font=load_font(18), fill=rgb(MUTED))
+
+
+def render_social_card_png(repo_root: Path, path: Path) -> None:
+    from PIL import Image, ImageDraw, PngImagePlugin
+
+    rows = model_rows(repo_root)
+    order = ["GPT", "GLM", "Grok Build", "Grok 4.3", "DeepSeek", "DS thinking"]
+    rows = sorted(rows, key=lambda row: order.index(row["short"]) if row["short"] in order else 99)
+    avg_current = sum(row["current_score"] for row in rows) / len(rows)
+    avg_empty = sum(row["empty_score"] for row in rows) / len(rows)
+    current_wins = sum(row["quality_current_wins"] for row in rows)
+    empty_wins = sum(row["quality_empty_wins"] for row in rows)
+    ties = sum(row["quality_ties"] for row in rows)
+    inconclusive = sum(row["quality_inconclusive"] for row in rows)
+    hard_gate_lift = sum(row["pass_delta"] for row in rows)
+
+    width, height = 1600, 900
+    image = Image.new("RGB", (width, height), rgb("#f8fafc"))
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((36, 36, 1564, 864), radius=24, fill=rgb("#ffffff"), outline=rgb("#dbe3ef"), width=1)
+
+    draw.text((80, 78), "50-case instruction eval snapshot", font=load_font(26, bold=True), fill=rgb("#475569"))
+    title = "Instructions lift quality vs empty baselines"
+    draw.text((80, 112), title, font=fit_font(draw, title, 58, 1440, bold=True), fill=rgb(INK))
+    draw.text(
+        (80, 184),
+        "Current instruction bundle compared with empty bundle across six tested model rows.",
+        font=load_font(28),
+        fill=rgb("#475569"),
+    )
+
+    social_metric_card(draw, 80, 250, 320, "Avg quality score", f"{avg_current:.1f} vs {avg_empty:.1f}", "current vs empty, /100", "#dcfce7")
+    social_metric_card(draw, 435, 250, 320, "Head-to-head wins", f"{current_wins} vs {empty_wins}", "current better vs empty better", "#dbeafe")
+    social_metric_card(draw, 790, 250, 320, "Hard-gate lift", f"+{hard_gate_lift}", "passed cases across models", "#fef3c7")
+
+    panel_x, panel_y, panel_w, panel_h = 80, 408, 1440, 410
+    draw.rounded_rectangle((panel_x, panel_y, panel_x + panel_w, panel_y + panel_h), radius=20, fill=rgb("#ffffff"), outline=rgb("#dbe3ef"), width=1)
+    draw.text((108, 424), "Average judge score by model", font=load_font(25, bold=True), fill=rgb(INK))
+    draw.ellipse((948, 426, 964, 442), fill=rgb("#94a3b8"))
+    draw.text((976, 422), "empty bundle", font=load_font(16, bold=True), fill=rgb(MUTED))
+    draw.ellipse((1118, 426, 1134, 442), fill=rgb(CURRENT))
+    draw.text((1146, 422), "current instructions", font=load_font(16, bold=True), fill=rgb(MUTED))
+
+    axis_x, axis_w = 420, 545
+    for tick in [0, 25, 50, 75, 100]:
+        x = axis_x + int(axis_w * pct(tick, 100))
+        draw.line((x, 472, x, 788), fill=rgb("#e5e7eb"), width=1)
+        draw.text((x - 8, 448), str(tick), font=load_font(17, bold=True), fill=rgb(MUTED))
+
+    for index, row in enumerate(rows):
+        y = 490 + index * 56
+        if index % 2 == 1:
+            draw.rounded_rectangle((96, y - 22, 1504, y + 36), radius=12, fill=rgb("#f8fafc"))
+        draw.text((108, y - 4), row["label"], font=load_font(24, bold=True), fill=rgb(INK))
+        empty_w = int(axis_w * pct(row["empty_score"], 100))
+        current_w = int(axis_w * pct(row["current_score"], 100))
+        draw.rounded_rectangle((axis_x, y - 14, axis_x + axis_w, y - 2), radius=6, fill=rgb("#eef2f7"))
+        draw.rounded_rectangle((axis_x, y - 14, axis_x + empty_w, y - 2), radius=6, fill=rgb("#94a3b8"))
+        draw.rounded_rectangle((axis_x, y + 12, axis_x + axis_w, y + 25), radius=7, fill=rgb("#eef2f7"))
+        draw.rounded_rectangle((axis_x, y + 12, axis_x + current_w, y + 25), radius=7, fill=rgb(row["color"]))
+
+        draw.text((988, y - 20), f"{row['empty_score']:.1f}", font=load_font(20, bold=True), fill=rgb("#334155"))
+        draw.text((1058, y - 20), "wins", font=load_font(16, bold=True), fill=rgb(MUTED))
+        draw.text((1154, y - 20), "hard gates", font=load_font(16, bold=True), fill=rgb(MUTED))
+        draw.text((988, y + 8), f"{row['current_score']:.1f}", font=load_font(20, bold=True), fill=rgb("#334155"))
+        draw.text((1058, y + 8), f"{row['quality_current_wins']} vs {row['quality_empty_wins']}", font=load_font(20, bold=True), fill=rgb("#334155"))
+        draw.text((1154, y + 8), f"{row['empty_passed']} -> {row['current_passed']}", font=load_font(20, bold=True), fill=rgb("#334155"))
+        draw.rounded_rectangle((1314, y - 13, 1418, y + 24), radius=18, fill=rgb("#dcfce7"))
+        draw.text((1326, y - 9), f"{row['quality_delta']:+.1f}", font=load_font(26, bold=True), fill=rgb(INK))
+
+    footer_text = (
+        "Source: saved empty-vs-current quality aggregates, 50 cases. "
+        f"Wins are head-to-head judge choices; ties {ties}, inconclusive {inconclusive}."
+    )
+    draw.text((80, 838), footer_text, font=load_font(17, bold=True), fill=rgb(MUTED))
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    metadata = PngImagePlugin.PngInfo()
+    for key, value in SOCIAL_PNG_METADATA.items():
+        metadata.add_text(key, value)
+    image.save(path, pnginfo=metadata)
+
+
 def resolve_path(repo_root: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo_root / path
 
@@ -310,228 +347,175 @@ def compact_model_label(model: str) -> str:
     return {"Grok Build": "GB", "Grok 4.3": "G4", "DeepSeek": "DS", "DS thinking": "DSt"}.get(model, model)
 
 
-def compact_reference_label(reference: str) -> str:
-    return "OH" if reference == "OpenHands" else "F"
-
-
 def short_score(value: float) -> str:
     rounded = round(value)
     return "0" if rounded == 0 else f"{rounded:+d}"
 
 
-def quality_summary(refresh_root: Path, rel_path: str) -> dict[str, Any]:
-    data = read_json(refresh_root / rel_path)
+def summary_counts(repo_root: Path, rel_path: Path) -> dict[str, Any]:
+    data = read_json(resolve_path(repo_root, rel_path))
+    results = data["results"]
+    return {
+        "passed": int(data.get("passed", sum(1 for item in results if item["passed"]))),
+        "failed": int(data.get("failed", sum(1 for item in results if not item["passed"]))),
+        "total": int(data.get("total", len(results))),
+        "agent": sum(1 for item in results if item.get("failure_type") == "agent"),
+        "results": results,
+    }
+
+
+def quality_pair(repo_root: Path, rel_path: Path) -> dict[str, Any]:
+    data = read_json(resolve_path(repo_root, rel_path))
     pair = data["pairs"][0]
-    aggregate = pair["aggregate"]
     return {
-        "aggregate": aggregate,
+        "aggregate": pair["aggregate"],
         "pair_path": Path(pair["quality_json"]),
-        "baseline_label": data["baseline_label"],
         "candidate_label": pair["candidate_label"],
+        "baseline_label": data["baseline_label"],
     }
 
 
-def quality_summary_with_fallback(primary_root: Path, fallback_root: Path, rel_path: str) -> tuple[dict[str, Any], str]:
-    if (primary_root / rel_path).exists():
-        return quality_summary(primary_root, rel_path), "same refresh"
-    return quality_summary(fallback_root, rel_path), "reused quality"
+def quality_pairs(repo_root: Path, rel_path: Path) -> list[dict[str, Any]]:
+    data = read_json(resolve_path(repo_root, rel_path))
+    return [
+        {
+            "aggregate": pair["aggregate"],
+            "pair_path": Path(pair["quality_json"]),
+            "candidate_label": pair["candidate_label"],
+            "baseline_label": data["baseline_label"],
+        }
+        for pair in data["pairs"]
+    ]
 
 
-def summary_counts(refresh_root: Path, rel_path: str) -> dict[str, int]:
-    data = read_json(refresh_root / rel_path)
+def aggregate_quality_json(repo_root: Path, rel_path: Path) -> dict[str, Any]:
+    data = read_json(resolve_path(repo_root, rel_path))
+    winners = {"current": 0, "baseline": 0, "tie": 0, "inconclusive": 0}
+    sources: dict[str, int] = {}
+    confidence: dict[str, int] = {}
+    deltas: list[float] = []
+    for item in data["comparisons"]:
+        quality = item["quality"]
+        winner = quality.get("winner", "inconclusive")
+        winners[winner if winner in winners else "inconclusive"] += 1
+        source = quality.get("source", "unknown")
+        sources[source] = sources.get(source, 0) + 1
+        conf = quality.get("confidence", "unknown")
+        confidence[conf] = confidence.get(conf, 0) + 1
+        delta = quality.get("delta")
+        if isinstance(delta, (int, float)):
+            deltas.append(float(delta))
     return {
-        "passed": int(data["passed"]),
-        "failed": int(data["failed"]),
-        "total": int(data["total"]),
-        "agent": sum(1 for item in data["results"] if item["failure_type"] == "agent"),
+        "total": len(data["comparisons"]),
+        "winners": winners,
+        "sources": sources,
+        "confidence": confidence,
+        "average_delta": round(sum(deltas) / len(deltas), 1) if deltas else 0.0,
+        "pair_path": resolve_path(repo_root, rel_path),
     }
 
 
-def summary_counts_with_fallback(primary_root: Path, fallback_root: Path, rel_path: str) -> tuple[dict[str, int], str]:
-    if (primary_root / rel_path).exists():
-        return summary_counts(primary_root, rel_path), "same refresh"
-    return summary_counts(fallback_root, rel_path), "reused empty"
-
-
-def v413_source_root(source: str, gpt_root: Path, external_root: Path) -> Path:
-    if source == "gpt":
-        return gpt_root
-    if source == "external":
-        return external_root
-    raise ValueError(f"unknown v4.13 source root: {source}")
-
-
-def v413_summary_counts(gpt_root: Path, external_root: Path, source_path: tuple[str, str]) -> dict[str, int]:
-    source, rel_path = source_path
-    return summary_counts(v413_source_root(source, gpt_root, external_root), rel_path)
-
-
-def v413_model_rows(gpt_root: Path, external_root: Path, quality_root: Path) -> list[dict[str, Any]]:
+def model_rows(repo_root: Path) -> list[dict[str, Any]]:
     rows = []
-    for model in V413_MODELS:
-        previous = v413_summary_counts(gpt_root, external_root, model["previous"])
-        current = v413_summary_counts(gpt_root, external_root, model["current"])
-        quality = quality_summary(quality_root, model["prev_quality"])
+    for model in MODELS:
+        current = summary_counts(repo_root, model["current"])
+        empty = summary_counts(repo_root, model["empty"])
+        quality = quality_pair(repo_root, model["quality"])
         aggregate = quality["aggregate"]
+        winners = aggregate["winners"]
         rows.append(
             {
                 **model,
-                "total": aggregate["total"],
-                "previous_passed": previous["passed"],
                 "current_passed": current["passed"],
-                "pass_delta": current["passed"] - previous["passed"],
-                "wins": aggregate["winners"]["current"],
-                "losses": aggregate["winners"]["baseline"],
-                "ties": aggregate["winners"]["tie"],
-                "inconclusive": aggregate["winners"]["inconclusive"],
+                "current_failed": current["failed"],
+                "empty_passed": empty["passed"],
+                "empty_failed": empty["failed"],
+                "total": current["total"],
+                "agent": current["agent"],
+                "empty_agent": empty["agent"],
+                "pass_delta": current["passed"] - empty["passed"],
+                "quality_current_wins": winners["current"],
+                "quality_empty_wins": winners["baseline"],
+                "quality_ties": winners["tie"],
+                "quality_inconclusive": winners.get("inconclusive", 0),
                 "quality_delta": aggregate["average_delta"],
-                "candidate_score": aggregate["average_current_score"],
-                "baseline_score": aggregate["average_baseline_score"],
+                "current_score": aggregate["average_current_score"],
+                "empty_score": aggregate["average_baseline_score"],
                 "judge_calls": aggregate["sources"].get("llm_judge", 0),
                 "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
                 "pair_path": quality["pair_path"],
+                "results": current["results"],
             }
         )
     return rows
 
 
-def v413_gpt_external_rows(quality_root: Path, rel_path: str, prefix: str) -> list[dict[str, Any]]:
-    data = read_json(quality_root / rel_path)
-    labels = {
-        f"{prefix}-glm": "GLM",
-        f"{prefix}-deepseek": "DeepSeek",
-        f"{prefix}-deepseek-thinking": "DS thinking",
+def gpt_external_rows(repo_root: Path) -> list[dict[str, Any]]:
+    label_map = {
+        "GLM-5.2": ("GLM", "#16a34a"),
+        "Grok-4.3": ("Grok 4.3", "#ea580c"),
+        "Grok-Build-0.1": ("Grok Build", "#7c3aed"),
+        "DeepSeek-V4-Flash": ("DeepSeek", "#0891b2"),
+        "DeepSeek-V4-Flash-thinking": ("DS thinking", "#0f766e"),
     }
     rows = []
-    for pair in data["pairs"]:
+    for pair in quality_pairs(repo_root, GPT_EXTERNAL_QUALITY):
         aggregate = pair["aggregate"]
         winners = aggregate["winners"]
-        rows.append(
-            {
-                "label": labels.get(pair["candidate_label"], pair["candidate_label"]),
-                "candidate_label": pair["candidate_label"],
-                "hard_passed": aggregate["candidate_passed"],
-                "total": aggregate["total"],
-                "wins": winners["current"],
-                "gpt_wins": winners["baseline"],
-                "ties": winners["tie"],
-                "inconclusive": winners["inconclusive"],
-                "delta": aggregate["average_delta"],
-                "score": aggregate["average_current_score"],
-                "judge_calls": aggregate["sources"].get("llm_judge", 0),
-                "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
-                "pair_path": Path(pair["quality_json"]),
-            }
-        )
-    order = ["GLM", "DeepSeek", "DS thinking"]
-    return sorted(rows, key=lambda row: order.index(row["label"]) if row["label"] in order else 999)
-
-
-def v413_model_gap_rows(quality_root: Path) -> list[dict[str, Any]]:
-    previous = {row["label"]: row for row in v413_gpt_external_rows(quality_root, GPT_VS_EXTERNAL_PREVIOUS_QUALITY, "previous")}
-    current = {row["label"]: row for row in v413_gpt_external_rows(quality_root, GPT_VS_EXTERNAL_CURRENT_QUALITY, "current")}
-    rows = []
-    for label in ["GLM", "DeepSeek", "DS thinking"]:
-        prev_row = previous[label]
-        current_row = current[label]
+        label, color = label_map.get(pair["candidate_label"], (pair["candidate_label"], "#334155"))
         rows.append(
             {
                 "label": label,
-                "previous": prev_row,
-                "current": current_row,
-                "gap_change": current_row["delta"] - prev_row["delta"],
-                "pass_change": current_row["hard_passed"] - prev_row["hard_passed"],
-            }
-        )
-    return rows
-
-
-def model_rows(refresh_root: Path, empty_root: Path) -> list[dict[str, Any]]:
-    rows = []
-    for model in MODELS:
-        current = summary_counts(refresh_root, model["current"])
-        empty, empty_source = summary_counts_with_fallback(refresh_root, empty_root, model["empty"])
-        quality = quality_summary(refresh_root, model["prev_quality"])
-        empty_quality, empty_quality_source = quality_summary_with_fallback(refresh_root, empty_root, model["empty_quality"])
-        aggregate = quality["aggregate"]
-        empty_quality_aggregate = empty_quality["aggregate"]
-        rows.append(
-            {
-                **model,
-                "total": aggregate["total"],
-                "current_passed": current["passed"],
-                "old_passed": aggregate["baseline_passed"],
-                "new_passed": aggregate["candidate_passed"],
-                "pass_delta": aggregate["candidate_passed"] - aggregate["baseline_passed"],
-                "wins": aggregate["winners"]["current"],
-                "losses": aggregate["winners"]["baseline"],
-                "ties": aggregate["winners"]["tie"],
-                "inconclusive": aggregate["winners"]["inconclusive"],
-                "quality_delta": aggregate["average_delta"],
-                "agent": current["agent"],
-                "empty_passed": empty["passed"],
-                "empty_agent": empty["agent"],
-                "empty_source": empty_source,
-                "empty_delta": current["passed"] - empty["passed"],
-                "empty_quality_delta": empty_quality_aggregate["average_delta"],
-                "empty_quality_source": empty_quality_source,
-            }
-        )
-    return rows
-
-
-def gpt_external_rows(refresh_root: Path) -> list[dict[str, Any]]:
-    data = read_json(refresh_root / GPT_EXTERNAL_QUALITY)
-    labels = {
-        "Grok-4.3-new-current": "Grok 4.3",
-        "Grok-Build-0.1-new-current": "Grok Build",
-        "DeepSeek-V4-Flash-new-current": "DeepSeek",
-        "DeepSeek-V4-Flash-thinking-new-current": "DS thinking",
-        "GLM-5.2-new-current": "GLM",
-    }
-    rows = []
-    for pair in data["pairs"]:
-        aggregate = pair["aggregate"]
-        winners = aggregate["winners"]
-        rows.append(
-            {
-                "label": labels.get(pair["candidate_label"], pair["candidate_label"]),
+                "candidate_label": pair["candidate_label"],
+                "color": color,
                 "hard_passed": aggregate["candidate_passed"],
+                "gpt_passed": aggregate["baseline_passed"],
                 "total": aggregate["total"],
                 "wins": winners["current"],
                 "gpt_wins": winners["baseline"],
                 "ties": winners["tie"],
-                "inconclusive": winners["inconclusive"],
+                "inconclusive": winners.get("inconclusive", 0),
                 "delta": aggregate["average_delta"],
                 "score": aggregate["average_current_score"],
+                "gpt_score": aggregate["average_baseline_score"],
+                "judge_calls": aggregate["sources"].get("llm_judge", 0),
+                "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
+                "pair_path": pair["pair_path"],
             }
         )
-    order = ["GLM", "Grok Build", "Grok 4.3", "DeepSeek", "DS thinking"]
+    order = ["GLM", "Grok 4.3", "Grok Build", "DeepSeek", "DS thinking"]
     return sorted(rows, key=lambda row: order.index(row["label"]) if row["label"] in order else 999)
 
 
-def reference_rows(refresh_root: Path) -> list[dict[str, Any]]:
+def reference_rows(repo_root: Path) -> list[dict[str, Any]]:
     rows = []
-    for item in REFERENCES:
-        summary = summary_counts(refresh_root, item["summary"])
-        quality = quality_summary(refresh_root, item["quality"])
-        aggregate = quality["aggregate"]
-        winners = aggregate["winners"]
-        rows.append(
-            {
-                **item,
-                "reference_passed": summary["passed"],
-                "reference_agent": summary["agent"],
-                "current_passed": aggregate["candidate_passed"],
-                "total": aggregate["total"],
-                "current_wins": winners["current"],
-                "reference_wins": winners["baseline"],
-                "ties": winners["tie"],
-                "inconclusive": winners["inconclusive"],
-                "delta": aggregate["average_delta"],
-                "pair_path": quality["pair_path"],
-            }
-        )
+    for ref in REFERENCE_QUALITY_SUMMARIES:
+        for pair in quality_pairs(repo_root, ref["quality"]):
+            aggregate = pair["aggregate"]
+            winners = aggregate["winners"]
+            model_label, model_color = REFERENCE_MODEL_LABELS.get(pair["candidate_label"], (pair["candidate_label"], "#334155"))
+            rows.append(
+                {
+                    **ref,
+                    "model": model_label,
+                    "model_color": model_color,
+                    "candidate_label": pair["candidate_label"],
+                    "label": f"{ref['short']}/{model_label}",
+                    "current_passed": aggregate["candidate_passed"],
+                    "reference_passed": aggregate["baseline_passed"],
+                    "total": aggregate["total"],
+                    "current_wins": winners["current"],
+                    "reference_wins": winners["baseline"],
+                    "ties": winners["tie"],
+                    "inconclusive": winners.get("inconclusive", 0),
+                    "delta": aggregate["average_delta"],
+                    "current_score": aggregate["average_current_score"],
+                    "reference_score": aggregate["average_baseline_score"],
+                    "judge_calls": aggregate["sources"].get("llm_judge", 0),
+                    "hard_gate_shortcuts": aggregate["sources"].get("hard_gate", 0),
+                    "pair_path": pair["pair_path"],
+                }
+            )
     return rows
 
 
@@ -553,57 +537,82 @@ def draw_segments(
     lines.append(rect(x, y, width, height, "none", rx=4, stroke="#e5e7eb"))
 
 
-def render_instruction_lift(
-    gpt_root: Path,
-    external_root: Path,
-    quality_root: Path,
-    refresh_root: Path,
-    output_dir: Path,
-) -> None:
-    rows = v413_model_rows(gpt_root, external_root, quality_root)
-    references = reference_rows(refresh_root)
-    gaps = v413_model_gap_rows(quality_root)
+def render_hard_gates_50(repo_root: Path, output_dir: Path) -> None:
+    rows = model_rows(repo_root)
+    width = 1120
+    height = 430
+    lines = svg_start(
+        width,
+        height,
+        "50-case hard-gate snapshot",
+        "Hard-gate pass counts for the current 50-case instruction eval suite.",
+    )
+    lines.extend(panel(32, 28, 1056, 374))
+    lines.append(text(56, 68, "50-case hard-gate snapshot", "title"))
+    lines.append(text(56, 94, "Current eval contract after Agent Data Injection coverage; saved quality rows are available separately.", "subtitle"))
+    lines.append(text(56, 132, "Model / runner", "axis"))
+    lines.append(text(340, 132, "Current instructed", "axis"))
+    lines.append(text(682, 132, "Empty bundle", "axis"))
+    lines.append(text(934, 132, "Notes", "axis"))
+    for index, row in enumerate(rows):
+        y = 168 + index * 44
+        lines.append(text(56, y, row["label"], "label"))
+        lines.append(rect(340, y - 12, 300, 16, "#e2e8f0", rx=8))
+        lines.append(rect(340, y - 12, 300 * pct(row["current_passed"], row["total"]), 16, row["color"], rx=8))
+        lines.append(text(652, y + 1, f"{row['current_passed']}/{row['total']}", "value"))
+        lines.append(rect(682, y - 12, 300, 16, "#e2e8f0", rx=8))
+        lines.append(rect(682, y - 12, 300 * pct(row["empty_passed"], row["total"]), 16, "#94a3b8", rx=8))
+        lines.append(text(994, y + 1, f"{row['empty_passed']}/{row['total']}", "value"))
+        lines.append(text(934, y + 24, row["note"], "small"))
+    lines.extend(footer(width, 414, "Source: .eval-results/refresh-2026-07-08-50-case-* summaries."))
+    lines.append("</svg>")
+    write_svg(output_dir / "hard-gates-50.svg", lines)
+
+
+def render_instruction_lift(repo_root: Path, output_dir: Path) -> None:
+    rows = model_rows(repo_root)
+    external = gpt_external_rows(repo_root)
+    references = reference_rows(repo_root)
     gpt = next(row for row in rows if row["short"] == "GPT")
-    non_gpt = [row for row in rows if row["short"] != "GPT"]
-    glm_gap = next(row for row in gaps if row["label"] == "GLM")
+    glm_gap = next(row for row in external if row["label"] == "GLM")
     width = 1120
     height = 560
     lines = svg_start(
         width,
         height,
-        "Instruction eval overview",
-        "Headline answers across fresh v4.13 GPT/GLM/DeepSeek rows plus saved v4.12 context.",
+        "50-case instruction eval overview",
+        "Headline answers from the 50-case hard-gate, saved quality, and GPT reference snapshots.",
     )
-    lines.append(text(40, 56, "Instruction eval overview", "title"))
-    lines.append(text(40, 84, "Read left to right: v4.13 improvement, external transfer, model gap, and reference-prompt context.", "subtitle"))
+    lines.append(text(40, 56, "50-case instruction eval overview", "title"))
+    lines.append(text(40, 84, "Read left to right: current-vs-empty lift, external model gap, GPT reference contrast, and scope caveat.", "subtitle"))
     card_w = 248
     cards = [
         (
             40,
-            "GPT quality improved",
-            f"{gpt['previous_passed']} -> {gpt['current_passed']} hard gates",
-            f"quality {gpt['wins']}/{gpt['ties']}/{gpt['losses']}, avg {gpt['quality_delta']:+.1f}",
+            "GPT clears hard gates",
+            f"{gpt['current_passed']}/{gpt['total']} current vs {gpt['empty_passed']}/{gpt['total']} empty",
+            f"quality split {gpt['quality_current_wins']}/{gpt['quality_ties']}/{gpt['quality_empty_wins']}, avg {gpt['quality_delta']:+.1f}",
             CURRENT,
         ),
         (
             310,
-            "External transfer mixed",
-            f"{sum(1 for row in non_gpt if row['pass_delta'] > 0)}/{len(non_gpt)} hard-gate lifts",
-            "GLM slight up; DS up; DSt down",
-            WARN,
+            "Instruction lift transfers",
+            f"{sum(1 for row in rows if row['pass_delta'] > 0)}/{len(rows)} models improve hard gates",
+            f"saved quality deltas all positive; GLM +{next(row for row in rows if row['short'] == 'GLM')['quality_delta']:.1f}",
+            GOOD,
         ),
         (
             580,
-            "Model gap vs GPT",
-            f"GLM current gap {glm_gap['current']['delta']:+.1f}",
-            f"gap {glm_gap['gap_change']:+.1f}; DS gaps still large",
+            "External gap remains",
+            f"GLM gap vs GPT {glm_gap['delta']:+.1f}",
+            f"GLM split {glm_gap['wins']}/{glm_gap['ties']}/{glm_gap['gpt_wins']}; others trail heavily",
             TIE,
         ),
         (
             850,
-            "Reference context",
-            f"{sum(1 for row in references if row['delta'] > 0)}/{len(references)} aggregate pairs",
-            "saved v4.12 cases expose regressions",
+            "References now all-model",
+            f"{sum(row['current_wins'] for row in references)} current wins across {sum(row['total'] for row in references)} compares",
+            "two references x six runners",
             BASELINE,
         ),
     ]
@@ -615,17 +624,17 @@ def render_instruction_lift(
         lines.append(text(x + 24, 242, secondary, "small"))
     lines.extend(panel(40, 304, 1040, 150))
     lines.append(text(72, 342, "Bottom line", "label"))
-    lines.append(text(72, 374, f"GPT is the cleanest v4.13 win: {gpt['current_passed']}/49 hard gates and {gpt['wins']}/{gpt['ties']}/{gpt['losses']} quality split versus previous.", "value"))
-    lines.append(text(72, 402, "GLM stays close but not better than GPT; DeepSeek Flash improves from previous, while DeepSeek thinking regresses.", "value"))
-    lines.append(text(72, 430, "Grok v4.13 full rows are not included here; existing Grok charts are saved v4.12 empty/current context only.", "value"))
-    lines.extend(footer(width, 532, "Source: v4.13 saved summaries, OpenAI/Codex saved-quality judge, and labeled v4.12 reference context"))
+    lines.append(text(72, 374, "The 50-case refresh is publication-ready for hard gates, current-vs-empty saved quality, and all-model reference comparisons.", "value"))
+    lines.append(text(72, 402, "Reference rows are observed saved-output comparisons for two reference bundles across six runners.", "value"))
+    lines.append(text(72, 430, "Treat external transfer as mixed: instructions lift every tested model versus empty, but GPT remains the quality anchor.", "value"))
+    lines.extend(footer(width, 532, "Source: 2026-07-08 50-case saved summaries and OpenAI/Codex quality judge."))
     lines.append("</svg>")
     write_svg(output_dir / "instruction-lift.svg", lines)
 
 
-def render_empty_current_lift(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
-    rows = model_rows(refresh_root, empty_root)
-    order = {"GPT": 0, "GLM": 1, "Grok Build": 2, "DeepSeek": 3, "Grok 4.3": 4, "DS thinking": 5}
+def render_empty_current_lift(repo_root: Path, output_dir: Path) -> None:
+    rows = model_rows(repo_root)
+    order = {"GPT": 0, "GLM": 1, "DeepSeek": 2, "DS thinking": 3, "Grok 4.3": 4, "Grok Build": 5}
     rows = sorted(rows, key=lambda row: order.get(row["short"], 99))
     width = 1120
     height = 650
@@ -635,18 +644,18 @@ def render_empty_current_lift(refresh_root: Path, empty_root: Path, output_dir: 
     lines = svg_start(
         width,
         height,
-        "Instruction lift across models",
-        "Hard-gate lift from empty bundle to current instructions across tested models.",
+        "50-case instruction lift across models",
+        "Hard-gate and saved quality lift from empty bundle to current instructions.",
     )
     lines.append(text(40, 56, "Instruction lift across models", "title"))
-    lines.append(text(40, 84, "49 cases. Hard-gate passes improve for every tested model; quality deltas use latest saved empty-vs-current aggregates.", "subtitle"))
+    lines.append(text(40, 84, "50 cases. Hard-gate passes and saved quality improve for every tested current-vs-empty row.", "subtitle"))
     lines.extend(panel(40, 110, 1040, 430))
     lines.append(text(72, 144, "Model", "axis"))
-    lines.append(text(axis_x, 144, "Hard-gate passes out of 49", "axis"))
+    lines.append(text(axis_x, 144, "Hard-gate passes out of 50", "axis"))
     lines.append(text(right_x, 144, "Pass lift", "axis"))
-    lines.append(text(994, 144, "Quality delta*", "axis"))
-    for tick in [0, 10, 20, 30, 40, 49]:
-        x = axis_x + axis_w * pct(tick, 49)
+    lines.append(text(994, 144, "Quality delta", "axis"))
+    for tick in [0, 10, 20, 30, 40, 50]:
+        x = axis_x + axis_w * pct(tick, 50)
         lines.append(line(x, 176, x, 506, "#e5e7eb"))
         lines.append(text(x, 166, tick, "axis", anchor="middle"))
     for index, row in enumerate(rows):
@@ -655,183 +664,166 @@ def render_empty_current_lift(refresh_root: Path, empty_root: Path, output_dir: 
             lines.append(rect(64, y - 30, 990, 48, "#f8fafc", rx=0))
         empty_y = y - 14
         current_y = y + 4
-        empty_passed = row["empty_passed"]
-        current_passed = row["current_passed"]
-        pass_delta = current_passed - empty_passed
         lines.append(text(72, y + 4, row["label"], "label"))
         lines.append(rect(axis_x, empty_y, axis_w, 11, "#eef2f7", rx=6))
-        lines.append(rect(axis_x, empty_y, axis_w * pct(empty_passed, 49), 11, "#94a3b8", rx=6))
+        lines.append(rect(axis_x, empty_y, axis_w * pct(row["empty_passed"], 50), 11, "#94a3b8", rx=6))
         lines.append(rect(axis_x, current_y, axis_w, 13, "#eef2f7", rx=7))
-        lines.append(rect(axis_x, current_y, axis_w * pct(current_passed, 49), 13, row["color"], rx=7))
-        lines.append(text(right_x, y - 8, f"empty {empty_passed}/49", "small"))
-        lines.append(text(right_x, y + 12, f"current {current_passed}/49", "value"))
+        lines.append(rect(axis_x, current_y, axis_w * pct(row["current_passed"], 50), 13, row["color"], rx=7))
+        lines.append(text(right_x, y - 8, f"empty {row['empty_passed']}/50", "small"))
+        lines.append(text(right_x, y + 12, f"current {row['current_passed']}/50", "value"))
         lines.append(rect(892, y - 18, 56, 28, "#d1fae5", rx=14))
-        lines.append(text(920, y + 1, f"+{pass_delta}", "value", anchor="middle"))
-        lines.append(text(994, y + 1, f"{row['empty_quality_delta']:+.1f}", "value"))
+        lines.append(text(920, y + 1, f"+{row['pass_delta']}", "value", anchor="middle"))
+        lines.append(text(994, y + 1, f"{row['quality_delta']:+.1f}", "value"))
     legend_y = 575
     lines.append(circle(78, legend_y, 7, "#94a3b8"))
     lines.append(text(94, legend_y + 4, "Empty bundle", "axis"))
     lines.append(circle(204, legend_y, 7, CURRENT))
     lines.append(text(220, legend_y + 4, "Current instructions", "axis"))
-    lines.append(text(72, 610, "*Quality delta is the latest saved empty-vs-current judge aggregate; hard gates use the v4.12 current refresh plus latest available empty baselines.", "small"))
-    lines.extend(footer(width, 632, "Source: v4.12 current summaries, latest empty summaries, and saved empty-vs-current quality aggregates"))
+    lines.append(text(72, 610, "Quality delta is current score minus empty score from saved model-quality summaries.", "small"))
+    lines.extend(footer(width, 632, "Source: 50-case current/empty summaries plus saved empty-vs-current quality aggregates."))
     lines.append("</svg>")
     write_svg(output_dir / "empty-current-lift.svg", lines)
 
 
-def render_model_gap(quality_root: Path, output_dir: Path) -> None:
-    rows = v413_model_gap_rows(quality_root)
+def render_model_gap(repo_root: Path, output_dir: Path) -> None:
+    rows = gpt_external_rows(repo_root)
     width = 1120
-    height = 570
+    height = 620
     axis_x = 292
     axis_w = 620
     lines = svg_start(
         width,
         height,
-        "External model gap versus GPT",
-        "OpenAI/Codex judge comparison of external saved outputs against GPT on previous and current instructions.",
+        "External model gap versus GPT on 50 cases",
+        "OpenAI/Codex judge comparison of external saved current outputs against GPT current outputs.",
     )
     lines.append(text(40, 56, "External model gap versus GPT", "title"))
-    lines.append(text(40, 84, "Same judge, same 49 cases. Delta is external-model score minus GPT score; closer to zero is better for transfer.", "subtitle"))
-    lines.extend(panel(40, 112, 1040, 360))
+    lines.append(text(40, 84, "Delta is external-model score minus GPT score on current instructions; closer to zero is better.", "subtitle"))
+    lines.extend(panel(40, 112, 1040, 400))
     lines.append(text(72, 148, "Model", "axis"))
     lines.append(text(axis_x, 148, "Average quality delta versus GPT", "axis"))
     lines.append(text(926, 148, "Quality split", "axis"))
-    for tick in [-60, -40, -20, 0]:
-        x = axis_x + axis_w * pct(tick + 60, 60)
-        lines.append(line(x, 176, x, 394, "#e5e7eb"))
+    for tick in [-50, -40, -30, -20, -10, 0]:
+        x = axis_x + axis_w * pct(tick + 50, 50)
+        lines.append(line(x, 176, x, 444, "#e5e7eb"))
         lines.append(text(x, 166, tick, "axis", anchor="middle"))
     zero_x = axis_x + axis_w
-    lines.append(line(zero_x, 170, zero_x, 406, "#94a3b8"))
+    lines.append(line(zero_x, 170, zero_x, 456, "#94a3b8"))
     for index, row in enumerate(rows):
-        y = 214 + index * 78
+        y = 214 + index * 56
         if index % 2 == 0:
-            lines.append(rect(64, y - 38, 990, 64, "#f8fafc", rx=0))
-        lines.append(text(72, y - 8, row["label"], "label"))
-        lines.append(text(72, y + 14, f"hard gates {row['previous']['hard_passed']} -> {row['current']['hard_passed']}", "small"))
-        previous_delta = row["previous"]["delta"]
-        current_delta = row["current"]["delta"]
-        previous_x = axis_x + axis_w * pct(previous_delta + 60, 60)
-        current_x = axis_x + axis_w * pct(current_delta + 60, 60)
-        lines.append(rect(axis_x, y - 18, axis_w, 10, TRACK, rx=5))
-        lines.append(line(previous_x, y - 28, current_x, y - 28, "#94a3b8"))
-        lines.append(circle(previous_x, y - 28, 7, "#94a3b8"))
-        lines.append(circle(current_x, y - 28, 8, CURRENT))
-        lines.append(text(previous_x, y - 42, f"{previous_delta:+.1f}", "axis", anchor="middle"))
-        lines.append(text(current_x, y - 2, f"{current_delta:+.1f}", "value", anchor="middle"))
-        change_color = GOOD if row["gap_change"] > 0 else WARN if row["gap_change"] < 0 else TIE
-        lines.append(rect(692, y - 30, 70, 28, change_color, rx=14))
-        lines.append(text(727, y - 11, f"{row['gap_change']:+.1f}", "value", anchor="middle"))
-        current = row["current"]
-        lines.append(text(926, y - 18, f"current {current['wins']}/{current['ties']}/{current['gpt_wins']}", "value"))
-        lines.append(text(926, y + 4, "external / tie / GPT", "small"))
-    legend_y = 510
-    lines.append(circle(78, legend_y, 7, "#94a3b8"))
-    lines.append(text(94, legend_y + 4, "previous instructions", "axis"))
-    lines.append(circle(244, legend_y, 7, CURRENT))
-    lines.append(text(260, legend_y + 4, "current instructions", "axis"))
-    lines.append(text(444, legend_y + 4, "Gap-change chip: positive means the external model moved closer to GPT.", "axis"))
-    lines.extend(footer(width, 548, "Source: v4.13 GPT-vs-external saved-quality summaries judged by OpenAI/Codex"))
+            lines.append(rect(64, y - 30, 990, 50, "#f8fafc", rx=0))
+        lines.append(text(72, y - 3, row["label"], "label"))
+        lines.append(text(72, y + 17, f"hard gates {row['hard_passed']}/50", "small"))
+        delta = row["delta"]
+        x = axis_x + axis_w * pct(delta + 50, 50)
+        lines.append(rect(axis_x, y - 14, axis_w, 10, TRACK, rx=5))
+        lines.append(rect(x, y - 20, max(zero_x - x, 0), 22, "#dbeafe", rx=4))
+        lines.append(circle(x, y - 9, 8, row["color"]))
+        lines.append(text(x, y - 28, f"{delta:+.1f}", "value", anchor="middle"))
+        lines.append(text(926, y - 7, f"{row['wins']}/{row['ties']}/{row['gpt_wins']}", "value"))
+        lines.append(text(926, y + 13, "external / tie / GPT", "small"))
+    legend_y = 550
+    lines.append(circle(78, legend_y, 7, CURRENT))
+    lines.append(text(94, legend_y + 4, "external model", "axis"))
+    lines.append(text(244, legend_y + 4, "Zero is parity with GPT; all current external rows remain below GPT on average.", "axis"))
+    lines.extend(footer(width, 598, "Source: gpt-vs-external-current saved quality summary."))
     lines.append("</svg>")
     write_svg(output_dir / "model-gap.svg", lines)
 
 
-def render_model_transfer(refresh_root: Path, empty_root: Path, output_dir: Path) -> None:
-    rows = model_rows(refresh_root, empty_root)
-    references = reference_rows(refresh_root)
-    ref_passes = {(row["short"], row["reference"]): row["reference_passed"] for row in references}
+def render_model_transfer(repo_root: Path, output_dir: Path) -> None:
+    rows = model_rows(repo_root)
     width = 1280
-    height = 650
+    height = 610
     axis_x = 292
     axis_w = 760
     lines = svg_start(
         width,
         height,
-        "Instruction bundles by model",
-        "Hard-gate passes out of 49 for empty, previous current, v4.12 current, and reference instruction bundles.",
+        "50-case hard-gate transfer",
+        "Hard-gate passes out of 50 for empty and current instruction bundles.",
     )
     lines.append(text(40, 56, "Hard-gate passes by model and instruction bundle", "title"))
-    lines.append(text(40, 84, "Dot positions show passed eval cases out of 49. Empty baselines are latest available; reused rows are marked.", "subtitle"))
-    lines.extend(panel(40, 118, 1200, 410))
-    for tick in [0, 10, 20, 30, 40, 49]:
-        x = axis_x + axis_w * pct(tick, 49)
-        lines.append(line(x, 156, x, 478, "#e5e7eb"))
+    lines.append(text(40, 84, "Dot positions show passed eval cases out of 50. This chart is current-vs-empty, not reference-prompt coverage.", "subtitle"))
+    lines.extend(panel(40, 118, 1200, 360))
+    for tick in [0, 10, 20, 30, 40, 50]:
+        x = axis_x + axis_w * pct(tick, 50)
+        lines.append(line(x, 156, x, 430, "#e5e7eb"))
         lines.append(text(x, 146, tick, "axis", anchor="middle"))
     lines.append(line(axis_x, 156, axis_x + axis_w, 156, "#94a3b8"))
-    legend = [("empty", "#94a3b8"), ("previous current", "#f59e0b"), ("v4.12 current", CURRENT), ("OpenHands", OPENHANDS), ("Fable", FABLE)]
-    for index, (label, color) in enumerate(legend):
-        x = 72 + index * 165
-        lines.append(circle(x, 556, 7, color))
-        lines.append(text(x + 14, 560, label, "axis"))
     for index, row in enumerate(rows):
-        y = 192 + index * 48
+        y = 192 + index * 43
         if index % 2 == 0:
-            lines.append(rect(64, y - 22, 1140, 42, "#f8fafc", rx=0))
+            lines.append(rect(64, y - 22, 1140, 38, "#f8fafc", rx=0))
         lines.append(text(72, y + 5, row["label"], "label"))
-        values = [
-            ("empty", row["empty_passed"], "#94a3b8"),
-            ("previous", row["old_passed"], "#f59e0b"),
-            ("current", row["new_passed"], CURRENT),
-            ("OpenHands", ref_passes.get((row["short"], "OpenHands")), OPENHANDS),
-            ("Fable", ref_passes.get((row["short"], "Fable")), FABLE),
-        ]
-        for offset, (label, value, color) in enumerate(values):
-            if value is None:
-                continue
-            x = axis_x + axis_w * pct(value, 49)
-            lines.append(circle(x, y, 7, color))
-            lines.append(text(x, y + 24 + (offset % 2) * 12, value, "axis", anchor="middle"))
-        if row["empty_source"] != "same refresh":
-            lines.append(text(1080, y + 5, "empty reused", "small"))
-    lines.append(text(72, 604, "This is the main pass/fail context: it restores the no-instructions comparison without rerunning empty for every model.", "label"))
-    lines.extend(footer(width, 626, "Source: current v4.12 refresh plus latest available empty/reference summaries"))
+        empty_x = axis_x + axis_w * pct(row["empty_passed"], 50)
+        current_x = axis_x + axis_w * pct(row["current_passed"], 50)
+        lines.append(line(empty_x, y, current_x, y, "#94a3b8"))
+        lines.append(circle(empty_x, y, 7, "#94a3b8"))
+        lines.append(circle(current_x, y, 8, row["color"]))
+        lines.append(text(empty_x, y + 24, row["empty_passed"], "axis", anchor="middle"))
+        lines.append(text(current_x, y - 14, row["current_passed"], "value", anchor="middle"))
+        lines.append(text(1080, y + 5, f"{row['quality_current_wins']}/{row['quality_ties']}/{row['quality_empty_wins']} quality", "small"))
+    legend_y = 516
+    lines.append(circle(78, legend_y, 7, "#94a3b8"))
+    lines.append(text(94, legend_y + 4, "empty", "axis"))
+    lines.append(circle(170, legend_y, 7, CURRENT))
+    lines.append(text(186, legend_y + 4, "current", "axis"))
+    lines.append(text(330, legend_y + 4, "Right-side text is current/tie/empty quality split.", "axis"))
+    lines.extend(footer(width, 588, "Source: 50-case current/empty summaries and saved empty-vs-current quality reports."))
     lines.append("</svg>")
     write_svg(output_dir / "model-transfer.svg", lines)
 
 
-def render_reference_prompts(refresh_root: Path, output_dir: Path) -> None:
-    rows = reference_rows(refresh_root)
-    width = 1120
-    height = 850
+def render_reference_prompts(repo_root: Path, output_dir: Path) -> None:
+    rows = reference_rows(repo_root)
+    width = 1280
+    height = 690
     lines = svg_start(
         width,
         height,
-        "Current instructions versus reference instruction bundles",
-        "OpenHands and Claude/Fable baselines compared with our current instructions on each model.",
+        "Current instructions versus reference bundles",
+        "OpenHands and Claude/Fable baselines compared with all saved current runners on 50 cases.",
     )
     lines.append(text(40, 56, "Current vs reference instruction bundles", "title"))
-    lines.append(text(40, 84, "Our current bundle wins aggregate quality for every measured model/reference pair, with concrete caveats.", "subtitle"))
-    lines.extend(panel(40, 112, 1040, 650))
-    lines.append(text(72, 150, "Model / reference", "axis"))
-    lines.append(text(300, 150, "Hard gates", "axis"))
-    lines.append(text(500, 150, "Current / tie / reference / inconclusive", "axis"))
-    lines.append(text(932, 150, "Delta", "axis", anchor="middle"))
+    lines.append(text(40, 84, "Rows are saved comparisons: current runner vs reference bundle. Positive delta favors current.", "subtitle"))
+    lines.extend(panel(40, 112, 1200, 470))
+    lines.append(text(72, 150, "Reference", "axis"))
+    lines.append(text(190, 150, "Runner", "axis"))
+    lines.append(text(386, 150, "Hard gates", "axis"))
+    lines.append(text(570, 150, "Current / tie / reference / inconclusive", "axis"))
+    lines.append(text(1060, 150, "Avg delta", "axis", anchor="middle"))
     for index, row in enumerate(rows):
-        y = 184 + index * 47
-        lines.append(text(72, y + 14, f"{row['short']} vs {row['reference']}", "label"))
-        lines.append(text(300, y + 14, f"{row['current_passed']}/49 vs {row['reference_passed']}/49", "value"))
+        y = 182 + index * 31
+        if index % 2 == 0:
+            lines.append(rect(64, y - 18, 1140, 28, "#f8fafc", rx=0))
+        lines.append(text(72, y + 1, row["reference"], "small"))
+        lines.append(text(190, y + 1, row["model"], "label"))
+        lines.append(text(386, y + 1, f"{row['current_passed']}/50 vs {row['reference_passed']}/50", "value"))
         draw_segments(
             lines,
-            500,
-            y,
+            570,
+            y - 14,
             320,
             18,
             row["total"],
             [(row["current_wins"], CURRENT), (row["ties"], TIE), (row["reference_wins"], BASELINE), (row["inconclusive"], INCONCLUSIVE)],
         )
-        lines.append(text(835, y + 14, f"{row['current_wins']}/{row['ties']}/{row['reference_wins']}/{row['inconclusive']}", "value"))
-        lines.append(text(932, y + 14, f"{row['delta']:+.1f}", "value", anchor="middle"))
-        if row.get("caveat"):
-            lines.append(text(970, y + 14, row["caveat"], "small"))
-    lines.append(rect(72, 794, 12, 12, CURRENT, rx=3))
-    lines.append(text(92, 805, "current wins", "axis"))
-    lines.append(rect(176, 794, 12, 12, BASELINE, rx=3))
-    lines.append(text(196, 805, "reference wins", "axis"))
-    lines.append(rect(306, 794, 12, 12, INCONCLUSIVE, rx=3))
-    lines.append(text(326, 805, "fail/fail or residual", "axis"))
-    lines.extend(footer(width, 824, "Source: current-vs-reference saved quality summaries"))
+        lines.append(text(906, y + 1, f"{row['current_wins']}/{row['ties']}/{row['reference_wins']}/{row['inconclusive']}", "value"))
+        lines.append(text(1060, y + 1, f"{row['delta']:+.1f}", "value", anchor="middle"))
+    lines.append(text(72, 624, "Grok Build rows include observed adapter/provider agent failures from the saved run; they are not smoothed.", "label"))
+    lines.extend(footer(width, 666, "Source: all-model OpenHands/Fable 50-case saved-quality summaries."))
     lines.append("</svg>")
     write_svg(output_dir / "reference-prompts.svg", lines)
+
+
+def comparison_record_sides(item: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    baseline = item["baseline"]
+    current = item.get("candidate") or item.get("current")
+    if current is None:
+        raise ValueError(f"comparison item has no candidate/current side: {item.get('case_id')}")
+    return baseline, current
 
 
 def pass_pass_counts(pair_path: Path) -> dict[str, Any]:
@@ -840,37 +832,24 @@ def pass_pass_counts(pair_path: Path) -> dict[str, Any]:
     total = 0
     deltas: list[float] = []
     for item in data["comparisons"]:
-        if not (item["baseline"]["passed"] and item["candidate"]["passed"]):
+        baseline, current = comparison_record_sides(item)
+        if not (baseline["passed"] and current["passed"]):
             continue
         total += 1
         quality = item["quality"]
-        winner = quality.get("winner")
-        if winner in counts:
-            counts[winner] += 1
+        winner = quality.get("winner", "inconclusive")
+        counts[winner if winner in counts else "inconclusive"] += 1
         if isinstance(quality.get("delta"), (int, float)):
             deltas.append(float(quality["delta"]))
     return {"total": total, "counts": counts, "avg_delta": round(sum(deltas) / len(deltas), 1) if deltas else 0.0}
 
 
-def render_quality_only_comparisons(
-    refresh_root: Path,
-    gpt_root: Path,
-    external_root: Path,
-    quality_root: Path,
-    output_dir: Path,
-) -> None:
-    prev_rows = []
-    for row in v413_model_rows(gpt_root, external_root, quality_root):
-        prev_rows.append({"label": row["short"], **pass_pass_counts(row["pair_path"])})
-    gap_rows = []
-    for row in v413_model_gap_rows(quality_root):
-        gap_rows.append({"label": f"{row['label']} cur", **pass_pass_counts(row["current"]["pair_path"])})
-        gap_rows.append({"label": f"{row['label']} prev", **pass_pass_counts(row["previous"]["pair_path"])})
-    ref_rows = []
-    for row in reference_rows(refresh_root):
-        ref_rows.append({"label": f"{row['short']}/{compact_reference_label(row['reference'])}", **pass_pass_counts(row["pair_path"])})
+def render_quality_only_comparisons(repo_root: Path, output_dir: Path) -> None:
+    lift_rows = [{"label": row["short"], **pass_pass_counts(row["pair_path"])} for row in model_rows(repo_root)]
+    gap_rows = [{"label": row["label"], **pass_pass_counts(row["pair_path"])} for row in gpt_external_rows(repo_root)]
+    ref_rows = [{"label": row["short"], **pass_pass_counts(row["pair_path"])} for row in reference_rows(repo_root)]
     width = 1360
-    height = 790
+    height = 720
     lines = svg_start(
         width,
         height,
@@ -879,65 +858,29 @@ def render_quality_only_comparisons(
     )
     lines.append(text(40, 56, "Quality-only small multiples", "title"))
     lines.append(text(40, 84, "Hard failures are excluded. Triplets are left wins / ties / right wins, with n=pass/pass overlap.", "subtitle"))
-    lines.extend(panel(40, 116, 390, 540))
-    lines.append(text(72, 152, "v4.13 current vs previous", "label"))
-    for index, row in enumerate(prev_rows):
-        counts = row["counts"]
-        y = 188 + index * 62
-        lines.append(text(72, y + 14, row["label"], "label"))
-        draw_segments(lines, 178, y, 150, 18, row["total"], [(counts["current"], GOOD), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
-        lines.append(text(344, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
-        lines.append(text(190, y + 40, f"n={row['total']}, avg delta {row['avg_delta']:+.1f}", "small"))
-    lines.extend(panel(460, 116, 390, 540))
-    lines.append(text(492, 152, "External model vs GPT", "label"))
-    for index, row in enumerate(gap_rows):
-        counts = row["counts"]
-        y = 184 + index * 62
-        lines.append(text(492, y + 14, row["label"], "label"))
-        draw_segments(lines, 614, y, 132, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
-        lines.append(text(762, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
-        lines.append(text(614, y + 40, f"n={row['total']}, avg delta {row['avg_delta']:+.1f}", "small"))
-    lines.extend(panel(880, 116, 440, 540))
-    lines.append(text(912, 152, "Current vs references (v4.12 saved)", "label"))
-    for index, row in enumerate(ref_rows):
-        counts = row["counts"]
-        y = 184 + index * 38
-        lines.append(text(912, y + 14, row["label"], "label"))
-        draw_segments(lines, 1048, y, 150, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
-        lines.append(text(1214, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
-        lines.append(text(1270, y + 14, f"n={row['total']}", "small"))
-    lines.append(text(72, 692, "Triplet meaning changes by panel: current/previous, external/GPT, and current/reference. Use the title before comparing colors.", "label"))
-    lines.extend(footer(width, 758, "Source: OpenAI/Codex saved-quality reports filtered to both sides passed; references are saved v4.12 context"))
+    panels = [
+        (40, "Current vs empty", lift_rows, "current / tie / empty"),
+        (460, "External model vs GPT", gap_rows, "external / tie / GPT"),
+        (880, "Current vs references", ref_rows, "current / tie / reference"),
+    ]
+    for x, title, rows, legend in panels:
+        lines.extend(panel(x, 116, 390, 450))
+        lines.append(text(x + 32, 152, title, "label"))
+        for index, row in enumerate(rows):
+            counts = row["counts"]
+            y = 188 + index * (54 if len(rows) <= 5 else 30)
+            lines.append(text(x + 32, y + 14, row["label"], "label"))
+            draw_segments(lines, x + 150, y, 132, 18, max(row["total"], 1), [(counts["current"], CURRENT), (counts["tie"], TIE), (counts["baseline"], BASELINE)])
+            lines.append(text(x + 296, y + 14, f"{counts['current']}/{counts['tie']}/{counts['baseline']}", "value"))
+            if len(rows) <= 8:
+                lines.append(text(x + 150, y + 40, f"n={row['total']}, avg {row['avg_delta']:+.1f}", "small"))
+            else:
+                lines.append(text(x + 150, y + 30, f"n={row['total']}, avg {row['avg_delta']:+.1f}", "small"))
+        lines.append(text(x + 32, 530, legend, "axis"))
+    lines.append(text(72, 625, "Use this chart for quality-only reads; hard-gate misses are shown in the other charts and still matter.", "label"))
+    lines.extend(footer(width, 692, "Source: saved quality reports filtered to both sides passed."))
     lines.append("</svg>")
     write_svg(output_dir / "quality-only-comparisons.svg", lines)
-
-
-def case_winner_matrix(refresh_root: Path) -> tuple[list[str], list[dict[str, Any]]]:
-    rows = reference_rows(refresh_root)
-    outcomes: dict[str, dict[str, dict[str, Any]]] = {}
-    baseline_win_counts: dict[str, int] = {}
-
-    for row in rows:
-        model_short = compact_model_label(row["short"])
-        ref_short = compact_reference_label(row["reference"])
-        col = f"{model_short}/{ref_short}"
-        pair = read_json(row["pair_path"])
-        for item in pair["comparisons"]:
-            if not (item["baseline"]["passed"] and item["candidate"]["passed"]):
-                continue
-            case_id = item["case_id"]
-            quality = item["quality"]
-            winner = quality.get("winner", "inconclusive")
-            delta = quality.get("delta")
-            outcomes.setdefault(case_id, {})[col] = {
-                "winner": winner,
-                "delta": delta if isinstance(delta, (int, float)) else None,
-            }
-            if winner == "baseline":
-                baseline_win_counts[case_id] = baseline_win_counts.get(case_id, 0) + 1
-    columns = [f"{compact_model_label(row['short'])}/{compact_reference_label(row['reference'])}" for row in rows]
-    selected = sorted(outcomes, key=lambda case_id: (-baseline_win_counts.get(case_id, 0), case_id))[:20]
-    return columns, [{"case": case_id, "values": outcomes[case_id], "reference_wins": baseline_win_counts.get(case_id, 0)} for case_id in selected]
 
 
 def winner_fill(winner: str) -> str:
@@ -950,10 +893,6 @@ def winner_fill(winner: str) -> str:
     return INCONCLUSIVE_FILL
 
 
-def winner_text(winner: str) -> str:
-    return {"current": "C", "baseline": "R", "tie": "T", "inconclusive": "I"}.get(winner, "")
-
-
 def delta_text(entry: dict[str, Any]) -> str:
     delta = entry.get("delta")
     if isinstance(delta, (int, float)):
@@ -962,11 +901,12 @@ def delta_text(entry: dict[str, Any]) -> str:
     return "I"
 
 
-def pair_delta_map(pair_path: Path) -> dict[str, dict[str, Any]]:
+def pair_delta_map(pair_path: Path, *, passed_only: bool = True) -> dict[str, dict[str, Any]]:
     data = read_json(pair_path)
     values = {}
     for item in data["comparisons"]:
-        if not (item["baseline"]["passed"] and item["candidate"]["passed"]):
+        baseline, current = comparison_record_sides(item)
+        if passed_only and not (baseline["passed"] and current["passed"]):
             continue
         quality = item["quality"]
         delta = quality.get("delta")
@@ -977,55 +917,22 @@ def pair_delta_map(pair_path: Path) -> dict[str, dict[str, Any]]:
     return values
 
 
-def gpt_external_case_columns(refresh_root: Path) -> list[dict[str, Any]]:
-    data = read_json(refresh_root / GPT_EXTERNAL_QUALITY)
-    labels = {
-        "Grok-4.3-new-current": "G4",
-        "Grok-Build-0.1-new-current": "GB",
-        "DeepSeek-V4-Flash-new-current": "DS",
-        "DeepSeek-V4-Flash-thinking-new-current": "DSt",
-        "GLM-5.2-new-current": "GLM",
-    }
-    order = ["GLM", "GB", "G4", "DS", "DSt"]
-    columns = []
-    for pair in data["pairs"]:
-        label = labels.get(pair["candidate_label"], pair["candidate_label"])
-        columns.append({"label": label, "values": pair_delta_map(Path(pair["quality_json"]))})
-    return sorted(columns, key=lambda column: order.index(column["label"]) if column["label"] in order else 999)
+def reference_case_columns(repo_root: Path) -> list[dict[str, Any]]:
+    return [{"label": row["short"], "values": pair_delta_map(row["pair_path"])} for row in reference_rows(repo_root)]
 
 
-def v413_prev_current_case_columns(gpt_root: Path, external_root: Path, quality_root: Path) -> list[dict[str, Any]]:
-    columns = []
-    for row in v413_model_rows(gpt_root, external_root, quality_root):
-        columns.append({"label": compact_model_label(row["short"]), "values": pair_delta_map(row["pair_path"])})
-    return columns
+def case_detail_columns(repo_root: Path) -> list[dict[str, Any]]:
+    rows = []
+    gpt = next(row for row in model_rows(repo_root) if row["short"] == "GPT")
+    rows.append({"label": "GPT/E", "values": pair_delta_map(gpt["pair_path"])})
+    for row in gpt_external_rows(repo_root):
+        rows.append({"label": compact_model_label(row["label"]), "values": pair_delta_map(row["pair_path"])})
+    for row in reference_rows(repo_root):
+        rows.append({"label": row["short"], "values": pair_delta_map(row["pair_path"])})
+    return rows
 
 
-def v413_gpt_external_case_columns(quality_root: Path, rel_path: str, prefix: str) -> list[dict[str, Any]]:
-    rows = v413_gpt_external_rows(quality_root, rel_path, prefix)
-    return [
-        {"label": compact_model_label(row["label"]), "values": pair_delta_map(row["pair_path"])}
-        for row in rows
-    ]
-
-
-def prev_current_case_columns(refresh_root: Path, empty_root: Path) -> list[dict[str, Any]]:
-    columns = []
-    for row in model_rows(refresh_root, empty_root):
-        quality = quality_summary(refresh_root, row["prev_quality"])
-        columns.append({"label": compact_model_label(row["short"]), "values": pair_delta_map(quality["pair_path"])})
-    return columns
-
-
-def reference_case_columns(refresh_root: Path) -> list[dict[str, Any]]:
-    columns = []
-    for row in reference_rows(refresh_root):
-        label = f"{compact_model_label(row['short'])}/{compact_reference_label(row['reference'])}"
-        columns.append({"label": label, "values": pair_delta_map(row["pair_path"])})
-    return columns
-
-
-def select_case_ids(columns: list[dict[str, Any]], limit: int, mode: str) -> list[str]:
+def select_case_ids(columns: list[dict[str, Any]], limit: int) -> list[str]:
     case_ids = sorted({case_id for column in columns for case_id in column["values"]})
 
     def metrics(case_id: str) -> tuple[int, int, float, float]:
@@ -1043,32 +950,7 @@ def select_case_ids(columns: list[dict[str, Any]], limit: int, mode: str) -> lis
             max(abs(delta) for delta in deltas),
         )
 
-    if mode == "external":
-        return sorted(case_ids, key=lambda case_id: (-metrics(case_id)[1], -metrics(case_id)[3], case_id))[:limit]
-    return sorted(case_ids, key=lambda case_id: (-metrics(case_id)[0], metrics(case_id)[2], -metrics(case_id)[3], case_id))[:limit]
-
-
-def delta_counts(columns: list[dict[str, Any]], case_ids: list[str]) -> dict[str, int]:
-    counts = {"positive": 0, "negative": 0, "tie": 0, "blank": 0}
-    for case_id in case_ids:
-        for column in columns:
-            entry = column["values"].get(case_id)
-            if entry is None:
-                counts["blank"] += 1
-                continue
-            delta = entry.get("delta")
-            if not isinstance(delta, (int, float)) or round(delta) == 0:
-                counts["tie"] += 1
-            elif delta > 0:
-                counts["positive"] += 1
-            else:
-                counts["negative"] += 1
-    return counts
-
-
-def comparison_chip(lines: list[str], x: float, y: float, label: str, value: int, fill: str) -> None:
-    lines.append(rect(x, y - 17, 108, 24, fill, rx=12, stroke="#e5e7eb"))
-    lines.append(text(x + 12, y, f"{label} {value}", "axis"))
+    return sorted(case_ids, key=lambda case_id: (-metrics(case_id)[0], -metrics(case_id)[3], case_id))[:limit]
 
 
 def column_delta_summary(column: dict[str, Any]) -> dict[str, Any]:
@@ -1085,215 +967,108 @@ def column_delta_summary(column: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def render_explained_delta_table(
-    lines: list[str],
-    x: float,
-    y: float,
-    width: float,
-    title: str,
-    formula: str,
-    interpretation: str,
-    positive_label: str,
-    negative_label: str,
-    columns: list[dict[str, Any]],
-    case_ids: list[str],
-    cell_width: float,
-) -> float:
-    row_height = 28
-    case_width = width - cell_width * len(columns) - 44
-    height = 224 + len(case_ids) * row_height
-    counts = delta_counts(columns, case_ids)
-    lines.extend(panel(x, y, width, height))
-    lines.append(text(x + 24, y + 36, title, "label"))
-    lines.append(text(x + 24, y + 60, f"Formula: {formula}", "value"))
-    lines.append(text(x + 24, y + 82, interpretation, "small"))
-    lines.append(text(x + 24, y + 104, "Column mini-summary uses all pass/pass cases. Rows below are selected watchlist cases, so they are intentionally not representative.", "small"))
-    legend_y = y + 132
-    legend = [
-        (x + 24, f"+ {positive_label}", CURRENT_FILL),
-        (x + 178, f"- {negative_label}", BASELINE_FILL),
-        (x + 332, "0 tie", TIE_FILL),
-        (x + 430, "blank no pass/pass", "#ffffff"),
-    ]
-    for lx, label, fill in legend:
-        lines.append(rect(lx, legend_y - 14, 18, 18, fill, rx=4, stroke="#e5e7eb"))
-        lines.append(text(lx + 26, legend_y, label, "axis"))
-    comparison_chip(lines, x + width - 472, legend_y, "selected +", counts["positive"], CURRENT_FILL)
-    comparison_chip(lines, x + width - 354, legend_y, "selected -", counts["negative"], BASELINE_FILL)
-    comparison_chip(lines, x + width - 236, legend_y, "selected 0", counts["tie"], TIE_FILL)
-    comparison_chip(lines, x + width - 118, legend_y, "blank", counts["blank"], "#ffffff")
-
-    header_y = y + 166
-    lines.append(text(x + 24, header_y, "Case", "axis"))
-    for index, column in enumerate(columns):
-        cx = x + 24 + case_width + index * cell_width + cell_width / 2
-        summary = column_delta_summary(column)
-        lines.append(text(cx, header_y, column["label"], "axis", anchor="middle"))
-        lines.append(text(cx, header_y + 16, f"+{summary['positive']} -{summary['negative']}", "axis", anchor="middle"))
-        lines.append(text(cx, header_y + 31, f"avg {summary['average']:+.1f}", "axis", anchor="middle"))
-    for row_index, case_id in enumerate(case_ids):
-        cy = y + 220 + row_index * row_height
-        if row_index % 2 == 0:
-            lines.append(rect(x + 16, cy - 16, width - 32, row_height, "#f8fafc", rx=0))
-        lines.append(text(x + 24, cy, case_id, "small"))
-        for col_index, column in enumerate(columns):
-            entry = column["values"].get(case_id)
-            cx = x + 24 + case_width + col_index * cell_width + 7
-            if entry is None:
-                lines.append(rect(cx, cy - 16, cell_width - 14, 19, "#ffffff", rx=5, stroke="#f1f5f9"))
-                continue
-            lines.append(rect(cx, cy - 16, cell_width - 14, 19, winner_fill(entry.get("winner", "inconclusive")), rx=5, stroke="#e5e7eb"))
-            lines.append(text(cx + (cell_width - 14) / 2, cy - 2, delta_text(entry), "cell", anchor="middle"))
-    return height
-
-
-def render_case_detail_comparisons(
-    refresh_root: Path,
-    gpt_root: Path,
-    external_root: Path,
-    quality_root: Path,
-    output_dir: Path,
-) -> None:
-    prev_columns = v413_prev_current_case_columns(gpt_root, external_root, quality_root)
-    current_gap_columns = v413_gpt_external_case_columns(quality_root, GPT_VS_EXTERNAL_CURRENT_QUALITY, "current")
-    previous_gap_columns = v413_gpt_external_case_columns(quality_root, GPT_VS_EXTERNAL_PREVIOUS_QUALITY, "previous")
-    reference_columns = reference_case_columns(refresh_root)
-    prev_cases = select_case_ids(prev_columns, 10, "regression")
-    current_gap_cases = select_case_ids(current_gap_columns, 8, "regression")
-    previous_gap_cases = select_case_ids(previous_gap_columns, 8, "regression")
-    reference_cases = select_case_ids(reference_columns, 8, "regression")
-    width = 1400
-    y = 136
-    blocks = [
-        (
-            "v4.13 current vs previous instructions",
-            "current score - previous score",
-            "Read this as instruction-change impact on the same model. Red cells are concrete regressions versus the previous instructions.",
-            "current better",
-            "previous better",
-            prev_columns,
-            prev_cases,
-            86,
-        ),
-        (
-            "External models vs GPT on current instructions",
-            "external-model score - GPT score",
-            "Read this as current-instruction model gap. Red cells mean GPT's answer was better; blue cells mean the external model beat GPT.",
-            "external better",
-            "GPT better",
-            current_gap_columns,
-            current_gap_cases,
-            96,
-        ),
-        (
-            "External models vs GPT on previous instructions",
-            "external-model score - GPT score",
-            "Read this as the previous-instruction model gap, so current/previous gap movement can be compared case by case.",
-            "external better",
-            "GPT better",
-            previous_gap_columns,
-            previous_gap_cases,
-            96,
-        ),
-        (
-            "Current instructions vs reference bundles (v4.12 saved)",
-            "current-instructions score - reference-bundle score",
-            "Read this as saved reference context, not fresh v4.13 provider evidence. Red cells are reference wins worth inspecting.",
-            "current better",
-            "reference better",
-            reference_columns,
-            reference_cases,
-            58,
-        ),
-    ]
-    heights = [224 + len(cases) * 28 for _, _, _, _, _, _, cases, _ in blocks]
-    height = int(180 + sum(heights) + 28 * (len(blocks) - 1) + 50)
+def render_case_detail_comparisons(repo_root: Path, output_dir: Path) -> None:
+    columns = case_detail_columns(repo_root)
+    case_ids = select_case_ids(columns, 18)
+    width = 1900
+    row_height = 30
+    height = 280 + len(case_ids) * row_height + 76
     lines = svg_start(
         width,
         height,
         "Case-level quality deltas",
-        "Signed pass/pass judge score deltas for concrete high-signal eval cases.",
+        "Signed pass/pass judge score deltas for high-signal 50-case eval rows.",
     )
     lines.append(text(40, 56, "Case-level quality deltas", "title"))
-    lines.append(text(40, 84, "Every number is a judge-score delta on a concrete eval case after both hard gates pass.", "subtitle"))
-    lines.append(text(40, 106, "Positive and negative colors are explained separately in each block; blanks are excluded quality comparisons, not zeros.", "small"))
-    for title, formula, interpretation, positive_label, negative_label, columns, cases, cell_width in blocks:
-        block_height = render_explained_delta_table(
-            lines,
-            40,
-            y,
-            1320,
-            title,
-            formula,
-            interpretation,
-            positive_label,
-            negative_label,
-            columns,
-            cases,
-            cell_width,
-        )
-        y += block_height + 28
-    lines.extend(footer(width, height - 32, "Source: saved quality pair reports filtered to both sides passed"))
-    lines.append("</svg>")
-    write_svg(output_dir / "case-detail-comparisons.svg", lines)
-
-
-def render_quality_only_case_matrix(refresh_root: Path, output_dir: Path) -> None:
-    columns, rows = case_winner_matrix(refresh_root)
-    width = 1280
-    row_height = 28
-    height = 230 + len(rows) * row_height + 100
-    lines = svg_start(
-        width,
-        height,
-        "Case-level current versus reference matrix",
-        "Pass/pass judge score deltas for concrete current versus reference instruction cases.",
-    )
-    lines.append(text(40, 56, "Case-level quality delta matrix", "title"))
-    lines.append(text(40, 84, "Each cell is current score minus reference score after both hard gates pass. + favors current, - favors reference, blank=no pass/pass.", "subtitle"))
-    lines.append(text(40, 104, "OH=OpenHands, F=Claude/Fable, GB=Grok Build, G4=Grok 4.3, DS=DeepSeek, DSt=DS thinking.", "small"))
-    lines.extend(panel(40, 116, 1200, height - 190))
+    lines.append(text(40, 84, "Each cell is left-side score minus baseline score after both hard gates pass; blanks are excluded, not zero.", "subtitle"))
+    lines.extend(panel(40, 116, 1820, height - 184))
     table_x = 72
-    case_width = 370
-    cell_width = 62
+    case_width = 430
+    cell_width = 76
     header_y = 154
     lines.append(text(table_x, header_y, "Case", "axis"))
     for index, column in enumerate(columns):
         x = table_x + case_width + index * cell_width + cell_width / 2
-        lines.append(text(x, header_y, column, "axis", anchor="middle"))
-    for row_index, row in enumerate(rows):
-        y = 194 + row_index * row_height
+        summary = column_delta_summary(column)
+        lines.append(text(x, header_y, column["label"], "axis", anchor="middle"))
+        lines.append(text(x, header_y + 16, f"+{summary['positive']} -{summary['negative']}", "axis", anchor="middle"))
+        lines.append(text(x, header_y + 31, f"avg {summary['average']:+.1f}", "axis", anchor="middle"))
+    for row_index, case_id in enumerate(case_ids):
+        y = 216 + row_index * row_height
         if row_index % 2 == 0:
-            lines.append(rect(table_x - 8, y - 17, 1138, row_height, "#f8fafc", rx=0))
-        lines.append(text(table_x, y, row["case"], "small"))
+            lines.append(rect(table_x - 8, y - 18, 1740, row_height, "#f8fafc", rx=0))
+        lines.append(text(table_x, y, case_id, "small"))
         for col_index, column in enumerate(columns):
             x = table_x + case_width + col_index * cell_width + 8
-            entry = row["values"].get(column)
+            entry = column["values"].get(case_id)
+            if entry is None:
+                lines.append(rect(x, y - 18, cell_width - 16, 21, "#ffffff", rx=5, stroke="#f1f5f9"))
+                continue
+            lines.append(rect(x, y - 18, cell_width - 16, 21, winner_fill(entry.get("winner", "inconclusive")), rx=5, stroke="#e5e7eb"))
+            lines.append(text(x + (cell_width - 16) / 2, y - 3, delta_text(entry), "cell", anchor="middle"))
+    legend_y = height - 76
+    for x, label, color in [(72, "+ left side", CURRENT_FILL), (210, "- baseline", BASELINE_FILL), (340, "0 tie", TIE_FILL), (426, "blank no pass/pass", "#ffffff")]:
+        lines.append(rect(x, legend_y - 14, 18, 18, color, rx=4, stroke="#e5e7eb"))
+        lines.append(text(x + 26, legend_y, label, "axis"))
+    lines.extend(footer(width, height - 32, "Source: selected 50-case saved quality pair reports."))
+    lines.append("</svg>")
+    write_svg(output_dir / "case-detail-comparisons.svg", lines)
+
+
+def render_quality_only_case_matrix(repo_root: Path, output_dir: Path) -> None:
+    columns = reference_case_columns(repo_root)
+    case_ids = select_case_ids(columns, 24)
+    width = 1640
+    row_height = 28
+    height = 230 + len(case_ids) * row_height + 100
+    lines = svg_start(
+        width,
+        height,
+        "All-model current versus reference case matrix",
+        "Pass/pass judge score deltas for current runners versus OpenHands and Claude/Fable.",
+    )
+    lines.append(text(40, 56, "All-model reference quality delta matrix", "title"))
+    lines.append(text(40, 84, "Each cell is current score minus reference score after both hard gates pass. + favors current, - favors reference.", "subtitle"))
+    lines.extend(panel(40, 116, 1560, height - 190))
+    table_x = 72
+    case_width = 470
+    cell_width = 84
+    header_y = 154
+    lines.append(text(table_x, header_y, "Case", "axis"))
+    for index, column in enumerate(columns):
+        x = table_x + case_width + index * cell_width + cell_width / 2
+        lines.append(text(x, header_y, column["label"], "axis", anchor="middle"))
+    for row_index, case_id in enumerate(case_ids):
+        y = 194 + row_index * row_height
+        if row_index % 2 == 0:
+            lines.append(rect(table_x - 8, y - 17, 1480, row_height, "#f8fafc", rx=0))
+        lines.append(text(table_x, y, case_id, "small"))
+        for col_index, column in enumerate(columns):
+            x = table_x + case_width + col_index * cell_width + 8
+            entry = column["values"].get(case_id)
             if entry is None:
                 lines.append(rect(x, y - 17, cell_width - 16, 20, "#ffffff", rx=5, stroke="#f1f5f9"))
                 continue
-            winner = entry.get("winner", "inconclusive")
-            lines.append(rect(x, y - 17, cell_width - 16, 20, winner_fill(winner), rx=5, stroke="#e5e7eb"))
+            lines.append(rect(x, y - 17, cell_width - 16, 20, winner_fill(entry.get("winner", "inconclusive")), rx=5, stroke="#e5e7eb"))
             lines.append(text(x + (cell_width - 16) / 2, y - 3, delta_text(entry), "cell", anchor="middle"))
     legend_y = height - 72
-    for x, label, color in [(72, "+ current", CURRENT_FILL), (184, "- reference", BASELINE_FILL), (320, "0 tie", TIE_FILL), (396, "I inconclusive", INCONCLUSIVE_FILL), (520, "blank no pass/pass", "#ffffff")]:
+    for x, label, color in [(72, "+ current", CURRENT_FILL), (184, "- reference", BASELINE_FILL), (320, "0 tie", TIE_FILL), (396, "blank no pass/pass", "#ffffff")]:
         lines.append(rect(x, legend_y - 14, 18, 18, color, rx=4, stroke="#e5e7eb"))
         lines.append(text(x + 26, legend_y, label, "axis"))
-    lines.extend(footer(width, height - 34, "Source: all current-vs-reference quality pair reports"))
+    lines.extend(footer(width, height - 34, "Source: all-model OpenHands/Fable 50-case quality reports."))
     lines.append("</svg>")
     write_svg(output_dir / "quality-only-case-matrix.svg", lines)
 
 
-def render_coverage_watchlist(refresh_root: Path, output_dir: Path) -> None:
-    cases = read_jsonl(CASE_FILE)
+def render_coverage_watchlist(repo_root: Path, output_dir: Path) -> None:
     current_by_model = []
-    for model in MODELS:
-        data = read_json(refresh_root / model["current"])
-        current_by_model.append((model["short"], {item["case_id"]: item for item in data["results"]}))
+    for row in model_rows(repo_root):
+        current_by_model.append((row["short"], {item["case_id"]: item for item in row["results"]}))
+    case_ids = list(next(iter(current_by_model))[1])
     rows = []
-    for case in cases:
-        passers = [short for short, result_map in current_by_model if result_map[case["id"]]["passed"]]
-        rows.append({"case": case["id"], "passed": len(passers), "passers": passers})
+    for case_id in case_ids:
+        passers = [short for short, result_map in current_by_model if result_map[case_id]["passed"]]
+        rows.append({"case": case_id, "passed": len(passers), "passers": passers})
     rows = sorted(rows, key=lambda row: (row["passed"], row["case"]))[:18]
     width = 1120
     height = 700
@@ -1304,7 +1079,7 @@ def render_coverage_watchlist(refresh_root: Path, output_dir: Path) -> None:
         "Cases with the fewest current-model hard-gate passes across the six tested models.",
     )
     lines.append(text(40, 56, "Current weak spots by case", "title"))
-    lines.append(text(40, 84, "The weakest cases are where model transfer is still limited, even after v4.12 improvements.", "subtitle"))
+    lines.append(text(40, 84, "The weakest 50-case rows are where model transfer is still limited, even with current instructions.", "subtitle"))
     lines.extend(panel(40, 116, 1040, 500))
     lines.append(text(72, 152, "Case", "axis"))
     lines.append(text(590, 152, "Current models passing out of 6", "axis"))
@@ -1318,36 +1093,26 @@ def render_coverage_watchlist(refresh_root: Path, output_dir: Path) -> None:
         lines.append(rect(590, y - 14, 220 * pct(row["passed"], 6), 14, fill, rx=7))
         lines.append(text(826, y - 2, f"{row['passed']}/6", "value"))
         lines.append(text(878, y - 2, ", ".join(row["passers"]) if row["passers"] else "none", "small"))
-    lines.append(text(72, 650, "Use this as the concrete backlog: improving these cases should be checked across non-GPT models, not only GPT.", "label"))
-    lines.extend(footer(width, 676, "Source: current summaries across GPT, GLM, Grok, Grok Build, DeepSeek, and DeepSeek thinking"))
+    lines.append(text(72, 650, "Use this as the concrete backlog; it is not a request to add always-on instruction text.", "label"))
+    lines.extend(footer(width, 676, "Source: current summaries across GPT, GLM, Grok, Grok Build, DeepSeek, and DeepSeek thinking."))
     lines.append("</svg>")
     write_svg(output_dir / "coverage-watchlist.svg", lines)
 
 
-def build_all(
-    repo_root: Path,
-    refresh_root: Path,
-    empty_root: Path,
-    v413_gpt_root: Path,
-    v413_external_root: Path,
-    canonical_quality_root: Path,
-    output_dir: Path,
-) -> None:
-    refresh_root = resolve_path(repo_root, refresh_root)
-    empty_root = resolve_path(repo_root, empty_root)
-    v413_gpt_root = resolve_path(repo_root, v413_gpt_root)
-    v413_external_root = resolve_path(repo_root, v413_external_root)
-    canonical_quality_root = resolve_path(repo_root, canonical_quality_root)
+def build_all(repo_root: Path, output_dir: Path, social_image: Path = DEFAULT_SOCIAL_IMAGE) -> None:
     output_dir = resolve_path(repo_root, output_dir)
-    render_instruction_lift(v413_gpt_root, v413_external_root, canonical_quality_root, refresh_root, output_dir)
-    render_empty_current_lift(refresh_root, empty_root, output_dir)
-    render_model_gap(canonical_quality_root, output_dir)
-    render_model_transfer(refresh_root, empty_root, output_dir)
-    render_reference_prompts(refresh_root, output_dir)
-    render_quality_only_comparisons(refresh_root, v413_gpt_root, v413_external_root, canonical_quality_root, output_dir)
-    render_case_detail_comparisons(refresh_root, v413_gpt_root, v413_external_root, canonical_quality_root, output_dir)
-    render_quality_only_case_matrix(refresh_root, output_dir)
-    render_coverage_watchlist(refresh_root, output_dir)
+    social_image = resolve_path(repo_root, social_image)
+    render_hard_gates_50(repo_root, output_dir)
+    render_instruction_lift(repo_root, output_dir)
+    render_empty_current_lift(repo_root, output_dir)
+    render_model_gap(repo_root, output_dir)
+    render_model_transfer(repo_root, output_dir)
+    render_reference_prompts(repo_root, output_dir)
+    render_quality_only_comparisons(repo_root, output_dir)
+    render_case_detail_comparisons(repo_root, output_dir)
+    render_quality_only_case_matrix(repo_root, output_dir)
+    render_coverage_watchlist(repo_root, output_dir)
+    render_social_card_png(repo_root, social_image)
 
 
 def compare_svg_dirs(expected_dir: Path, output_dir: Path) -> list[str]:
@@ -1365,66 +1130,52 @@ def compare_svg_dirs(expected_dir: Path, output_dir: Path) -> list[str]:
     return problems
 
 
-def check_all(
-    repo_root: Path,
-    refresh_root: Path,
-    empty_root: Path,
-    v413_gpt_root: Path,
-    v413_external_root: Path,
-    canonical_quality_root: Path,
-    output_dir: Path,
-) -> list[str]:
+def compare_file(expected_path: Path, output_path: Path) -> list[str]:
+    if not output_path.exists():
+        return [f"missing: {output_path}"]
+    if expected_path.read_bytes() != output_path.read_bytes():
+        return [f"stale: {output_path}"]
+    return []
+
+
+def check_all(repo_root: Path, output_dir: Path, social_image: Path = DEFAULT_SOCIAL_IMAGE) -> list[str]:
     output_dir = resolve_path(repo_root, output_dir)
+    social_image = resolve_path(repo_root, social_image)
     with tempfile.TemporaryDirectory(prefix="readme-infographics-check-") as tmp:
         expected_dir = Path(tmp) / "readme"
-        build_all(repo_root, refresh_root, empty_root, v413_gpt_root, v413_external_root, canonical_quality_root, expected_dir)
-        return compare_svg_dirs(expected_dir, output_dir)
+        expected_social = Path(tmp) / "social" / social_image.name
+        build_all(repo_root, expected_dir, expected_social)
+        problems = compare_svg_dirs(expected_dir, output_dir)
+        problems.extend(compare_file(expected_social, social_image))
+        return problems
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh-root", default=str(DEFAULT_REFRESH_ROOT), help="Saved refresh artifact root.")
-    parser.add_argument("--empty-root", default=str(DEFAULT_EMPTY_ROOT), help="Fallback root for reused empty-baseline artifacts.")
-    parser.add_argument("--v413-gpt-root", default=str(DEFAULT_V413_GPT_ROOT), help="Saved GPT v4.13 artifact root.")
-    parser.add_argument("--v413-external-root", default=str(DEFAULT_V413_EXTERNAL_ROOT), help="Saved GLM/DeepSeek v4.13 artifact root.")
-    parser.add_argument("--canonical-quality-root", default=str(DEFAULT_CANONICAL_QUALITY_ROOT), help="OpenAI/Codex saved-quality artifact root.")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Directory for generated README SVGs.")
-    parser.add_argument("--check", action="store_true", help="Verify generated README SVGs are fresh without updating them.")
+    parser.add_argument("--social-image", default=str(DEFAULT_SOCIAL_IMAGE), help="Generated social-card PNG path.")
+    parser.add_argument("--check", action="store_true", help="Verify generated README SVGs and social PNG are fresh without updating them.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     repo_root = Path.cwd()
+    output_dir = Path(args.output_dir)
+    social_image = Path(args.social_image)
     if args.check:
-        problems = check_all(
-            repo_root,
-            Path(args.refresh_root),
-            Path(args.empty_root),
-            Path(args.v413_gpt_root),
-            Path(args.v413_external_root),
-            Path(args.canonical_quality_root),
-            Path(args.output_dir),
-        )
+        problems = check_all(repo_root, output_dir, social_image)
         if problems:
             print("README infographics are not fresh:", file=sys.stderr)
             for problem in problems:
                 print(f"- {problem}", file=sys.stderr)
             print("Regenerate with the same arguments without --check.", file=sys.stderr)
             return 1
-        print(f"readme infographics fresh: {Path(args.output_dir)}")
+        print(f"readme infographics fresh: {output_dir}; social image fresh: {social_image}")
         return 0
 
-    build_all(
-        repo_root,
-        Path(args.refresh_root),
-        Path(args.empty_root),
-        Path(args.v413_gpt_root),
-        Path(args.v413_external_root),
-        Path(args.canonical_quality_root),
-        Path(args.output_dir),
-    )
-    print(f"wrote {Path(args.output_dir)}")
+    build_all(repo_root, output_dir, social_image)
+    print(f"wrote {output_dir} and {social_image}")
     return 0
 
 

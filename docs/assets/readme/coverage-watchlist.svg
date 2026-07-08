@@ -13,112 +13,112 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 </style>
 <rect x="0" y="0" width="1120" height="700" fill="#f8fafc"/>
 <text x="40.0" y="56.0" class="title">Current weak spots by case</text>
-<text x="40.0" y="84.0" class="subtitle">The weakest cases are where model transfer is still limited, even after v4.12 improvements.</text>
+<text x="40.0" y="84.0" class="subtitle">The weakest 50-case rows are where model transfer is still limited, even with current instructions.</text>
 <rect x="40.0" y="116.0" width="1040.0" height="500.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <text x="72.0" y="152.0" class="axis">Case</text>
 <text x="590.0" y="152.0" class="axis">Current models passing out of 6</text>
 <rect x="64.0" y="172.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="188.0" class="small">small-fix-local-pattern-over-clever-rewrite</text>
+<text x="72.0" y="188.0" class="small">generated-artifact-freshness-gate</text>
 <rect x="590.0" y="174.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="174.0" width="36.7" height="14.0" rx="7.0" fill="#dc2626"/>
 <text x="826.0" y="186.0" class="value">1/6</text>
 <text x="878.0" y="186.0" class="small">GPT</text>
-<text x="72.0" y="212.0" class="small">adr-violation-evidence</text>
+<text x="72.0" y="212.0" class="small">prompt-injection-file-data</text>
 <rect x="590.0" y="198.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="198.0" width="73.3" height="14.0" rx="7.0" fill="#f97316"/>
-<text x="826.0" y="210.0" class="value">2/6</text>
-<text x="878.0" y="210.0" class="small">GPT, DS thinking</text>
+<rect x="590.0" y="198.0" width="36.7" height="14.0" rx="7.0" fill="#dc2626"/>
+<text x="826.0" y="210.0" class="value">1/6</text>
+<text x="878.0" y="210.0" class="small">GPT</text>
 <rect x="64.0" y="220.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="236.0" class="small">characterization-test-before-fix</text>
+<text x="72.0" y="236.0" class="small">behavior-preserving-refactor</text>
 <rect x="590.0" y="222.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="222.0" width="73.3" height="14.0" rx="7.0" fill="#f97316"/>
 <text x="826.0" y="234.0" class="value">2/6</text>
 <text x="878.0" y="234.0" class="small">GPT, GLM</text>
-<text x="72.0" y="260.0" class="small">generated-artifact-freshness-gate</text>
+<text x="72.0" y="260.0" class="small">adr-violation-evidence</text>
 <rect x="590.0" y="246.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="246.0" width="73.3" height="14.0" rx="7.0" fill="#f97316"/>
-<text x="826.0" y="258.0" class="value">2/6</text>
-<text x="878.0" y="258.0" class="small">GPT, GLM</text>
+<rect x="590.0" y="246.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="258.0" class="value">3/6</text>
+<text x="878.0" y="258.0" class="small">GPT, Grok 4.3, Grok Build</text>
 <rect x="64.0" y="268.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="284.0" class="small">skill-invocation-trigger-controls</text>
+<text x="72.0" y="284.0" class="small">advanced-instruction-eval-trigger</text>
 <rect x="590.0" y="270.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="270.0" width="73.3" height="14.0" rx="7.0" fill="#f97316"/>
-<text x="826.0" y="282.0" class="value">2/6</text>
-<text x="878.0" y="282.0" class="small">GPT, GLM</text>
-<text x="72.0" y="308.0" class="small">behavior-preserving-refactor</text>
+<rect x="590.0" y="270.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="282.0" class="value">3/6</text>
+<text x="878.0" y="282.0" class="small">GPT, GLM, Grok Build</text>
+<text x="72.0" y="308.0" class="small">agent-data-injection-trusted-metadata</text>
 <rect x="590.0" y="294.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="294.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="306.0" class="value">3/6</text>
-<text x="878.0" y="306.0" class="small">GPT, GLM, DS thinking</text>
+<text x="878.0" y="306.0" class="small">GPT, GLM, DeepSeek</text>
 <rect x="64.0" y="316.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="332.0" class="small">concurrency-idempotency</text>
+<text x="72.0" y="332.0" class="small">architectural-smell-triage</text>
 <rect x="590.0" y="318.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="318.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="330.0" class="value">3/6</text>
-<text x="878.0" y="330.0" class="small">GPT, GLM, DS thinking</text>
-<text x="72.0" y="356.0" class="small">dependency-boundary-respect</text>
+<text x="878.0" y="330.0" class="small">GPT, GLM, DeepSeek</text>
+<text x="72.0" y="356.0" class="small">architecture-traceability-link-recovery</text>
 <rect x="590.0" y="342.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="342.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="354.0" class="value">3/6</text>
-<text x="878.0" y="354.0" class="small">GPT, Grok Build, Grok 4.3</text>
+<text x="878.0" y="354.0" class="small">GPT, GLM, Grok Build</text>
 <rect x="64.0" y="364.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="380.0" class="small">eval-task-reward-hacking-resistance</text>
+<text x="72.0" y="380.0" class="small">banned-wrapper-replacement</text>
 <rect x="590.0" y="366.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="366.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="378.0" class="value">3/6</text>
 <text x="878.0" y="378.0" class="small">GPT, GLM, Grok Build</text>
-<text x="72.0" y="404.0" class="small">verification-command-discovery</text>
+<text x="72.0" y="404.0" class="small">complexity-and-resource-analysis</text>
 <rect x="590.0" y="390.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="390.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="402.0" class="value">3/6</text>
-<text x="878.0" y="402.0" class="small">GPT, GLM, Grok Build</text>
+<text x="878.0" y="402.0" class="small">GPT, GLM, Grok 4.3</text>
 <rect x="64.0" y="412.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="428.0" class="small">architectural-smell-triage</text>
+<text x="72.0" y="428.0" class="small">dependency-boundary-respect</text>
 <rect x="590.0" y="414.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="414.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="426.0" class="value">4/6</text>
-<text x="878.0" y="426.0" class="small">GPT, GLM, DeepSeek, DS thinking</text>
-<text x="72.0" y="452.0" class="small">banned-wrapper-replacement</text>
+<rect x="590.0" y="414.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="426.0" class="value">3/6</text>
+<text x="878.0" y="426.0" class="small">GPT, GLM, DS thinking</text>
+<text x="72.0" y="452.0" class="small">human-time-scope-gate</text>
 <rect x="590.0" y="438.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="438.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="450.0" class="value">4/6</text>
-<text x="878.0" y="450.0" class="small">GPT, GLM, Grok Build, DeepSeek</text>
+<rect x="590.0" y="438.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="450.0" class="value">3/6</text>
+<text x="878.0" y="450.0" class="small">GPT, Grok 4.3, DS thinking</text>
 <rect x="64.0" y="460.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="476.0" class="small">branch-context-before-review</text>
+<text x="72.0" y="476.0" class="small">implicit-review-comment-comprehension</text>
 <rect x="590.0" y="462.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="462.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="474.0" class="value">4/6</text>
-<text x="878.0" y="474.0" class="small">GPT, GLM, Grok Build, DS thinking</text>
-<text x="72.0" y="500.0" class="small">complexity-and-resource-analysis</text>
+<rect x="590.0" y="462.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="474.0" class="value">3/6</text>
+<text x="878.0" y="474.0" class="small">GPT, GLM, DS thinking</text>
+<text x="72.0" y="500.0" class="small">public-api-compatibility</text>
 <rect x="590.0" y="486.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="486.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="498.0" class="value">4/6</text>
-<text x="878.0" y="498.0" class="small">GPT, GLM, Grok Build, Grok 4.3</text>
+<rect x="590.0" y="486.0" width="110.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="498.0" class="value">3/6</text>
+<text x="878.0" y="498.0" class="small">GPT, GLM, Grok 4.3</text>
 <rect x="64.0" y="508.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="524.0" class="small">prompt-injection-file-data</text>
+<text x="72.0" y="524.0" class="small">characterization-test-before-fix</text>
 <rect x="590.0" y="510.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="510.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="522.0" class="value">4/6</text>
-<text x="878.0" y="522.0" class="small">GPT, GLM, Grok Build, DeepSeek</text>
-<text x="72.0" y="548.0" class="small">tool-output-prompt-injection-utility-security</text>
+<text x="878.0" y="522.0" class="small">GPT, GLM, Grok 4.3, DeepSeek</text>
+<text x="72.0" y="548.0" class="small">concurrency-idempotency</text>
 <rect x="590.0" y="534.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="590.0" y="534.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
 <text x="826.0" y="546.0" class="value">4/6</text>
-<text x="878.0" y="546.0" class="small">GPT, GLM, Grok Build, Grok 4.3</text>
+<text x="878.0" y="546.0" class="small">GPT, GLM, Grok 4.3, Grok Build</text>
 <rect x="64.0" y="556.0" width="970.0" height="24.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="572.0" class="small">advanced-instruction-eval-trigger</text>
+<text x="72.0" y="572.0" class="small">multi-agent-write-coordination</text>
 <rect x="590.0" y="558.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="558.0" width="183.3" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="570.0" class="value">5/6</text>
-<text x="878.0" y="570.0" class="small">GPT, GLM, Grok Build, Grok 4.3, DeepSeek</text>
-<text x="72.0" y="596.0" class="small">architecture-traceability-link-recovery</text>
+<rect x="590.0" y="558.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="570.0" class="value">4/6</text>
+<text x="878.0" y="570.0" class="small">GPT, GLM, Grok Build, DS thinking</text>
+<text x="72.0" y="596.0" class="small">question-only-readonly-answer</text>
 <rect x="590.0" y="582.0" width="220.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="590.0" y="582.0" width="183.3" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="826.0" y="594.0" class="value">5/6</text>
-<text x="878.0" y="594.0" class="small">GPT, GLM, Grok Build, Grok 4.3, DS thinking</text>
-<text x="72.0" y="650.0" class="label">Use this as the concrete backlog: improving these cases should be checked across non-GPT models, not only GPT.</text>
+<rect x="590.0" y="582.0" width="146.7" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="826.0" y="594.0" class="value">4/6</text>
+<text x="878.0" y="594.0" class="small">GPT, GLM, DeepSeek, DS thinking</text>
+<text x="72.0" y="650.0" class="label">Use this as the concrete backlog; it is not a request to add always-on instruction text.</text>
 <line x1="32.0" y1="646.0" x2="1088.0" y2="646.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="664.0" class="small">Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots.</text>
-<text x="32.0" y="676.0" class="small">Source: current summaries across GPT, GLM, Grok, Grok Build, DeepSeek, and DeepSeek thinking</text>
+<text x="32.0" y="664.0" class="small">Scope: 50-case saved hard-gate and quality snapshot; all-model reference rows included.</text>
+<text x="32.0" y="676.0" class="small">Source: current summaries across GPT, GLM, Grok, Grok Build, DeepSeek, and DeepSeek thinking.</text>
 <text x="1088.0" y="676.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>

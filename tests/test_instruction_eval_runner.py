@@ -80,7 +80,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("cases=49", result.stdout)
+        self.assertIn("cases=50", result.stdout)
         self.assertIn("markdown_tables=2", result.stdout)
         self.assertIn("presets=16", result.stdout)
         self.assertIn("references=2", result.stdout)
@@ -225,11 +225,15 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 49)
-        self.assertEqual(len(commands), 49)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=49", result.stdout)
+        self.assertEqual(len(progress), 50)
+        self.assertEqual(len(commands), 50)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=50", result.stdout)
         self.assertIn(
-            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=49",
+            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=50",
+            result.stdout,
+        )
+        self.assertIn(
+            "case=agent-data-injection-trusted-metadata label=current status=running index=50 total=50",
             result.stdout,
         )
         for case_id in [
@@ -307,11 +311,15 @@ class InstructionEvalRunnerTests(unittest.TestCase):
         lines = [line for line in result.stdout.splitlines() if line.strip()]
         progress = [line for line in lines if "status=running" in line]
         commands = [line for line in lines if line.startswith("/tmp/codex exec")]
-        self.assertEqual(len(progress), 49)
-        self.assertEqual(len(commands), 49)
-        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=49", result.stdout)
+        self.assertEqual(len(progress), 50)
+        self.assertEqual(len(commands), 50)
+        self.assertIn("case=privacy-persistent-state label=current status=running index=1 total=50", result.stdout)
         self.assertIn(
-            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=49",
+            "case=tool-output-prompt-injection-utility-security label=current status=running index=49 total=50",
+            result.stdout,
+        )
+        self.assertIn(
+            "case=agent-data-injection-trusted-metadata label=current status=running index=50 total=50",
             result.stdout,
         )
         self.assertLess(

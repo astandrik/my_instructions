@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="650" viewBox="0 0 1280 650" role="img" aria-labelledby="title desc">
-<title id="title">Instruction bundles by model</title>
-<desc id="desc">Hard-gate passes out of 49 for empty, previous current, v4.12 current, and reference instruction bundles.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="610" viewBox="0 0 1280 610" role="img" aria-labelledby="title desc">
+<title id="title">50-case hard-gate transfer</title>
+<desc id="desc">Hard-gate passes out of 50 for empty and current instruction bundles.</desc>
 <style>
 text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
 .title{font-size:30px;font-weight:700;fill:#111827}
@@ -11,107 +11,75 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 .axis{font-size:11px;fill:#64748b}
 .cell{font-size:11px;font-weight:700;fill:#111827}
 </style>
-<rect x="0" y="0" width="1280" height="650" fill="#f8fafc"/>
+<rect x="0" y="0" width="1280" height="610" fill="#f8fafc"/>
 <text x="40.0" y="56.0" class="title">Hard-gate passes by model and instruction bundle</text>
-<text x="40.0" y="84.0" class="subtitle">Dot positions show passed eval cases out of 49. Empty baselines are latest available; reused rows are marked.</text>
-<rect x="40.0" y="118.0" width="1200.0" height="410.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<line x1="292.0" y1="156.0" x2="292.0" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="40.0" y="84.0" class="subtitle">Dot positions show passed eval cases out of 50. This chart is current-vs-empty, not reference-prompt coverage.</text>
+<rect x="40.0" y="118.0" width="1200.0" height="360.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<line x1="292.0" y1="156.0" x2="292.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
 <text x="292.0" y="146.0" class="axis" text-anchor="middle">0</text>
-<line x1="447.1" y1="156.0" x2="447.1" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="447.1" y="146.0" class="axis" text-anchor="middle">10</text>
-<line x1="602.2" y1="156.0" x2="602.2" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="602.2" y="146.0" class="axis" text-anchor="middle">20</text>
-<line x1="757.3" y1="156.0" x2="757.3" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="757.3" y="146.0" class="axis" text-anchor="middle">30</text>
-<line x1="912.4" y1="156.0" x2="912.4" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="912.4" y="146.0" class="axis" text-anchor="middle">40</text>
-<line x1="1052.0" y1="156.0" x2="1052.0" y2="478.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="1052.0" y="146.0" class="axis" text-anchor="middle">49</text>
+<line x1="444.0" y1="156.0" x2="444.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="444.0" y="146.0" class="axis" text-anchor="middle">10</text>
+<line x1="596.0" y1="156.0" x2="596.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="596.0" y="146.0" class="axis" text-anchor="middle">20</text>
+<line x1="748.0" y1="156.0" x2="748.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="748.0" y="146.0" class="axis" text-anchor="middle">30</text>
+<line x1="900.0" y1="156.0" x2="900.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="900.0" y="146.0" class="axis" text-anchor="middle">40</text>
+<line x1="1052.0" y1="156.0" x2="1052.0" y2="430.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="1052.0" y="146.0" class="axis" text-anchor="middle">50</text>
 <line x1="292.0" y1="156.0" x2="1052.0" y2="156.0" stroke="#94a3b8" stroke-width="1"/>
-<circle cx="72.0" cy="556.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="86.0" y="560.0" class="axis">empty</text>
-<circle cx="237.0" cy="556.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="251.0" y="560.0" class="axis">previous current</text>
-<circle cx="402.0" cy="556.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="416.0" y="560.0" class="axis">v4.12 current</text>
-<circle cx="567.0" cy="556.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="581.0" y="560.0" class="axis">OpenHands</text>
-<circle cx="732.0" cy="556.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="746.0" y="560.0" class="axis">Fable</text>
-<rect x="64.0" y="170.0" width="1140.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<rect x="64.0" y="170.0" width="1140.0" height="38.0" rx="0.0" fill="#f8fafc"/>
 <text x="72.0" y="197.0" class="label">GPT-5.5</text>
-<circle cx="927.9" cy="192.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="927.9" y="216.0" class="axis" text-anchor="middle">41</text>
-<circle cx="943.4" cy="192.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="943.4" y="228.0" class="axis" text-anchor="middle">42</text>
-<circle cx="1052.0" cy="192.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="1052.0" y="216.0" class="axis" text-anchor="middle">49</text>
-<circle cx="912.4" cy="192.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="912.4" y="228.0" class="axis" text-anchor="middle">40</text>
-<circle cx="850.4" cy="192.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="850.4" y="216.0" class="axis" text-anchor="middle">36</text>
-<text x="72.0" y="245.0" class="label">GLM-5.2</text>
-<circle cx="555.7" cy="240.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="555.7" y="264.0" class="axis" text-anchor="middle">17</text>
-<circle cx="927.9" cy="240.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="927.9" y="276.0" class="axis" text-anchor="middle">41</text>
-<circle cx="1005.5" cy="240.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="1005.5" y="264.0" class="axis" text-anchor="middle">46</text>
-<circle cx="540.2" cy="240.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="540.2" y="276.0" class="axis" text-anchor="middle">16</text>
-<circle cx="586.7" cy="240.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="586.7" y="264.0" class="axis" text-anchor="middle">19</text>
-<text x="1080.0" y="245.0" class="small">empty reused</text>
-<rect x="64.0" y="266.0" width="1140.0" height="42.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="293.0" class="label">Grok Build 0.1</text>
-<circle cx="509.1" cy="288.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="509.1" y="312.0" class="axis" text-anchor="middle">14</text>
-<circle cx="850.4" cy="288.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="850.4" y="324.0" class="axis" text-anchor="middle">36</text>
-<circle cx="927.9" cy="288.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="927.9" y="312.0" class="axis" text-anchor="middle">41</text>
-<circle cx="540.2" cy="288.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="540.2" y="324.0" class="axis" text-anchor="middle">16</text>
-<circle cx="493.6" cy="288.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="493.6" y="312.0" class="axis" text-anchor="middle">13</text>
-<text x="72.0" y="341.0" class="label">Grok 4.3</text>
-<circle cx="416.1" cy="336.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="416.1" y="360.0" class="axis" text-anchor="middle">8</text>
-<circle cx="726.3" cy="336.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="726.3" y="372.0" class="axis" text-anchor="middle">28</text>
-<circle cx="850.4" cy="336.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="850.4" y="360.0" class="axis" text-anchor="middle">36</text>
-<circle cx="416.1" cy="336.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="416.1" y="372.0" class="axis" text-anchor="middle">8</text>
-<circle cx="462.6" cy="336.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="462.6" y="360.0" class="axis" text-anchor="middle">11</text>
-<rect x="64.0" y="362.0" width="1140.0" height="42.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="389.0" class="label">DeepSeek V4 Flash</text>
-<circle cx="431.6" cy="384.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="431.6" y="408.0" class="axis" text-anchor="middle">9</text>
-<circle cx="741.8" cy="384.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="741.8" y="420.0" class="axis" text-anchor="middle">29</text>
-<circle cx="757.3" cy="384.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="757.3" y="408.0" class="axis" text-anchor="middle">30</text>
-<circle cx="462.6" cy="384.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="462.6" y="420.0" class="axis" text-anchor="middle">11</text>
-<circle cx="447.1" cy="384.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="447.1" y="408.0" class="axis" text-anchor="middle">10</text>
-<text x="72.0" y="437.0" class="label">DeepSeek V4 thinking</text>
-<circle cx="385.1" cy="432.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
-<text x="385.1" y="456.0" class="axis" text-anchor="middle">6</text>
-<circle cx="695.3" cy="432.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="695.3" y="468.0" class="axis" text-anchor="middle">26</text>
-<circle cx="757.3" cy="432.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="757.3" y="456.0" class="axis" text-anchor="middle">30</text>
-<circle cx="385.1" cy="432.0" r="7.0" fill="#059669" stroke="#ffffff" stroke-width="2.0"/>
-<text x="385.1" y="468.0" class="axis" text-anchor="middle">6</text>
-<circle cx="447.1" cy="432.0" r="7.0" fill="#db2777" stroke="#ffffff" stroke-width="2.0"/>
-<text x="447.1" y="456.0" class="axis" text-anchor="middle">10</text>
-<text x="1080.0" y="437.0" class="small">empty reused</text>
-<text x="72.0" y="604.0" class="label">This is the main pass/fail context: it restores the no-instructions comparison without rerunning empty for every model.</text>
-<line x1="32.0" y1="596.0" x2="1248.0" y2="596.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="614.0" class="small">Scope: v4.13 OpenAI-judged GPT/GLM/DeepSeek saved outputs; Grok/reference/no-instruction charts use labeled v4.12 saved snapshots.</text>
-<text x="32.0" y="626.0" class="small">Source: current v4.12 refresh plus latest available empty/reference summaries</text>
-<text x="1248.0" y="626.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+<line x1="854.4" y1="192.0" x2="1052.0" y2="192.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="854.4" cy="192.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="1052.0" cy="192.0" r="8.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
+<text x="854.4" y="216.0" class="axis" text-anchor="middle">37</text>
+<text x="1052.0" y="178.0" class="value" text-anchor="middle">50</text>
+<text x="1080.0" y="197.0" class="small">46/3/1 quality</text>
+<text x="72.0" y="240.0" class="label">GLM-5.2</text>
+<line x1="535.2" y1="235.0" x2="991.2" y2="235.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="535.2" cy="235.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="991.2" cy="235.0" r="8.0" fill="#16a34a" stroke="#ffffff" stroke-width="2.0"/>
+<text x="535.2" y="259.0" class="axis" text-anchor="middle">16</text>
+<text x="991.2" y="221.0" class="value" text-anchor="middle">46</text>
+<text x="1080.0" y="240.0" class="small">46/0/0 quality</text>
+<rect x="64.0" y="256.0" width="1140.0" height="38.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="283.0" class="label">Grok 4.3</text>
+<line x1="368.0" y1="278.0" x2="793.6" y2="278.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="368.0" cy="278.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="793.6" cy="278.0" r="8.0" fill="#ea580c" stroke="#ffffff" stroke-width="2.0"/>
+<text x="368.0" y="302.0" class="axis" text-anchor="middle">5</text>
+<text x="793.6" y="264.0" class="value" text-anchor="middle">33</text>
+<text x="1080.0" y="283.0" class="small">32/1/1 quality</text>
+<text x="72.0" y="326.0" class="label">Grok Build 0.1</text>
+<line x1="459.2" y1="321.0" x2="763.2" y2="321.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="459.2" cy="321.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="763.2" cy="321.0" r="8.0" fill="#7c3aed" stroke="#ffffff" stroke-width="2.0"/>
+<text x="459.2" y="345.0" class="axis" text-anchor="middle">11</text>
+<text x="763.2" y="307.0" class="value" text-anchor="middle">31</text>
+<text x="1080.0" y="326.0" class="small">30/0/4 quality</text>
+<rect x="64.0" y="342.0" width="1140.0" height="38.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="369.0" class="label">DeepSeek V4 Flash</text>
+<line x1="368.0" y1="364.0" x2="763.2" y2="364.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="368.0" cy="364.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="763.2" cy="364.0" r="8.0" fill="#0891b2" stroke="#ffffff" stroke-width="2.0"/>
+<text x="368.0" y="388.0" class="axis" text-anchor="middle">5</text>
+<text x="763.2" y="350.0" class="value" text-anchor="middle">31</text>
+<text x="1080.0" y="369.0" class="small">29/2/0 quality</text>
+<text x="72.0" y="412.0" class="label">DeepSeek V4 thinking</text>
+<line x1="413.6" y1="407.0" x2="808.8" y2="407.0" stroke="#94a3b8" stroke-width="1"/>
+<circle cx="413.6" cy="407.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<circle cx="808.8" cy="407.0" r="8.0" fill="#0f766e" stroke="#ffffff" stroke-width="2.0"/>
+<text x="413.6" y="431.0" class="axis" text-anchor="middle">8</text>
+<text x="808.8" y="393.0" class="value" text-anchor="middle">34</text>
+<text x="1080.0" y="412.0" class="small">33/0/2 quality</text>
+<circle cx="78.0" cy="516.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
+<text x="94.0" y="520.0" class="axis">empty</text>
+<circle cx="170.0" cy="516.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
+<text x="186.0" y="520.0" class="axis">current</text>
+<text x="330.0" y="520.0" class="axis">Right-side text is current/tie/empty quality split.</text>
+<line x1="32.0" y1="558.0" x2="1248.0" y2="558.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="576.0" class="small">Scope: 50-case saved hard-gate and quality snapshot; all-model reference rows included.</text>
+<text x="32.0" y="588.0" class="small">Source: 50-case current/empty summaries and saved empty-vs-current quality reports.</text>
+<text x="1248.0" y="588.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>
