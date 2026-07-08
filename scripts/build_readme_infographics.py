@@ -539,32 +539,50 @@ def draw_segments(
 
 def render_hard_gates_50(repo_root: Path, output_dir: Path) -> None:
     rows = model_rows(repo_root)
-    width = 1120
-    height = 430
+    width = 1280
+    height = 610
+    axis_x = 300
+    axis_w = 510
     lines = svg_start(
         width,
         height,
         "50-case hard-gate snapshot",
         "Hard-gate pass counts for the current 50-case instruction eval suite.",
     )
-    lines.extend(panel(32, 28, 1056, 374))
-    lines.append(text(56, 68, "50-case hard-gate snapshot", "title"))
-    lines.append(text(56, 94, "Current eval contract after Agent Data Injection coverage; saved quality rows are available separately.", "subtitle"))
-    lines.append(text(56, 132, "Model / runner", "axis"))
-    lines.append(text(340, 132, "Current instructed", "axis"))
-    lines.append(text(682, 132, "Empty bundle", "axis"))
-    lines.append(text(934, 132, "Notes", "axis"))
+    lines.extend(panel(40, 28, 1200, 500))
+    lines.append(text(72, 68, "50-case hard-gate snapshot", "title"))
+    lines.append(text(72, 94, "Current eval contract after Agent Data Injection coverage; saved quality rows are available separately.", "subtitle"))
+    lines.append(text(72, 136, "Model / runner", "axis"))
+    lines.append(text(axis_x, 136, "Hard-gate passes out of 50", "axis"))
+    lines.append(text(836, 136, "current", "axis"))
+    lines.append(text(918, 136, "empty", "axis"))
+    lines.append(text(1002, 136, "lift", "axis"))
+    lines.append(text(1090, 136, "note", "axis"))
+    for tick in [0, 10, 20, 30, 40, 50]:
+        x = axis_x + axis_w * pct(tick, 50)
+        lines.append(line(x, 156, x, 438, "#e5e7eb"))
+        lines.append(text(x, 150, tick, "axis", anchor="middle"))
     for index, row in enumerate(rows):
-        y = 168 + index * 44
-        lines.append(text(56, y, row["label"], "label"))
-        lines.append(rect(340, y - 12, 300, 16, "#e2e8f0", rx=8))
-        lines.append(rect(340, y - 12, 300 * pct(row["current_passed"], row["total"]), 16, row["color"], rx=8))
-        lines.append(text(652, y + 1, f"{row['current_passed']}/{row['total']}", "value"))
-        lines.append(rect(682, y - 12, 300, 16, "#e2e8f0", rx=8))
-        lines.append(rect(682, y - 12, 300 * pct(row["empty_passed"], row["total"]), 16, "#94a3b8", rx=8))
-        lines.append(text(994, y + 1, f"{row['empty_passed']}/{row['total']}", "value"))
-        lines.append(text(934, y + 24, row["note"], "small"))
-    lines.extend(footer(width, 414, "Source: .eval-results/refresh-2026-07-08-50-case-* summaries."))
+        y = 188 + index * 46
+        if index % 2 == 1:
+            lines.append(rect(64, y - 28, 1140, 44, "#f8fafc", rx=0))
+        lines.append(text(72, y + 1, row["label"], "label"))
+        lines.append(rect(axis_x, y - 16, axis_w, 12, "#eef2f7", rx=6))
+        lines.append(rect(axis_x, y - 16, axis_w * pct(row["empty_passed"], row["total"]), 12, "#94a3b8", rx=6))
+        lines.append(rect(axis_x, y + 4, axis_w, 14, "#eef2f7", rx=7))
+        lines.append(rect(axis_x, y + 4, axis_w * pct(row["current_passed"], row["total"]), 14, row["color"], rx=7))
+        lines.append(text(836, y + 5, f"{row['current_passed']}/{row['total']}", "value"))
+        lines.append(text(918, y + 5, f"{row['empty_passed']}/{row['total']}", "value"))
+        lines.append(rect(990, y - 14, 58, 28, "#d1fae5", rx=14))
+        lines.append(text(1019, y + 5, f"+{row['pass_delta']}", "value", anchor="middle"))
+        lines.append(text(1090, y + 5, row["note"], "small"))
+    legend_y = 488
+    lines.append(circle(78, legend_y, 7, "#94a3b8"))
+    lines.append(text(94, legend_y + 4, "empty bundle", "axis"))
+    lines.append(circle(204, legend_y, 7, CURRENT))
+    lines.append(text(220, legend_y + 4, "current instructions", "axis"))
+    lines.append(text(430, legend_y + 4, "Lift is current hard-gate passes minus empty-bundle passes.", "axis"))
+    lines.extend(footer(width, 588, "Source: .eval-results/refresh-2026-07-08-50-case-* summaries."))
     lines.append("</svg>")
     write_svg(output_dir / "hard-gates-50.svg", lines)
 
