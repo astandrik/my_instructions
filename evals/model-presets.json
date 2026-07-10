@@ -39,6 +39,11 @@
     "reasoning_effort": "xhigh",
     "service_tier": "fast"
   },
+  "gpt-5.6-sol-medium": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "service_tier": "fast"
+  },
   "grok-4.3-medium": {
     "model": "grok-4.3",
     "reasoning_effort": "medium"

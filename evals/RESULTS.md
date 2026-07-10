@@ -17,15 +17,58 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## Blinded Six-Model Snapshot
+
+The 2026-07-10 snapshot uses clean blinded current and empty runs for six
+model/runner rows. Primary hard-gate results:
+
+| Model | Current | Empty | Lift |
+|---|---:|---:|---:|
+| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
+| GPT-5.6 Sol medium | 31 / 50 | 21 / 50 | +10 |
+| GLM-5.2 | 29 / 50 | 10 / 50 | +19 |
+| Grok 4.3 | 22 / 50 | 4 / 50 | +18 |
+| DeepSeek V4 Flash | 19 / 50 | 6 / 50 | +13 |
+| DeepSeek V4 Flash thinking | 21 / 50 | 6 / 50 | +15 |
+
+Dual-order quality consensus reports `current / empty / tie / order-sensitive / inconclusive`:
+
+| Model | Current | Empty | Tie | Order-sensitive | Inconclusive |
+|---|---:|---:|---:|---:|---:|
+| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
+| GPT-5.6 Sol medium | 21 | 3 | 3 | 6 | 17 |
+| GLM-5.2 | 27 | 1 | 0 | 2 | 20 |
+| Grok 4.3 | 21 | 0 | 1 | 0 | 28 |
+| DeepSeek V4 Flash | 16 | 2 | 0 | 1 | 31 |
+| DeepSeek V4 Flash thinking | 18 | 0 | 1 | 2 | 29 |
+
+Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
+
+The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
+
+These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+
+No OpenHands, Claude/Fable, or other reference rows are included.
+
+Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
+Canonical dual-order artifacts live under
+`.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
 ## 50-Case Refresh Snapshot
+
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
 
 As of 2026-07-08, `evals/cases.jsonl` contains 50 cases. The newest case is
 `agent-data-injection-trusted-metadata`, covering forged trusted/action metadata
 inside an untrusted data field. The case was added without changing
 `CRITICAL_INSTRUCTIONS.md`.
 
-This snapshot promotes saved 50-case evidence for hard gates, current-vs-empty
-quality, GPT-vs-external current quality, and all-model reference comparisons.
+This snapshot preserves historical saved 50-case evidence for hard gates,
+current-vs-empty quality, GPT-vs-external current quality, and all-model
+reference comparisons.
 Earlier interrupted reference attempts are not used; published reference rows
 come from completed `*-full-v1` compare directories and saved-quality
 aggregates.

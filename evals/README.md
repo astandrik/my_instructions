@@ -1,10 +1,30 @@
 # Instruction Evals
 
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
+
 This directory contains the repo-local eval contract for the instruction files.
 
 Use `RESULTS.md` for full benchmark snapshots and artifact paths. Use
 `CHANGELOG.md` for the chronological summary of instruction/eval changes,
 metric deltas, conclusions, and caveats.
+
+## Blinded Six-Model Publication
+
+The current publication covers six clean blinded current-vs-empty model/runner
+pairs and dual-order consensus from
+`.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
+Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
+
+The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
+
+These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+
+No OpenHands, Claude/Fable, or other reference rows are included.
+
+Grok Build is excluded because repeated transport failures prevented a clean primary pair.
 
 ## Static gate
 
@@ -21,30 +41,18 @@ When README SVGs are part of the change, check generated-artifact freshness:
 python3 -B scripts/build_readme_infographics.py --check
 ```
 
-When ignored `.eval-results/` artifacts are available, check that published
-GPT/Codex metrics still match the saved JSON, docs keep the partial-v4.13
-caveats and a pointer to the saved artifact root, `summary.json` and
-`quality.json` describe the same case set, README links every required SVG,
-README SVGs keep their scope footer, and docs do not overclaim v4.13 scope,
-including common phrasing variants about "all models", provider "re-run",
-every-tested-model wins, external model/provider improvement claims, and
-single-provider quality improvement claims for rows whose quality evidence is
-still pending:
+When ignored `.eval-results/` artifacts are available, check that the published
+blinded six-model rows and retained legacy pre-blinding metrics still match the
+saved JSON, README links exactly the required SVGs, docs retain the canonical
+artifact roots, and generated assets carry the matching publication scope:
 
 ```bash
 python3 -B scripts/check_published_eval_metrics.py
 ```
 
-If a future README publishes a provider hard-gate snapshot, the same guard
-requires that snapshot section to mark incomplete quality pending, missing
-provider rows policy-blocked, a saved `.eval-results/` artifact root as the
-source, and external transfer as mixed or not uniformly positive.
-
-The SVG scope check also rejects forbidden v4.13 all-model/provider overclaims
-inside generated README SVG text, so standalone images cannot publish a broader
-claim than the Markdown allows. The current footer is mixed scope: v4.13
-OpenAI-judged GPT/GLM/DeepSeek saved outputs plus labeled v4.12
-Grok/reference/no-instruction context.
+The SVG scope check also rejects forbidden all-model/provider overclaims inside
+generated README SVG text, so standalone images cannot publish a broader claim
+than the Markdown allows.
 
 ## Real agent run
 
@@ -70,6 +78,7 @@ python3 scripts/run_instruction_evals.py presets
 
 The checked-in presets currently cover:
 
+- `gpt-5.6-sol-medium` -> `gpt-5.6-sol`
 - `gpt-5.5-{low,medium,high,xhigh}` -> `gpt-5.5`
 - `gpt-5.4-{low,medium,high,xhigh}` -> `gpt-5.4`
 - `spark-{low,medium,high,xhigh}` -> `gpt-5.3-codex-spark`
@@ -78,10 +87,10 @@ The checked-in presets currently cover:
 - `deepseek-v4-flash-medium` -> `deepseek-v4-flash`
 - `glm-5.2-medium` -> `glm-5.2`
 
-The `gpt-5.5-*` and `gpt-5.4-*` presets set `service_tier="fast"` because
-the local Codex catalog advertises Fast tier for those models. Spark presets
-and the external API adapter presets do not set a service tier unless the
-target runtime starts advertising one.
+The `gpt-5.6-sol-medium`, `gpt-5.5-*`, and `gpt-5.4-*` presets set
+`service_tier="fast"` because the local Codex catalog advertises Fast tier for
+those models. Spark presets and the external API adapter presets do not set a
+service tier unless the target runtime starts advertising one.
 
 Preview the exact commands without running a model:
 
@@ -100,9 +109,10 @@ python3 scripts/run_instruction_evals.py run --agent-command "codex exec" --agen
 ```
 
 Run the same cases with an empty instruction bundle when measuring instruction
-lift. This keeps eval cases, schemas, presets, and reference metadata available
-in the temporary workspace, but materializes `CRITICAL_INSTRUCTIONS.md` as an
-empty file:
+lift. The primary temporary workspace contains only the candidate instruction
+bundle and final-response schema. Cases, rubrics, fixtures, presets, and
+reference metadata stay grader-side. The empty-bundle run materializes
+`CRITICAL_INSTRUCTIONS.md` as an empty file:
 
 ```bash
 python3 scripts/run_instruction_evals.py run \
@@ -187,13 +197,20 @@ python3 scripts/run_instruction_evals.py run --preset spark-xhigh --model <model
 python3 scripts/run_instruction_evals.py run --preset gpt-5.5-medium --service-tier flex --agent-command "codex exec"
 ```
 
-The optional quality judge defaults to the same `gpt-5.5-medium` preset. Override
-it independently when needed:
+Inline `run_instruction_evals.py compare` uses one `--agent-command` for the
+primary runs and optional judge, so its judge preset defaults to the same
+`gpt-5.5-medium` primary preset. Override it with Sol only when that command is
+the Codex CLI or another transport that supports `gpt-5.6-sol`:
 
 ```bash
-python3 scripts/run_instruction_evals.py compare --quality-judge --judge-preset gpt-5.5-high --baseline-ref HEAD --agent-command "codex exec"
-python3 scripts/run_instruction_evals.py compare --quality-judge --judge-model gpt-5.5 --judge-reasoning-effort high --baseline-ref HEAD --agent-command "codex exec"
+python3 scripts/run_instruction_evals.py compare --quality-judge --judge-preset gpt-5.6-sol-medium --baseline-ref HEAD --agent-command "codex exec"
+python3 scripts/run_instruction_evals.py compare --quality-judge --judge-model gpt-5.6-terra --judge-reasoning-effort medium --baseline-ref HEAD --agent-command "codex exec"
 ```
+
+The publication-oriented `compare_saved_model_quality.py` entry point has a
+separate judge transport and defaults to `gpt-5.6-sol-medium`, which selects
+`gpt-5.6-sol`, `model_reasoning_effort="medium"`, and `service_tier="fast"`.
+This keeps provider-specific primary adapters separate from the fixed judge.
 
 Keep checked-in presets to model slugs that have been verified with a real
 agent run in the target Codex account. Dry-run only verifies command shape; it
@@ -205,7 +222,7 @@ the Desktop-bundled CLI, the local cache is the most reliable quick check:
 ```bash
 jq -r '
   .models[]
-  | select(.slug == "gpt-5.5" or .slug == "gpt-5.4" or .slug == "gpt-5.3-codex-spark")
+  | select(.slug == "gpt-5.6-sol" or .slug == "gpt-5.5" or .slug == "gpt-5.4" or .slug == "gpt-5.3-codex-spark")
   | [
       .slug,
       ([.supported_reasoning_levels[].effort] | join(",")),
@@ -216,9 +233,9 @@ jq -r '
 ' ~/.codex/models_cache.json
 ```
 
-This should show all checked-in model slugs with a reasoning column containing
-`low,medium,high,xhigh`. For models that support fast mode, the speed-tier
-column should include `fast`.
+This should show each selected Codex model slug with a reasoning column
+containing `low,medium,high,xhigh`. For models that support fast mode, the
+speed-tier column should include `fast`.
 If a future CLI exposes `codex debug models`, that command is also acceptable
 as a metadata check. A successful real `codex exec --model ...` probe remains
 the runtime source of truth.
@@ -499,6 +516,34 @@ metadata in JSON and Markdown. Do not combine quality rows judged by different
 model families in one aggregate matrix unless the rows are explicitly split and
 labeled by judge; for a single all-model matrix, rerun every pair with the same
 judge.
+
+Publication-grade saved-output comparisons use the fixed
+`gpt-5.6-sol-medium` judge in both semantic orders: current as baseline with
+empty as candidate, then empty as baseline with current as candidate. Normalize
+each verdict back to the semantic instruction side. Count a current win, empty
+win, or tie only when both orders agree; otherwise mark the case
+`order_sensitive`. Do not publish a single-order win count or force an
+order-sensitive pair into a winner. The harness records both orders separately.
+Aggregate the saved wrapper summaries offline with
+`scripts/aggregate_saved_model_quality.py`; this does not call a model:
+
+```bash
+python3 -B scripts/aggregate_saved_model_quality.py \
+  --repo-root . \
+  --model-id <path-safe-model-id> \
+  --model-label <display-label> \
+  --baseline-source-summary <empty-summary.json> \
+  --current-source-summary <current-summary.json> \
+  --order-summary <baseline-first-model-quality-summary.json> \
+  --order-summary <current-first-model-quality-summary.json> \
+  --output-root .eval-results/blinded-50-case-v1/dual-order-quality-v2
+```
+
+The canonical aggregate preserves five winner buckets: `baseline`, `current`,
+`tie`, `inconclusive`, and `order_sensitive`. Publication validation binds the
+canonical detail back to both raw orders with source/order path, hash, and
+orientation validation, then recomputes normalized comparisons before accepting
+the artifact.
 
 Quality judging is required for every pass/pass case in each row that is
 published as a quality comparison or README quality infographic. It is not

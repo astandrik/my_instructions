@@ -13,11 +13,60 @@ eval harness for checking whether those instructions actually change behavior.
 - `scripts/build_readme_infographics.py`: deterministic SVG and social-card
   PNG generator for the public evidence snapshot.
 
-## Current Evidence
+## Blinded Six-Model Evidence
+
+The 2026-07-10 publication uses clean blinded current and empty runs for six
+model/runner rows. Primary hard-gate results:
+
+| Model | Current | Empty | Lift |
+|---|---:|---:|---:|
+| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
+| GPT-5.6 Sol medium | 31 / 50 | 21 / 50 | +10 |
+| GLM-5.2 | 29 / 50 | 10 / 50 | +19 |
+| Grok 4.3 | 22 / 50 | 4 / 50 | +18 |
+| DeepSeek V4 Flash | 19 / 50 | 6 / 50 | +13 |
+| DeepSeek V4 Flash thinking | 21 / 50 | 6 / 50 | +15 |
+
+Dual-order quality consensus reports `current / empty / tie / order-sensitive / inconclusive`:
+
+| Model | Current | Empty | Tie | Order-sensitive | Inconclusive |
+|---|---:|---:|---:|---:|---:|
+| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
+| GPT-5.6 Sol medium | 21 | 3 | 3 | 6 | 17 |
+| GLM-5.2 | 27 | 1 | 0 | 2 | 20 |
+| Grok 4.3 | 21 | 0 | 1 | 0 | 28 |
+| DeepSeek V4 Flash | 16 | 2 | 0 | 1 | 31 |
+| DeepSeek V4 Flash thinking | 18 | 0 | 1 | 2 | 29 |
+
+Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
+
+The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
+
+These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+
+No OpenHands, Claude/Fable, or other reference rows are included.
+
+Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
+Canonical dual-order publication artifacts live under
+`.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
+Current blinded visual snapshot:
+
+![Blinded hard-gate passes](docs/assets/readme/hard-gates-50.svg)
+![Blinded dual-order quality consensus](docs/assets/readme/empty-current-lift.svg)
+![Blinded dual-order quality scores](docs/assets/readme/quality-only-comparisons.svg)
+![Blinded coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
+
+## Historical Evidence
+
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
 
 Current eval contract: `evals/cases.jsonl` contains 50 cases. The 2026-07-08
 addition covers Agent Data Injection where forged trusted/action metadata
-appears inside an untrusted data field. The promoted 50-case saved quality
+appears inside an untrusted data field. That 50-case saved quality
 snapshot covers hard gates, current-vs-empty saved-output quality for all six
 tested runners, GPT-vs-external current quality, and all-model reference
 comparisons. GPT/Codex passed 50/50 current and 37/50 empty; GLM-5.2 reached
@@ -37,15 +86,13 @@ artifacts live under
 `.eval-results/refresh-2026-07-08-50-case-v2/`, and
 `.eval-results/refresh-2026-07-08-50-case-quality-v1/`.
 
-![50-case eval passes](docs/assets/readme/hard-gates-50.svg)
-
 Archived context: v4.13 had a clean GPT/Codex 49-case compare against `HEAD` in
 `.eval-results/v4.13-final-gpt55-full-49-v11/`: 98/98 hard gates passed.
 Rejudged with the same OpenAI/Codex saved-output judge in
 `.eval-results/openai-canonical-judge-2026-07-07-v1/`, current won 30 quality
 comparisons, baseline won 6, there were 13 ties, and average delta was +1.53.
 This remains useful historical context, but the headline snapshot above is the
-current 50-case publication artifact.
+legacy pre-blinding 50-case publication artifact.
 
 The saved 49-case context is split by scope:
 
@@ -73,56 +120,16 @@ The saved 49-case context is split by scope:
   `dependency-boundary-respect`, and several DeepSeek-specific ownership or
   review cases.
 
-50-case visual snapshot, from overview to detail:
-
-Each SVG footer labels the current scope: 50-case saved hard-gate and quality
-snapshot with all-model reference rows included.
-
-![Instruction eval overview](docs/assets/readme/instruction-lift.svg)
-
-![Empty-to-current instruction lift](docs/assets/readme/empty-current-lift.svg)
-
-![External model gap versus GPT](docs/assets/readme/model-gap.svg)
-
-![Hard-gate passes by model and instruction bundle](docs/assets/readme/model-transfer.svg)
-
-![Reference prompt comparison](docs/assets/readme/reference-prompts.svg)
-
-Quality-only view:
-
-![Quality-only small multiples](docs/assets/readme/quality-only-comparisons.svg)
-
-![Case-level quality details](docs/assets/readme/case-detail-comparisons.svg)
-
-Secondary full matrix:
-
-![Full current-versus-reference quality delta matrix](docs/assets/readme/quality-only-case-matrix.svg)
-
-![50-case coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
-
 Read this as:
 
-- The 50-case refresh is a current publication snapshot, not a model
-  leaderboard or proof that every runner improved in quality.
+- The 50-case refresh is a legacy pre-blinding snapshot, not clean blinded
+  instruction-lift evidence, a model leaderboard, or proof that every runner
+  improved in quality.
 - GLM-5.2 is the closest external quality row versus GPT. Other external rows
   still trail GPT materially despite positive current-vs-empty instruction lift.
-- The model-gap chart answers a different question from instruction lift: it
-  compares each external current row against GPT current output on the same
-  cases.
-- The hard-gate dot plot and empty-to-current lift chart use fresh 50-case
-  current and empty artifacts.
 - Reference bundles are useful as contrast, not as winners. The promoted
   reference snapshot now covers all six saved current runners against both
   reference bundles.
-- The pass/pass quality view is the cleanest answer to "quality without hard
-  fails"; it excludes cases where either side failed deterministic checks.
-- The case-detail view is numeric and split by concrete 50-case saved-quality
-  comparisons: GPT-vs-empty, external-vs-GPT, and all-model
-  current-vs-reference.
-  Each nonblank cell is the signed judge-score delta after both hard gates
-  pass; each block states its formula and color interpretation.
-- The full matrix is secondary because it is dense; use it when you need every
-  current-vs-reference pair, not as the first-read summary.
 
 See [evals/RESULTS.md](evals/RESULTS.md) for the full snapshot tables and
 [evals/PROMPT_QUALITY_CASES.md](evals/PROMPT_QUALITY_CASES.md) for tracked
@@ -147,9 +154,9 @@ python3 -B scripts/build_readme_infographics.py --check
 
 When `.eval-results/` artifacts are available, check that published 50-case
 numbers still match the saved JSON, docs point to the saved artifact roots,
-README links every required SVG, README SVGs keep their scope footer, and the
-docs do not overclaim full external-reference coverage or revert to stale
-pending-quality language:
+README links every required SVG, the five publication documents keep both the
+new blinded scope and the adjacent legacy pre-blinding caveats, and generated
+assets carry the matching six-model scope:
 
 ```bash
 python3 -B scripts/check_published_eval_metrics.py
@@ -174,8 +181,8 @@ python3 -B scripts/run_instruction_evals.py run \
   --case-timeout-seconds 900
 ```
 
-Compare the current worktree against a baseline ref with the same model and a
-fixed quality judge:
+Compare the current worktree against a baseline ref with the GPT-5.5 primary
+agent and the fixed Sol medium quality judge:
 
 ```bash
 python3 -B scripts/run_instruction_evals.py compare \
@@ -184,10 +191,14 @@ python3 -B scripts/run_instruction_evals.py compare \
   --agent-command "$CODEX_APP_CLI -a never exec" \
   --agent-command-mode current-codex \
   --preset gpt-5.5-medium \
-  --judge-preset gpt-5.5-medium \
+  --judge-preset gpt-5.6-sol-medium \
   --jobs 1 \
   --case-timeout-seconds 900
 ```
+
+For publication-grade saved-output quality, run both baseline/candidate orders
+and treat a disagreeing semantic verdict as `order_sensitive`; see
+`evals/README.md` for the fixed-judge policy.
 
 Use the Codex Desktop bundled CLI path above instead of an arbitrary `codex`
 wrapper on `PATH`. Keep `-a never` before `exec` for noninteractive harness

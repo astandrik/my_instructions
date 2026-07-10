@@ -419,7 +419,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--candidate", required=True, action="append", type=parse_label_path, help="Candidate LABEL=summary.json. Repeatable.")
     parser.add_argument("--agent-command", required=True, help="Judge agent command.")
     parser.add_argument("--agent-command-mode", default="current-codex", choices=sorted(evals.AGENT_COMMAND_MODES))
-    parser.add_argument("--judge-preset", default=evals.DEFAULT_PRESET, help="Judge model preset.")
+    parser.add_argument(
+        "--judge-preset",
+        default=evals.DEFAULT_SAVED_QUALITY_JUDGE_PRESET,
+        help=f"Judge model preset. Defaults to {evals.DEFAULT_SAVED_QUALITY_JUDGE_PRESET}.",
+    )
     parser.add_argument("--judge-model", help="Override judge model.")
     parser.add_argument("--judge-reasoning-effort", help="Override judge reasoning effort.")
     parser.add_argument("--judge-service-tier", help="Override judge service tier.")

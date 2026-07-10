@@ -18,13 +18,32 @@ without committing raw `.eval-results/` artifacts or local prompt mirrors.
 - `llm_judge`: both sides had the same hard-gate state and `gpt-5.5-medium`
   judged the saved structured final responses.
 
+## Blinded Six-Model Publication Scope
+
+The current publication aggregates both semantic orders and keeps every
+order-sensitive verdict separate from directional wins. Canonical artifacts
+live under `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
+Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
+
+The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
+
+These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+
+No OpenHands, Claude/Fable, or other reference rows are included.
+
+Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
 ## Snapshot Sources
+
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
 
 This file records the 2026-07-08 50-case all-model reference comparisons. The
 aggregate rows below cover all six saved current runners; the compact per-case
-text matrix that follows remains the GPT/Codex row. The full all-model
-per-case view is generated in `docs/assets/readme/quality-only-case-matrix.svg`
-and the pair-level JSON artifacts.
+text matrix that follows remains the GPT/Codex row. Pair-level JSON artifacts
+preserve the full historical all-model detail.
 
 OpenHands aggregate artifact:
 `.eval-results/refresh-2026-07-08-50-case-quality-v1/quality-reference-openhands-vs-current-all-models-full-v1/Reference-OpenHands-saved-model-quality/model-quality-summary.json`.

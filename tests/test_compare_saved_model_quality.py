@@ -226,6 +226,24 @@ class CompareSavedModelQualityTests(unittest.TestCase):
 
         self.assertTrue(args.dry_run)
 
+    def test_parse_args_defaults_to_sol_medium_judge(self):
+        module = load_script()
+
+        args = module.parse_args(
+            [
+                "--baseline",
+                "baseline=.eval-results/baseline/summary.json",
+                "--candidate",
+                "candidate=.eval-results/candidate/summary.json",
+                "--agent-command",
+                "codex exec",
+                "--output-dir",
+                ".eval-results/quality",
+            ]
+        )
+
+        self.assertEqual(args.judge_preset, "gpt-5.6-sol-medium")
+
 
 if __name__ == "__main__":
     unittest.main()

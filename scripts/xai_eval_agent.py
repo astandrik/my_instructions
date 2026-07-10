@@ -9,10 +9,12 @@ with a JSON schema, write the final message, and exit with a useful status.
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -22,6 +24,8 @@ from typing import Any
 VERSION = "xai-eval-agent 0.1"
 DEFAULT_BASE_URL = "https://api.x.ai/v1"
 DEFAULT_TIMEOUT_SECONDS = 300
+MAX_ATTEMPTS = 4
+RETRY_DELAYS_SECONDS = (1, 2, 4)
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -108,6 +112,14 @@ def extract_content(response: dict[str, Any]) -> str:
 
 
 def call_xai(body: dict[str, Any]) -> dict[str, Any]:
+    raw_max_attempts = os.environ.get("XAI_MAX_ATTEMPTS", "1")
+    try:
+        max_attempts = int(raw_max_attempts)
+    except ValueError:
+        raise ValueError("XAI_MAX_ATTEMPTS must be an integer from 1 through 4") from None
+    if not 1 <= max_attempts <= MAX_ATTEMPTS:
+        raise ValueError("XAI_MAX_ATTEMPTS must be an integer from 1 through 4")
+
     api_key = os.environ.get("XAI_API_KEY")
     if not api_key:
         raise RuntimeError("XAI_API_KEY is not set")
@@ -122,8 +134,20 @@ def call_xai(body: dict[str, Any]) -> dict[str, Any]:
         },
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8"))
+    for attempt in range(1, max_attempts + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except http.client.RemoteDisconnected as exc:
+            if attempt == max_attempts:
+                raise
+            print(
+                f"xAI retry attempt {attempt + 1}/{max_attempts} after {type(exc).__name__}",
+                file=sys.stderr,
+            )
+            time.sleep(RETRY_DELAYS_SECONDS[attempt - 1])
+
+    raise AssertionError("unreachable")
 
 
 def main(argv: list[str] | None = None) -> int:

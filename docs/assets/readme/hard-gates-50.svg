@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="610" viewBox="0 0 1280 610" role="img" aria-labelledby="title desc">
-<title id="title">50-case hard-gate snapshot</title>
-<desc id="desc">Hard-gate pass counts for the current 50-case instruction eval suite.</desc>
+<title id="title">Blinded 50-case hard-gate snapshot</title>
+<desc id="desc">Blinded current and empty hard-gate pass counts across six model and runner rows.</desc>
 <style>
 text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
 .title{font-size:30px;font-weight:700;fill:#111827}
@@ -13,8 +13,8 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 </style>
 <rect x="0" y="0" width="1280" height="610" fill="#f8fafc"/>
 <rect x="40.0" y="28.0" width="1200.0" height="500.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
-<text x="72.0" y="68.0" class="title">50-case hard-gate snapshot</text>
-<text x="72.0" y="94.0" class="subtitle">Current eval contract after Agent Data Injection coverage; saved quality rows are available separately.</text>
+<text x="72.0" y="68.0" class="title">Blinded 50-case hard-gate snapshot</text>
+<text x="72.0" y="94.0" class="subtitle">Primary current-vs-empty results only; dual-order quality is not loaded by this graphic.</text>
 <text x="72.0" y="136.0" class="axis">Model / runner</text>
 <text x="300.0" y="136.0" class="axis">Hard-gate passes out of 50</text>
 <text x="836.0" y="136.0" class="axis">current</text>
@@ -35,74 +35,75 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <text x="810.0" y="150.0" class="axis" text-anchor="middle">50</text>
 <text x="72.0" y="189.0" class="label">GPT-5.5</text>
 <rect x="300.0" y="172.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="172.0" width="377.4" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="172.0" width="255.0" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="192.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="192.0" width="510.0" height="14.0" rx="7.0" fill="#2563eb"/>
-<text x="836.0" y="193.0" class="value">50/50</text>
-<text x="918.0" y="193.0" class="value">37/50</text>
+<rect x="300.0" y="192.0" width="357.0" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="836.0" y="193.0" class="value">35/50</text>
+<text x="918.0" y="193.0" class="value">25/50</text>
 <rect x="990.0" y="174.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="193.0" class="value" text-anchor="middle">+13</text>
-<text x="1090.0" y="193.0" class="small">anchor row</text>
+<text x="1019.0" y="193.0" class="value" text-anchor="middle">+10</text>
+<text x="1090.0" y="193.0" class="small">Codex CLI</text>
 <rect x="64.0" y="206.0" width="1140.0" height="44.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="235.0" class="label">GLM-5.2</text>
+<text x="72.0" y="235.0" class="label">GPT-5.6 Sol medium</text>
 <rect x="300.0" y="218.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="218.0" width="163.2" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="218.0" width="214.2" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="238.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="238.0" width="469.2" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="836.0" y="239.0" class="value">46/50</text>
-<text x="918.0" y="239.0" class="value">16/50</text>
+<rect x="300.0" y="238.0" width="316.2" height="14.0" rx="7.0" fill="#4f46e5"/>
+<text x="836.0" y="239.0" class="value">31/50</text>
+<text x="918.0" y="239.0" class="value">21/50</text>
 <rect x="990.0" y="220.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="239.0" class="value" text-anchor="middle">+30</text>
-<text x="1090.0" y="239.0" class="small">closest external row</text>
-<text x="72.0" y="281.0" class="label">Grok 4.3</text>
+<text x="1019.0" y="239.0" class="value" text-anchor="middle">+10</text>
+<text x="1090.0" y="239.0" class="small">Codex CLI; same-family judge</text>
+<text x="72.0" y="281.0" class="label">GLM-5.2</text>
 <rect x="300.0" y="264.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="264.0" width="51.0" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="264.0" width="102.0" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="284.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="284.0" width="336.6" height="14.0" rx="7.0" fill="#ea580c"/>
-<text x="836.0" y="285.0" class="value">33/50</text>
-<text x="918.0" y="285.0" class="value">5/50</text>
+<rect x="300.0" y="284.0" width="295.8" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="836.0" y="285.0" class="value">29/50</text>
+<text x="918.0" y="285.0" class="value">10/50</text>
 <rect x="990.0" y="266.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="285.0" class="value" text-anchor="middle">+28</text>
-<text x="1090.0" y="285.0" class="small">ADI failed in full run</text>
+<text x="1019.0" y="285.0" class="value" text-anchor="middle">+19</text>
+<text x="1090.0" y="285.0" class="small">Z.ai adapter</text>
 <rect x="64.0" y="298.0" width="1140.0" height="44.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="327.0" class="label">Grok Build 0.1</text>
+<text x="72.0" y="327.0" class="label">Grok 4.3</text>
 <rect x="300.0" y="310.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="310.0" width="112.2" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="310.0" width="40.8" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="330.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="330.0" width="316.2" height="14.0" rx="7.0" fill="#7c3aed"/>
-<text x="836.0" y="331.0" class="value">31/50</text>
-<text x="918.0" y="331.0" class="value">11/50</text>
+<rect x="300.0" y="330.0" width="224.4" height="14.0" rx="7.0" fill="#ea580c"/>
+<text x="836.0" y="331.0" class="value">22/50</text>
+<text x="918.0" y="331.0" class="value">4/50</text>
 <rect x="990.0" y="312.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="331.0" class="value" text-anchor="middle">+20</text>
-<text x="1090.0" y="331.0" class="small">adapter row</text>
+<text x="1019.0" y="331.0" class="value" text-anchor="middle">+18</text>
+<text x="1090.0" y="331.0" class="small">xAI adapter</text>
 <text x="72.0" y="373.0" class="label">DeepSeek V4 Flash</text>
 <rect x="300.0" y="356.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="356.0" width="51.0" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="356.0" width="61.2" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="376.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="376.0" width="316.2" height="14.0" rx="7.0" fill="#0891b2"/>
-<text x="836.0" y="377.0" class="value">31/50</text>
-<text x="918.0" y="377.0" class="value">5/50</text>
+<rect x="300.0" y="376.0" width="193.8" height="14.0" rx="7.0" fill="#0891b2"/>
+<text x="836.0" y="377.0" class="value">19/50</text>
+<text x="918.0" y="377.0" class="value">6/50</text>
 <rect x="990.0" y="358.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="377.0" class="value" text-anchor="middle">+26</text>
-<text x="1090.0" y="377.0" class="small">non-thinking</text>
+<text x="1019.0" y="377.0" class="value" text-anchor="middle">+13</text>
+<text x="1090.0" y="377.0" class="small">DeepSeek adapter</text>
 <rect x="64.0" y="390.0" width="1140.0" height="44.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="419.0" class="label">DeepSeek V4 thinking</text>
+<text x="72.0" y="419.0" class="label">DeepSeek V4 Flash thinking</text>
 <rect x="300.0" y="402.0" width="510.0" height="12.0" rx="6.0" fill="#eef2f7"/>
-<rect x="300.0" y="402.0" width="81.6" height="12.0" rx="6.0" fill="#94a3b8"/>
+<rect x="300.0" y="402.0" width="61.2" height="12.0" rx="6.0" fill="#94a3b8"/>
 <rect x="300.0" y="422.0" width="510.0" height="14.0" rx="7.0" fill="#eef2f7"/>
-<rect x="300.0" y="422.0" width="346.8" height="14.0" rx="7.0" fill="#0f766e"/>
-<text x="836.0" y="423.0" class="value">34/50</text>
-<text x="918.0" y="423.0" class="value">8/50</text>
+<rect x="300.0" y="422.0" width="214.2" height="14.0" rx="7.0" fill="#0f766e"/>
+<text x="836.0" y="423.0" class="value">21/50</text>
+<text x="918.0" y="423.0" class="value">6/50</text>
 <rect x="990.0" y="404.0" width="58.0" height="28.0" rx="14.0" fill="#d1fae5"/>
-<text x="1019.0" y="423.0" class="value" text-anchor="middle">+26</text>
-<text x="1090.0" y="423.0" class="small">thinking mode</text>
+<text x="1019.0" y="423.0" class="value" text-anchor="middle">+15</text>
+<text x="1090.0" y="423.0" class="small">DeepSeek adapter; thinking</text>
 <circle cx="78.0" cy="488.0" r="7.0" fill="#94a3b8" stroke="#ffffff" stroke-width="2.0"/>
 <text x="94.0" y="492.0" class="axis">empty bundle</text>
 <circle cx="204.0" cy="488.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
 <text x="220.0" y="492.0" class="axis">current instructions</text>
 <text x="430.0" y="492.0" class="axis">Lift is current hard-gate passes minus empty-bundle passes.</text>
+<text x="72.0" y="520.0" class="small">Grok Build is excluded because repeated transport failures prevented a clean primary pair.</text>
 <line x1="32.0" y1="558.0" x2="1248.0" y2="558.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="576.0" class="small">Scope: 50-case saved hard-gate and quality snapshot; all-model reference rows included.</text>
-<text x="32.0" y="588.0" class="small">Source: .eval-results/refresh-2026-07-08-50-case-* summaries.</text>
+<text x="32.0" y="576.0" class="small">Scope: blinded current-vs-empty hard gates, 50 cases, 6 model/runner rows; no reference rows.</text>
+<text x="32.0" y="588.0" class="small">Source: blinded current/empty primary summary artifacts.</text>
 <text x="1248.0" y="588.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>

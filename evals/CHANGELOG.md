@@ -18,6 +18,10 @@ tables.
 
 ## Version Metric Ledger
 
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
+
 Use this table for the compact "where did each instruction version land?"
 view. Rows keep their original eval scope: do not compare a 43-case row with a
 49-case row as if they are the same benchmark. Use the direct common-case block
@@ -25,7 +29,7 @@ below when the question is specifically "v4.11 vs v4.13".
 
 | Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
 |---|---|---|---:|---|---:|---|
-| 2026-07-08 50-case snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
+| 2026-07-08 legacy pre-blinding snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
 | v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |
 | v4.12 GPT watchlist | 7 focused GPT/Codex cases | `.eval-results/v4.12-watchlist-compare-gpt55/compare-HEAD-current/summary.md` | 6 / 7 | descriptive quality only; current hard-gate wins 5, pass/pass ties 1, both-fail residual 1 | no numeric judge score | v4.11 baseline 1 / 7 |
 | v4.11 single bundle | 43 GPT/Codex cases | `.eval-results/full-single-bundle-v14-anti-overfit-jobs4/compare-origin-main-current/quality.md` | 43 / 43 | current 34, previous split bundle 3, tie 6, avg delta +9.0 | 95.5 | previous 40 / 43, avg 86.4 |
@@ -61,7 +65,69 @@ as uniform improvement:
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
 
+## 2026-07-10 - Blinded Six-Model Refresh
+
+- Published six clean blinded current-vs-empty model/runner pairs and executable
+  dual-order consensus from
+  `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
+Primary hard-gate rows:
+
+| Model | Current | Empty | Lift |
+|---|---:|---:|---:|
+| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
+| GPT-5.6 Sol medium | 31 / 50 | 21 / 50 | +10 |
+| GLM-5.2 | 29 / 50 | 10 / 50 | +19 |
+| Grok 4.3 | 22 / 50 | 4 / 50 | +18 |
+| DeepSeek V4 Flash | 19 / 50 | 6 / 50 | +13 |
+| DeepSeek V4 Flash thinking | 21 / 50 | 6 / 50 | +15 |
+
+Dual-order rows (`current / empty / tie / order-sensitive / inconclusive`):
+
+| Model | Current | Empty | Tie | Order-sensitive | Inconclusive |
+|---|---:|---:|---:|---:|---:|
+| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
+| GPT-5.6 Sol medium | 21 | 3 | 3 | 6 | 17 |
+| GLM-5.2 | 27 | 1 | 0 | 2 | 20 |
+| Grok 4.3 | 21 | 0 | 1 | 0 | 28 |
+| DeepSeek V4 Flash | 16 | 2 | 0 | 1 | 31 |
+| DeepSeek V4 Flash thinking | 18 | 0 | 1 | 2 | 29 |
+
+Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
+
+The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
+
+These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+
+No OpenHands, Claude/Fable, or other reference rows are included.
+
+Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
+## 2026-07-09 - Blinded Prompt Boundary and Semantic Fixtures
+
+- Removed case id, scenario, eval label, and grader artifacts from the primary
+  agent prompt and temporary eval workspace, including its visible directory
+  name, while retaining metadata in grader-side logs, artifact paths, and
+  quality-judge context.
+- Added grader-only deterministic fixtures to 14 hard-gate cases with positive,
+  plausible-wrong, and keyword-only categories. Validation requires positives
+  to pass and every negative fixture to fail as behavior; synthetic workflow
+  cases also reject representative false-completion claims.
+- Added an executable empty-actions check for the read-only instruction lookup
+  case so a correct answer cannot hide an unrelated mutation.
+- Relabeled the existing 2026-07-08 50-case metrics as a legacy pre-blinding
+  snapshot because primary prompts exposed case id/scenario metadata.
+- Kept every published number and artifact path unchanged. No model-backed run
+  was performed for this change.
+- Extended the publication scope contract to the eval README and to generated
+  README SVG and social PNG caveats. The publication guard now requires unique
+  caveated sections and rejects canonical current-vs-empty metrics outside them.
+
 ## 2026-07-08 - Agent Data Injection Eval Coverage and 50-Case Refresh
+
+Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
+(prompt contamination). The unchanged numbers are historical and are not clean
+blinded instruction-lift evidence.
 
 Instruction surface:
 
