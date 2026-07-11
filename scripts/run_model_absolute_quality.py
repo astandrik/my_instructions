@@ -20,7 +20,7 @@ import run_instruction_evals as evals
 
 
 DEFAULT_MANIFEST = Path("evals/model-quality-matrix.json")
-DEFAULT_OUTPUT_ROOT = Path(".eval-results/blinded-model-absolute-v1")
+DEFAULT_OUTPUT_ROOT = Path(".eval-results/blinded-50-case-v2-762db4f/absolute-quality")
 CANONICAL_MODELS = (
     ("gpt-5.6-sol", "GPT-5.6 Sol medium", "primary"),
     ("gpt-5.5", "GPT-5.5", "historical"),
@@ -200,7 +200,18 @@ def validate_manifest_contract(manifest: dict[str, Any]) -> None:
         counts = judge.get("model_passed_counts")
         if not isinstance(counts, dict) or list(counts) != expected_ids:
             raise MatrixError(f"judge {judge_name} passed counts drift")
-        if judge.get("budget") != {"model_jobs": 6, "judge_calls": 157}:
+        if any(
+            isinstance(count, bool) or not isinstance(count, int) or count < 0
+            for count in counts.values()
+        ):
+            raise MatrixError(f"judge {judge_name} passed counts drift")
+        budget = require_object(judge.get("budget"), f"judge {judge_name} budget")
+        if set(budget) != {"model_jobs", "judge_calls"}:
+            raise MatrixError(f"judge {judge_name} budget drift")
+        if budget != {
+            "model_jobs": len(CANONICAL_MODELS),
+            "judge_calls": sum(counts.values()),
+        }:
             raise MatrixError(f"judge {judge_name} budget drift")
 
 

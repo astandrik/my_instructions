@@ -66,13 +66,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     "order-sensitive verdicts are separate; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
-    "Pre-semantic-alternative scorer snapshot."
+    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    "163 hard-gate-passed responses across 6 models; single-response gpt-5.6-sol-medium judge; "
+    "comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    "judge scores are shown separately and are not averaged. Pre-semantic-alternative scorer snapshot."
+    "Scope: Sol medium vs Terra high audit on the same 163 current-only responses; "
+    "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
@@ -95,7 +95,7 @@ EXPECTED_ABSOLUTE_DOC_HEADINGS = {
     "evals/README.md": "## Absolute Cross-Model Quality",
     "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
     "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
-    "evals/CHANGELOG.md": "## 2026-07-10 - Absolute Cross-Model Quality",
+    "evals/CHANGELOG.md": "## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality",
 }
 FIXED_JUDGE_CAVEAT = "Fixed dual-order quality judge: `gpt-5.6-sol-medium`."
 SAME_MODEL_JUDGE_CAVEAT = (
@@ -913,10 +913,12 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         for scope in [
             module.BLINDED_HARD_GATE_SCOPE,
             module.BLINDED_DUAL_ORDER_SCOPE,
-            module.ABSOLUTE_QUALITY_SCOPE,
-            module.ABSOLUTE_JUDGE_AUDIT_SCOPE,
         ]:
             self.assertIn(module.PRE_SEMANTIC_SCORER_SCOPE, scope)
+        for scope in [module.ABSOLUTE_QUALITY_SCOPE, module.ABSOLUTE_JUDGE_AUDIT_SCOPE]:
+            self.assertNotIn(module.PRE_SEMANTIC_SCORER_SCOPE, scope)
+            self.assertIn("current-only", scope)
+            self.assertIn("163", scope)
 
     def test_absolute_publication_contract_uses_exact_headings_and_scopes(self):
         module = load_script()
@@ -1002,7 +1004,10 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
                 module.load_absolute_publication(root)
         self.assertEqual(module.ABSOLUTE_QUALITY_SCOPE, ABSOLUTE_QUALITY_SCOPE)
         self.assertEqual(module.ABSOLUTE_JUDGE_AUDIT_SCOPE, ABSOLUTE_JUDGE_AUDIT_SCOPE)
-        self.assertEqual(module.ABSOLUTE_QUALITY_ROOT, Path(".eval-results/blinded-model-absolute-v1/canonical"))
+        self.assertEqual(
+            module.ABSOLUTE_QUALITY_ROOT,
+            Path(".eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical"),
+        )
         self.assertEqual(module.GROK_BUILD_EXCLUSION_CAVEAT, GROK_BUILD_EXCLUSION_CAVEAT)
         self.assertEqual(module.EXPECTED_SOCIAL_PNG_METADATA["instruction_snapshot_models"], "6")
 
@@ -2048,7 +2053,7 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         self.assertIn("scope=checked", output)
         self.assertIn("judge=gpt-5.6-sol-medium", output)
         self.assertIn("dual_order=checked", output)
-        self.assertIn("absolute=157x2", output)
+        self.assertIn("absolute=163x2", output)
         self.assertIn("common_pairs=15", output)
         self.assertIn("terra_audit=checked", output)
 

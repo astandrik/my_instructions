@@ -26,7 +26,8 @@ QUALITY_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-quality-v1")
 BLINDED_ROOT = Path(".eval-results/blinded-50-case-v1")
 BLINDED_EXTERNAL_ROOT = Path(".eval-results/blinded-all-models-50-case-v1")
 BLINDED_QUALITY_ROOT = BLINDED_ROOT / "dual-order-quality-v2"
-ABSOLUTE_QUALITY_ROOT = Path(".eval-results/blinded-model-absolute-v1/canonical")
+ABSOLUTE_OUTPUT_ROOT = Path(".eval-results/blinded-50-case-v2-762db4f/absolute-quality")
+ABSOLUTE_QUALITY_ROOT = ABSOLUTE_OUTPUT_ROOT / "canonical"
 ABSOLUTE_SOL_QUALITY = ABSOLUTE_QUALITY_ROOT / "sol-absolute.json"
 ABSOLUTE_TERRA_QUALITY = ABSOLUTE_QUALITY_ROOT / "terra-absolute.json"
 ABSOLUTE_JUDGE_AUDIT = ABSOLUTE_QUALITY_ROOT / "sol-terra-audit.json"
@@ -65,6 +66,11 @@ PRE_SEMANTIC_SCORER_CAVEAT = (
     "Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior "
     "exact-phrase and exact-risk grader; deterministic regrade results are diagnostic and not published."
 )
+ABSOLUTE_CURRENT_SNAPSHOT_CAVEAT = (
+    "Current-only semantic-alternative scorer snapshot at commit `762db4f`; "
+    "no fresh empty baseline is used for this absolute-quality publication."
+)
+ABSOLUTE_JUDGMENT_COUNT = 163
 BLINDED_HARD_GATE_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
     f"50 cases, 6 model/runner rows; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
@@ -75,13 +81,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
-    f"{PRE_SEMANTIC_SCORER_SCOPE}"
+    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    f"{ABSOLUTE_JUDGMENT_COUNT} hard-gate-passed responses across 6 models; "
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    f"judge scores are shown separately and are not averaged. {PRE_SEMANTIC_SCORER_SCOPE}"
+    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only responses; "
+    "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
@@ -126,7 +132,7 @@ ABSOLUTE_DOC_HEADINGS = {
     "evals/README.md": "## Absolute Cross-Model Quality",
     "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
     "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
-    "evals/CHANGELOG.md": "## 2026-07-10 - Absolute Cross-Model Quality",
+    "evals/CHANGELOG.md": "## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality",
 }
 LEGACY_DOC_CAVEAT = (
     "Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata "
@@ -1486,7 +1492,7 @@ def expected_blinded_doc_sections(
 
 def load_absolute_publication(repo_root: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     manifest_path = repo_root / "evals/model-quality-matrix.json"
-    output_root = repo_root / ".eval-results/blinded-model-absolute-v1"
+    output_root = repo_root / ABSOLUTE_OUTPUT_ROOT
     manifest = read_json(manifest_path)
     cases_snapshot = manifest.get("snapshots", {}).get("cases", {})
     cases_path_value = cases_snapshot.get("path") if isinstance(cases_snapshot, dict) else None
@@ -1545,7 +1551,7 @@ def expected_absolute_doc_sections(
     changed = sum(row["changed_case_directions"] for row in audit["common_case_comparisons"])
     relations = sum(row["overlap"] for row in audit["common_case_comparisons"])
     caveats = [
-        PRE_SEMANTIC_SCORER_CAVEAT,
+        ABSOLUTE_CURRENT_SNAPSHOT_CAVEAT,
         ABSOLUTE_SEPARATE_METRICS_CAVEAT,
         ABSOLUTE_COMMON_CASE_CAVEAT,
         ABSOLUTE_JUDGES_CAVEAT,
@@ -1932,7 +1938,7 @@ def main(argv: list[str] | None = None) -> int:
         f"cases={snapshot.case_count}, "
         f"docs={len(docs)} models={len(blinded.model_rows)} svgs={svg_count} "
         "social=checked scope=checked judge=gpt-5.6-sol-medium dual_order=checked "
-        "absolute=157x2 common_pairs=15 terra_audit=checked"
+        f"absolute={ABSOLUTE_JUDGMENT_COUNT}x2 common_pairs=15 terra_audit=checked"
     )
     return 0
 

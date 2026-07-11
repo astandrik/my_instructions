@@ -40,12 +40,11 @@ Grok Build is excluded because repeated transport failures prevented a clean pri
 
 ## Absolute Cross-Model Quality Scope
 
-Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
-exact-phrase and exact-risk grader; deterministic regrade results are
-diagnostic and not published.
+Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
+empty baseline is used for this absolute-quality publication.
 
 The newer direct model-quality view does not use the pairwise/reference marks
-tracked below. It judges each of the 157 hard-gate-passed saved responses
+tracked below. It judges each of the 163 hard-gate-passed saved responses
 independently with Sol medium, then repeats the identical set with Terra high
 as a judge audit. Model identity and competitor responses are absent from the
 judge prompt.
@@ -57,7 +56,7 @@ high is an audit judge. Their scores are shown separately and are not averaged.
 No global leaderboard or rank is computed.
 
 Canonical artifacts live under
-`.eval-results/blinded-model-absolute-v1/canonical/`; the full aggregate and
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`; the full aggregate and
 15 common-case rows are published in `RESULTS.md`.
 
 ## Snapshot Sources

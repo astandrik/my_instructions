@@ -61,9 +61,8 @@ Canonical dual-order artifacts live under
 
 ## Absolute Cross-Model Quality Snapshot
 
-Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
-exact-phrase and exact-risk grader; deterministic regrade results are
-diagnostic and not published.
+Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
+empty baseline is used for this absolute-quality publication.
 
 Absolute scores judge one saved response at a time against the fixed rubric;
 the judge sees neither a competitor nor model identity. Hard-gate pass rate
@@ -73,12 +72,12 @@ and are not averaged.
 
 | Model | Role | Hard gate | Sol absolute | Terra audit | Terra - Sol |
 |---|---|---:|---:|---:|---:|
-| GPT-5.6 Sol medium | Primary | 31 / 50 | 97.87 | 97.45 | -0.42 |
-| GPT-5.5 | Historical | 35 / 50 | 97.74 | 97.03 | -0.71 |
-| GLM-5.2 | External | 29 / 50 | 93.17 | 93.34 | +0.17 |
-| Grok 4.3 | External | 22 / 50 | 88.91 | 87.73 | -1.18 |
-| DeepSeek V4 Flash | External | 19 / 50 | 82.32 | 76.05 | -6.27 |
-| DeepSeek V4 Flash thinking | External | 21 / 50 | 89.00 | 84.43 | -4.57 |
+| GPT-5.6 Sol medium | Primary | 33 / 50 | 98.15 | 97.76 | -0.39 |
+| GPT-5.5 | Historical | 35 / 50 | 96.86 | 96.54 | -0.32 |
+| GLM-5.2 | External | 29 / 50 | 95.45 | 92.79 | -2.66 |
+| Grok 4.3 | External | 25 / 50 | 86.36 | 86.40 | +0.04 |
+| DeepSeek V4 Flash | External | 18 / 50 | 81.56 | 75.11 | -6.45 |
+| DeepSeek V4 Flash thinking | External | 23 / 50 | 88.87 | 86.70 | -2.17 |
 
 Row averages use different passed-case subsets and therefore are not a model
 ranking. Direct model comparisons use only common hard-gate-passed cases and
@@ -86,32 +85,32 @@ are derived from saved absolute scores. They require no additional judge calls:
 
 | Model A | Model B | n | Mean A | Mean B | B - A | A higher / equal / B higher | Direction |
 |---|---|---:|---:|---:|---:|---:|---|
-| GPT-5.6 Sol medium | GPT-5.5 | 30 | 97.80 | 97.67 | -0.13 | 10 / 10 / 10 | GPT-5.6 Sol medium |
-| GPT-5.6 Sol medium | GLM-5.2 | 25 | 97.72 | 93.88 | -3.84 | 17 / 7 / 1 | GPT-5.6 Sol medium |
-| GPT-5.6 Sol medium | Grok 4.3 | 20 | 97.75 | 89.30 | -8.45 | 15 / 2 / 3 | GPT-5.6 Sol medium |
-| GPT-5.6 Sol medium | DeepSeek V4 Flash | 18 | 97.61 | 82.67 | -14.94 | 16 / 1 / 1 | GPT-5.6 Sol medium |
-| GPT-5.6 Sol medium | DeepSeek V4 Flash thinking | 19 | 97.79 | 88.68 | -9.11 | 16 / 0 / 3 | GPT-5.6 Sol medium |
-| GPT-5.5 | GLM-5.2 | 28 | 97.64 | 93.04 | -4.60 | 19 / 6 / 3 | GPT-5.5 |
-| GPT-5.5 | Grok 4.3 | 21 | 97.71 | 88.76 | -8.95 | 16 / 4 / 1 | GPT-5.5 |
-| GPT-5.5 | DeepSeek V4 Flash | 19 | 97.58 | 82.32 | -15.26 | 17 / 1 / 1 | GPT-5.5 |
-| GPT-5.5 | DeepSeek V4 Flash thinking | 20 | 97.70 | 88.65 | -9.05 | 15 / 4 / 1 | GPT-5.5 |
-| GLM-5.2 | Grok 4.3 | 20 | 93.00 | 88.00 | -5.00 | 13 / 3 / 4 | GLM-5.2 |
-| GLM-5.2 | DeepSeek V4 Flash | 18 | 91.83 | 81.56 | -10.27 | 13 / 2 / 3 | GLM-5.2 |
-| GLM-5.2 | DeepSeek V4 Flash thinking | 18 | 93.39 | 88.39 | -5.00 | 13 / 1 / 4 | GLM-5.2 |
-| Grok 4.3 | DeepSeek V4 Flash | 14 | 87.43 | 85.43 | -2.00 | 7 / 3 / 4 | Grok 4.3 |
-| Grok 4.3 | DeepSeek V4 Flash thinking | 15 | 88.07 | 90.53 | +2.46 | 5 / 2 / 8 | DeepSeek V4 Flash thinking |
-| DeepSeek V4 Flash | DeepSeek V4 Flash thinking | 16 | 84.19 | 87.69 | +3.50 | 7 / 1 / 8 | DeepSeek V4 Flash thinking |
+| GPT-5.6 Sol medium | GPT-5.5 | 31 | 98.10 | 96.68 | -1.42 | 16 / 11 / 4 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | GLM-5.2 | 28 | 97.96 | 95.46 | -2.50 | 19 / 5 / 4 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | Grok 4.3 | 24 | 97.88 | 87.38 | -10.50 | 20 / 3 / 1 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | DeepSeek V4 Flash | 18 | 97.89 | 81.56 | -16.33 | 17 / 0 / 1 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | DeepSeek V4 Flash thinking | 22 | 97.95 | 88.55 | -9.40 | 18 / 1 / 3 | GPT-5.6 Sol medium |
+| GPT-5.5 | GLM-5.2 | 28 | 96.50 | 95.32 | -1.18 | 13 / 10 / 5 | GPT-5.5 |
+| GPT-5.5 | Grok 4.3 | 24 | 96.12 | 86.46 | -9.66 | 18 / 4 / 2 | GPT-5.5 |
+| GPT-5.5 | DeepSeek V4 Flash | 17 | 95.59 | 80.88 | -14.71 | 14 / 2 / 1 | GPT-5.5 |
+| GPT-5.5 | DeepSeek V4 Flash thinking | 23 | 96.30 | 88.87 | -7.43 | 17 / 2 / 4 | GPT-5.5 |
+| GLM-5.2 | Grok 4.3 | 23 | 94.96 | 85.39 | -9.57 | 17 / 2 / 4 | GLM-5.2 |
+| GLM-5.2 | DeepSeek V4 Flash | 17 | 94.65 | 80.65 | -14.00 | 15 / 2 / 0 | GLM-5.2 |
+| GLM-5.2 | DeepSeek V4 Flash thinking | 19 | 94.89 | 87.37 | -7.52 | 14 / 3 / 2 | GLM-5.2 |
+| Grok 4.3 | DeepSeek V4 Flash | 16 | 85.25 | 81.62 | -3.63 | 9 / 1 / 6 | Grok 4.3 |
+| Grok 4.3 | DeepSeek V4 Flash thinking | 16 | 85.00 | 88.56 | +3.56 | 7 / 1 / 8 | DeepSeek V4 Flash thinking |
+| DeepSeek V4 Flash | DeepSeek V4 Flash thinking | 13 | 79.00 | 87.54 | +8.54 | 3 / 1 / 9 | DeepSeek V4 Flash thinking |
 
-Sol and Terra agree on all 15 aggregate pair directions. They differ on 96 of
-301 pair-case score relations. This is reported as judge sensitivity, not
+Sol and Terra agree on all 15 aggregate pair directions. They differ on 107 of
+319 pair-case score relations. This is reported as judge sensitivity, not
 combined into one score. No global leaderboard or rank is computed.
 
 Canonical JSON and Markdown artifacts live under
-`.eval-results/blinded-model-absolute-v1/canonical/`. Frozen provenance:
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen provenance:
 instructions SHA-256
-`8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
+`66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 cases SHA-256
-`aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
+`835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.
 
 ## 50-Case Refresh Snapshot
 

@@ -31,9 +31,12 @@ QUALITY_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-quality-v1")
 BLINDED_ROOT = Path(".eval-results/blinded-50-case-v1")
 BLINDED_EXTERNAL_ROOT = Path(".eval-results/blinded-all-models-50-case-v1")
 BLINDED_QUALITY_ROOT = BLINDED_ROOT / "dual-order-quality-v2"
-ABSOLUTE_QUALITY_ROOT = Path(".eval-results/blinded-model-absolute-v1/canonical")
+ABSOLUTE_QUALITY_ROOT = Path(
+    ".eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical"
+)
 ABSOLUTE_SOL_QUALITY = ABSOLUTE_QUALITY_ROOT / "sol-absolute.json"
 ABSOLUTE_JUDGE_AUDIT = ABSOLUTE_QUALITY_ROOT / "sol-terra-audit.json"
+ABSOLUTE_JUDGMENT_COUNT = 163
 LEGACY_SNAPSHOT_CAVEAT = (
     "Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata "
     "(prompt contamination)."
@@ -53,13 +56,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
-    f"{PRE_SEMANTIC_SCORER_SCOPE}"
+    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    f"{ABSOLUTE_JUDGMENT_COUNT} hard-gate-passed responses across 6 models; "
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    f"judge scores are shown separately and are not averaged. {PRE_SEMANTIC_SCORER_SCOPE}"
+    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only responses; "
+    "judge scores are shown separately and are not averaged."
 )
 SAME_MODEL_JUDGE_CAVEAT = (
     "The GPT-5.6 Sol row uses the same model family as the fixed quality judge; "
@@ -270,8 +273,10 @@ def load_absolute_quality(repo_root: Path) -> dict[str, Any]:
     data = read_json(resolve_path(repo_root, ABSOLUTE_SOL_QUALITY))
     if data.get("methodology") != "single_response_absolute_scoring":
         raise SystemExit("invalid absolute-quality methodology")
-    if data.get("total_judgments") != 157:
-        raise SystemExit("absolute-quality coverage must contain 157 judgments")
+    if data.get("total_judgments") != ABSOLUTE_JUDGMENT_COUNT:
+        raise SystemExit(
+            f"absolute-quality coverage must contain {ABSOLUTE_JUDGMENT_COUNT} judgments"
+        )
     models = data.get("models")
     comparisons = data.get("common_case_comparisons")
     expected_ids = [row["model_id"] for row in BLINDED_MODELS]
@@ -1264,7 +1269,7 @@ def render_model_absolute_quality(repo_root: Path, output_dir: Path) -> None:
         footer(
             width,
             728,
-            "Source: canonical sol-absolute.json; 157 independent single-response judgments.",
+            f"Source: canonical sol-absolute.json; {ABSOLUTE_JUDGMENT_COUNT} independent single-response judgments.",
             scope=ABSOLUTE_QUALITY_SCOPE,
         )
     )
@@ -1347,10 +1352,17 @@ def render_model_quality_judge_audit(repo_root: Path, output_dir: Path) -> None:
         width,
         height,
         "Sol vs Terra judge audit",
-        "Independent absolute-score audit on the same 157 blinded hard-gate-passed responses.",
+        f"Independent absolute-score audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only hard-gate-passed responses.",
     )
     lines.append(text(40, 56, "Sol vs Terra judge audit", "title"))
-    lines.append(text(40, 84, "Same 157 responses, same rubric, separate scores; judge outputs are not averaged.", "subtitle"))
+    lines.append(
+        text(
+            40,
+            84,
+            f"Same {ABSOLUTE_JUDGMENT_COUNT} responses, same rubric, separate scores; judge outputs are not averaged.",
+            "subtitle",
+        )
+    )
     lines.extend(panel(40, 110, 1280, 456))
     lines.append(text(72, 144, "Model / role", "axis"))
     lines.append(text(axis_x, 144, "Absolute quality score (0-100)", "axis"))

@@ -22,19 +22,19 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <text x="72.0" y="192.0" class="label">GPT-5.6 Sol medium</text>
 <text x="72.0" y="210.0" class="small">primary</text>
 <rect x="430.0" y="181.0" width="250.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="430.0" y="181.0" width="155.0" height="14.0" rx="7.0" fill="#2563eb"/>
-<text x="692.0" y="192.0" class="value">31/50</text>
+<rect x="430.0" y="181.0" width="165.0" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="692.0" y="192.0" class="value">33/50</text>
 <rect x="790.0" y="181.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="181.0" width="420.8" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="192.0" class="value">97.87</text>
+<rect x="790.0" y="181.0" width="422.0" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="192.0" class="value">98.15</text>
 <text x="72.0" y="252.0" class="label">GPT-5.5</text>
 <text x="72.0" y="270.0" class="small">historical</text>
 <rect x="430.0" y="241.0" width="250.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
 <rect x="430.0" y="241.0" width="175.0" height="14.0" rx="7.0" fill="#2563eb"/>
 <text x="692.0" y="252.0" class="value">35/50</text>
 <rect x="790.0" y="241.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="241.0" width="420.3" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="252.0" class="value">97.74</text>
+<rect x="790.0" y="241.0" width="416.5" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="252.0" class="value">96.86</text>
 <rect x="64.0" y="284.0" width="1230.0" height="50.0" rx="0.0" fill="#f8fafc"/>
 <text x="72.0" y="312.0" class="label">GLM-5.2</text>
 <text x="72.0" y="330.0" class="small">external</text>
@@ -42,37 +42,37 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <rect x="430.0" y="301.0" width="145.0" height="14.0" rx="7.0" fill="#2563eb"/>
 <text x="692.0" y="312.0" class="value">29/50</text>
 <rect x="790.0" y="301.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="301.0" width="400.6" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="312.0" class="value">93.17</text>
+<rect x="790.0" y="301.0" width="410.4" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="312.0" class="value">95.45</text>
 <text x="72.0" y="372.0" class="label">Grok 4.3</text>
 <text x="72.0" y="390.0" class="small">external</text>
 <rect x="430.0" y="361.0" width="250.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="430.0" y="361.0" width="110.0" height="14.0" rx="7.0" fill="#2563eb"/>
-<text x="692.0" y="372.0" class="value">22/50</text>
+<rect x="430.0" y="361.0" width="125.0" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="692.0" y="372.0" class="value">25/50</text>
 <rect x="790.0" y="361.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="361.0" width="382.3" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="372.0" class="value">88.91</text>
+<rect x="790.0" y="361.0" width="371.3" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="372.0" class="value">86.36</text>
 <rect x="64.0" y="404.0" width="1230.0" height="50.0" rx="0.0" fill="#f8fafc"/>
 <text x="72.0" y="432.0" class="label">DeepSeek V4 Flash</text>
 <text x="72.0" y="450.0" class="small">external</text>
 <rect x="430.0" y="421.0" width="250.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="430.0" y="421.0" width="95.0" height="14.0" rx="7.0" fill="#2563eb"/>
-<text x="692.0" y="432.0" class="value">19/50</text>
+<rect x="430.0" y="421.0" width="90.0" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="692.0" y="432.0" class="value">18/50</text>
 <rect x="790.0" y="421.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="421.0" width="354.0" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="432.0" class="value">82.32</text>
+<rect x="790.0" y="421.0" width="350.7" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="432.0" class="value">81.56</text>
 <text x="72.0" y="492.0" class="label">DeepSeek V4 Flash thinking</text>
 <text x="72.0" y="510.0" class="small">external</text>
 <rect x="430.0" y="481.0" width="250.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="430.0" y="481.0" width="105.0" height="14.0" rx="7.0" fill="#2563eb"/>
-<text x="692.0" y="492.0" class="value">21/50</text>
+<rect x="430.0" y="481.0" width="115.0" height="14.0" rx="7.0" fill="#2563eb"/>
+<text x="692.0" y="492.0" class="value">23/50</text>
 <rect x="790.0" y="481.0" width="430.0" height="14.0" rx="7.0" fill="#f1f5f9"/>
-<rect x="790.0" y="481.0" width="382.7" height="14.0" rx="7.0" fill="#16a34a"/>
-<text x="1232.0" y="492.0" class="value">89.00</text>
+<rect x="790.0" y="481.0" width="382.1" height="14.0" rx="7.0" fill="#16a34a"/>
+<text x="1232.0" y="492.0" class="value">88.87</text>
 <text x="72.0" y="610.0" class="label">Rows are ordered Primary, Historical, then External; this is not a global ranking.</text>
 <text x="72.0" y="634.0" class="small">Different pass counts mean absolute row averages use different case subsets.</text>
 <line x1="32.0" y1="698.0" x2="1328.0" y2="698.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="716.0" class="small">Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. Pre-semantic-alternative scorer snapshot.</text>
-<text x="32.0" y="728.0" class="small">Source: canonical sol-absolute.json; 157 independent single-response judgments.</text>
+<text x="32.0" y="716.0" class="small">Scope: current-only semantic-alternative absolute quality at 762db4f, 163 hard-gate-passed responses across 6 models; single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking.</text>
+<text x="32.0" y="728.0" class="small">Source: canonical sol-absolute.json; 163 independent single-response judgments.</text>
 <text x="1328.0" y="728.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>

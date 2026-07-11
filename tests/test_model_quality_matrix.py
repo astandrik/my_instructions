@@ -33,39 +33,35 @@ MODEL_LABELS = [
     "DeepSeek V4 Flash thinking",
 ]
 MODEL_ROLES = ["primary", "historical", "external", "external", "external", "external"]
-PASS_COUNTS = [31, 35, 29, 22, 19, 21]
+PASS_COUNTS = [33, 35, 29, 25, 18, 23]
 PASS_PATTERNS = {
-    "gpt-5.6-sol": "11010000101001101011101111101110011011110101110101",
-    "gpt-5.5": "11010100101011101011101111101111011010110101111111",
-    "glm-5.2": "11010000101011010011101101101111011010110101101100",
-    "grok-4.3": "01010000101001111011100101101111001010110000000000",
-    "deepseek-v4-flash": "11000000001011100001100101101110010010010101000000",
-    "deepseek-v4-flash-thinking": "11000000001001111001101001101110010010010100100010",
+    model_id: "1" * count + "0" * (50 - count)
+    for model_id, count in zip(MODEL_IDS, PASS_COUNTS, strict=True)
 }
 SOURCE_SUMMARIES = [
     {
-        "path": ".eval-results/blinded-50-case-v1/current-sol56-medium-v1/current/summary.json",
-        "sha256": "ba0e37c89ae74416e1493a02389364cade2860b24ed459b9e9f9ddd92b9b0962",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-gpt56-sol/current/summary.json",
+        "sha256": "5af24dbfcc7ab03d8fd01992a683644ce9555d32c244ff412b20853b8749d87d",
     },
     {
-        "path": ".eval-results/blinded-50-case-v1/current-gpt55/current/summary.json",
-        "sha256": "5b76ad1edb3a0ddb026339b501a3cd6c8855c68223abe5e5b92b51af951eab54",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-gpt55/current/summary.json",
+        "sha256": "c5643303c4f2d795cb33a0de4c9ded358d663c145f65542330a04ecb1a1a0ad3",
     },
     {
-        "path": ".eval-results/blinded-all-models-50-case-v1/current-glm-5.2/current/summary.json",
-        "sha256": "7173007137bacae47332928cb891f55dc185e41b5529a8b85db20dafe60ca9d3",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-glm-5.2/current/summary.json",
+        "sha256": "69ee04fec39fdede786bccb4947306d2c6a4964ae5bbd387b19d4a450960021c",
     },
     {
-        "path": ".eval-results/blinded-all-models-50-case-v1/current-grok-4.3/current/summary.json",
-        "sha256": "55845cd5937edf13cab05627ca15ef2f47b52668b98ee05f71c992a78404ad6d",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-grok-4.3/current/summary.json",
+        "sha256": "809d7e8e438fbaf51bf561ec2726f15d5a61748bc4cf4f26156954d3b9fbf1bb",
     },
     {
-        "path": ".eval-results/blinded-all-models-50-case-v1/current-deepseek-v4-flash/current/summary.json",
-        "sha256": "f63e7fd0272e83885ce672eb4ce74422aabbf2535a5a8fce6796753b4944b33a",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-deepseek-v4-flash/current/summary.json",
+        "sha256": "6e39b861259f271ba7d3a132fc52234093efa2d263c585bdde2a929a69cf0423",
     },
     {
-        "path": ".eval-results/blinded-all-models-50-case-v1/current-deepseek-v4-flash-thinking/current/summary.json",
-        "sha256": "480ffcc6a81f5773cd0164c78c3e4a92296596c0c0d90606838aa05882b11700",
+        "path": ".eval-results/blinded-50-case-v2-762db4f/current-deepseek-v4-flash-thinking/current/summary.json",
+        "sha256": "d3440b513fe60c6ecbe5da72850b314764b3c83b78df95ef8d9713dffe28ccb9",
     },
 ]
 
@@ -208,16 +204,16 @@ class ModelQualityManifestTests(unittest.TestCase):
             [model["source_summary"] for model in self.manifest["models"]], SOURCE_SUMMARIES
         )
 
-    def test_both_judges_cover_the_identical_157_passed_responses(self):
+    def test_both_judges_cover_the_identical_163_passed_responses(self):
         expected_counts = dict(zip(MODEL_IDS, PASS_COUNTS, strict=True))
         for judge_name, judge in self.manifest["judges"].items():
             with self.subTest(judge=judge_name):
                 self.assertEqual(judge["coverage"], "all_hard_gate_passed_responses")
                 self.assertEqual(judge["model_passed_counts"], expected_counts)
-                self.assertEqual(judge["budget"], {"model_jobs": 6, "judge_calls": 157})
+                self.assertEqual(judge["budget"], {"model_jobs": 6, "judge_calls": 163})
         self.assertEqual(
             sum(judge["budget"]["judge_calls"] for judge in self.manifest["judges"].values()),
-            314,
+            326,
         )
         serialized = json.dumps(self.manifest["judges"], sort_keys=True)
         for obsolete in ("pairs", "pair_count", "order_jobs", "deterministic_shortcuts"):
@@ -251,13 +247,13 @@ class ModelAbsoluteQualityRunnerTests(unittest.TestCase):
     def tearDown(self):
         self.tempdir.cleanup()
 
-    def test_plan_reports_six_jobs_and_exact_157_calls_for_each_judge(self):
+    def test_plan_reports_six_jobs_and_exact_163_calls_for_each_judge(self):
         for judge_name in ("sol", "terra"):
             with self.subTest(judge=judge_name):
                 plan = self.runner.build_plan(self.root, self.manifest_path, judge_name)
                 self.assertEqual(len(plan.jobs), 6)
                 self.assertEqual([len(job.case_ids) for job in plan.jobs], PASS_COUNTS)
-                self.assertEqual(plan.judge_calls, 157)
+                self.assertEqual(plan.judge_calls, 163)
                 self.assertTrue(
                     all(job.output_path.is_relative_to(self.root.resolve()) for job in plan.jobs)
                 )
@@ -268,6 +264,32 @@ class ModelAbsoluteQualityRunnerTests(unittest.TestCase):
             records = {record["case_id"]: record for record in job.source_records}
             self.assertEqual(job.case_ids, tuple(case_id for case_id, record in records.items() if record["passed"]))
             self.assertTrue(all(records[case_id]["failure_type"] == "none" for case_id in job.case_ids))
+
+    def test_plan_accepts_snapshot_specific_call_budget(self):
+        manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
+        source_path = self.root / manifest["models"][0]["source_summary"]["path"]
+        source = json.loads(source_path.read_text(encoding="utf-8"))
+        newly_passed = next(record for record in source["results"] if not record["passed"])
+        newly_passed.update(
+            {
+                "passed": True,
+                "failure_type": "none",
+                "details": ["all deterministic checks passed"],
+            }
+        )
+        source["passed"] += 1
+        source["failed"] -= 1
+        source_path.write_text(json.dumps(source, sort_keys=True) + "\n", encoding="utf-8")
+        manifest["models"][0]["source_summary"]["sha256"] = sha256(source_path)
+        for judge in manifest["judges"].values():
+            judge["model_passed_counts"]["gpt-5.6-sol"] += 1
+            judge["budget"]["judge_calls"] += 1
+        self.manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        plan = self.runner.build_plan(self.root, self.manifest_path, "sol")
+
+        self.assertEqual(plan.judge_calls, 164)
+        self.assertEqual(len(plan.jobs[0].case_ids), 34)
 
     def test_frozen_plan_reconstructs_case_order_from_hashed_sources_after_catalog_drift(self):
         cases_path = self.root / "evals" / "cases.jsonl"
@@ -290,7 +312,7 @@ class ModelAbsoluteQualityRunnerTests(unittest.TestCase):
         self.assertEqual(len(plan.cases_by_id), 50)
         self.assertEqual(len(plan.jobs), 6)
         self.assertEqual([len(job.case_ids) for job in plan.jobs], PASS_COUNTS)
-        self.assertEqual(plan.judge_calls, 157)
+        self.assertEqual(plan.judge_calls, 163)
 
     def test_frozen_plan_still_rejects_source_hash_drift(self):
         manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
@@ -309,7 +331,8 @@ class ModelAbsoluteQualityRunnerTests(unittest.TestCase):
 
         write_fixture(self.root)
         manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
-        manifest["judges"]["sol"]["model_passed_counts"]["gpt-5.6-sol"] = 30
+        manifest["judges"]["sol"]["model_passed_counts"]["gpt-5.6-sol"] = 32
+        manifest["judges"]["sol"]["budget"]["judge_calls"] = 162
         self.manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(self.runner.MatrixError, "passed counts"):
             self.runner.build_plan(self.root, self.manifest_path, "sol")
@@ -460,13 +483,13 @@ class ModelAbsoluteQualityAggregatorTests(unittest.TestCase):
         )
 
         self.assertEqual(result["methodology"], "single_response_absolute_scoring")
-        self.assertEqual(result["total_judgments"], 157)
+        self.assertEqual(result["total_judgments"], 163)
         self.assertEqual(len(result["models"]), 6)
         self.assertEqual(len(result["common_case_comparisons"]), 15)
         self.assertEqual(
             [model["hard_gate_passed"] for model in result["models"]], PASS_COUNTS
         )
-        self.assertEqual(result["models"][0]["hard_gate_pass_rate"], 0.62)
+        self.assertEqual(result["models"][0]["hard_gate_pass_rate"], 0.66)
         self.assertEqual(
             set(result["models"][0]["dimension_scores"]),
             set(self.runner.evals.QUALITY_CHECK_IDS),
@@ -510,6 +533,22 @@ class ModelAbsoluteQualityAggregatorTests(unittest.TestCase):
         self.assertIn("terra_direction", pair)
         self.assertIn("judge_sensitive", pair)
         self.assertIn("changed_case_directions", pair)
+
+    def test_sol_terra_audit_accepts_snapshot_specific_equal_coverage(self):
+        sol = self.aggregator.aggregate_judge(
+            self.root, self.manifest_path, "sol", output_root=self.plans["sol"].output_root
+        )
+        terra = self.aggregator.aggregate_judge(
+            self.root, self.manifest_path, "terra", output_root=self.plans["terra"].output_root
+        )
+        for result in (sol, terra):
+            result["models"][0]["hard_gate_passed"] += 1
+            result["models"][0]["case_scores"]["newly-passed-case"] = 80
+            result["total_judgments"] += 1
+
+        audit = self.aggregator.aggregate_judge_audit(sol, terra)
+
+        self.assertEqual(len(audit["models"]), 6)
 
     def test_aggregation_fails_closed_on_incomplete_or_drifted_judgments(self):
         missing = self.plans["sol"].jobs[-1].output_path / "summary.json"

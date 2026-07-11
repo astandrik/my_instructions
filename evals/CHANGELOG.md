@@ -65,19 +65,49 @@ as uniform improvement:
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
 
-## 2026-07-11 - Semantic-Alternative Scorer Calibration
+## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality
 
-- Added deterministic any-of phrase groups and allowed risk-level sets without
-  adding a model-backed scorer or dependency.
-- Added positive, plausible-wrong, and keyword-only fixtures to five asymmetric
-  cases; the suite now has 19 semantic-fixture cases.
-- Added a classification-only `regrade` command with source/response/case and
-  instruction fingerprints plus a canonical-promotion guard.
-- Kept primary case prompts and `CRITICAL_INSTRUCTIONS.md` unchanged.
-- Regraded saved structured outputs only as diagnostic evidence. The published
-  figures below remain unchanged until a fresh primary and quality rerun.
+Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
+empty baseline is used for this absolute-quality publication.
 
-## 2026-07-10 - Absolute Cross-Model Quality
+Hard-gate pass rate and quality among passed responses are separate metrics.
+Direct model comparisons use only common hard-gate-passed cases and are derived
+from saved absolute scores. Sol medium is the primary judge; Terra high is an
+audit judge. Their scores are shown separately and are not averaged. No global
+leaderboard or rank is computed.
+
+- Added deterministic any-of phrase groups, allowed decision/risk sets, 19
+  semantic-fixture cases, and classification-only regrade provenance.
+- Accepted the compact request-authority matrix after the GPT-5.6 Sol A/B;
+  the instruction core is 762 bytes smaller than the prior snapshot.
+- Ran fresh current-only primary evaluations for all six canonical rows with
+  50 identical case IDs and zero agent/transport failures.
+- Scored all 163 hard-gate-passed responses independently with Sol medium and
+  repeated the identical 163 responses with Terra high as an audit. Scores
+  remain separate and are not averaged.
+- Derived all 15 direct comparisons from common passed-case intersections.
+  Sol and Terra agree on all 15 aggregate pair directions and differ on 107 of
+  319 pair-case score relations.
+- Stopped the incomplete GLM empty run after the decision to use current-only
+  absolute scoring. Excluded Grok Build after repeated agent failures made a
+  clean canonical row impossible.
+
+| Model | Role | Hard gate | Sol absolute | Terra audit | Terra - Sol |
+|---|---|---:|---:|---:|---:|
+| GPT-5.6 Sol medium | Primary | 33 / 50 | 98.15 | 97.76 | -0.39 |
+| GPT-5.5 | Historical | 35 / 50 | 96.86 | 96.54 | -0.32 |
+| GLM-5.2 | External | 29 / 50 | 95.45 | 92.79 | -2.66 |
+| Grok 4.3 | External | 25 / 50 | 86.36 | 86.40 | +0.04 |
+| DeepSeek V4 Flash | External | 18 / 50 | 81.56 | 75.11 | -6.45 |
+| DeepSeek V4 Flash thinking | External | 23 / 50 | 88.87 | 86.70 | -2.17 |
+
+Canonical artifacts live under
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen instructions:
+`66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
+frozen 50-case catalog:
+`835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.
+
+## 2026-07-10 - Absolute Cross-Model Quality (Historical Pre-Semantic Snapshot)
 
 Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
 exact-phrase and exact-risk grader; deterministic regrade results are

@@ -163,8 +163,28 @@ def aggregate_judge_audit(sol: dict[str, Any], terra: dict[str, Any]) -> dict[st
         raise runner.MatrixError("judge audit methodology mismatch")
     if sol.get("snapshots") != terra.get("snapshots"):
         raise runner.MatrixError("judge audit snapshot mismatch")
-    if sol.get("total_judgments") != 157 or terra.get("total_judgments") != 157:
-        raise runner.MatrixError("judge audit requires exact 157-record coverage")
+    audit_totals = []
+    for judge_name, result in (("sol", sol), ("terra", terra)):
+        models = result.get("models")
+        if not isinstance(models, list):
+            raise runner.MatrixError(f"judge audit {judge_name} models missing")
+        actual_total = 0
+        for row in models:
+            if not isinstance(row, dict) or not isinstance(row.get("case_scores"), dict):
+                raise runner.MatrixError(f"judge audit {judge_name} model coverage invalid")
+            hard_gate_passed = row.get("hard_gate_passed")
+            if (
+                isinstance(hard_gate_passed, bool)
+                or not isinstance(hard_gate_passed, int)
+                or hard_gate_passed != len(row["case_scores"])
+            ):
+                raise runner.MatrixError(f"judge audit {judge_name} model coverage mismatch")
+            actual_total += hard_gate_passed
+        if result.get("total_judgments") != actual_total:
+            raise runner.MatrixError(f"judge audit {judge_name} total coverage mismatch")
+        audit_totals.append(actual_total)
+    if audit_totals[0] != audit_totals[1]:
+        raise runner.MatrixError("judge audit coverage mismatch")
     terra_models = {row["model_id"]: row for row in terra["models"]}
     model_rows = []
     for sol_row in sol["models"]:

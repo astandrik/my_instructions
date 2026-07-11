@@ -32,12 +32,11 @@ Grok Build is excluded because repeated transport failures prevented a clean pri
 
 ## Absolute Cross-Model Quality
 
-Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
-exact-phrase and exact-risk grader; deterministic regrade results are
-diagnostic and not published.
+Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
+empty baseline is used for this absolute-quality publication.
 
 The direct model-quality publication uses independent single-response scoring,
-not pairwise judge prompts. Only the 157 saved responses that passed their
+not pairwise judge prompts. Only the 163 saved responses that passed their
 deterministic hard gates are judged. Hard-gate pass rate and quality among
 passed responses are separate metrics.
 
@@ -47,11 +46,11 @@ common hard-gate-passed cases and are derived from saved absolute scores. They
 require no additional model calls. No global leaderboard or rank is computed.
 
 Canonical artifacts live under
-`.eval-results/blinded-model-absolute-v1/canonical/`:
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`:
 
-- `.eval-results/blinded-model-absolute-v1/canonical/sol-absolute.json`
-- `.eval-results/blinded-model-absolute-v1/canonical/terra-absolute.json`
-- `.eval-results/blinded-model-absolute-v1/canonical/sol-terra-audit.json`
+- `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/sol-absolute.json`
+- `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/terra-absolute.json`
+- `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/sol-terra-audit.json`
 
 Reproduce or validate the ignored artifacts with:
 
@@ -62,9 +61,9 @@ python3 -B scripts/aggregate_model_absolute_quality.py --check
 ```
 
 The frozen instruction SHA-256 is
-`8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
+`66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 the cases SHA-256 is
-`aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
+`835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.
 
 ## Static gate
 

@@ -137,16 +137,16 @@ def six_publication_rows():
 
 def absolute_quality_fixture():
     labels = {
-        "gpt-5.6-sol": ("GPT-5.6 Sol medium", "primary", 31, 97.87),
-        "gpt-5.5": ("GPT-5.5", "historical", 35, 97.74),
-        "glm-5.2": ("GLM-5.2", "external", 29, 93.17),
-        "grok-4.3": ("Grok 4.3", "external", 22, 88.91),
-        "deepseek-v4-flash": ("DeepSeek V4 Flash", "external", 19, 82.32),
+        "gpt-5.6-sol": ("GPT-5.6 Sol medium", "primary", 33, 98.15),
+        "gpt-5.5": ("GPT-5.5", "historical", 35, 96.86),
+        "glm-5.2": ("GLM-5.2", "external", 29, 95.45),
+        "grok-4.3": ("Grok 4.3", "external", 25, 86.36),
+        "deepseek-v4-flash": ("DeepSeek V4 Flash", "external", 18, 81.56),
         "deepseek-v4-flash-thinking": (
             "DeepSeek V4 Flash thinking",
             "external",
-            21,
-            89.0,
+            23,
+            88.87,
         ),
     }
     models = [
@@ -185,7 +185,7 @@ def absolute_quality_fixture():
     return {
         "methodology": "single_response_absolute_scoring",
         "judge": {"key": "sol", "preset": "gpt-5.6-sol-medium"},
-        "total_judgments": 157,
+        "total_judgments": 163,
         "models": models,
         "common_case_comparisons": comparisons,
     }
@@ -566,11 +566,13 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
         for scope in [
             module.BLINDED_HARD_GATE_SCOPE,
             module.BLINDED_DUAL_ORDER_SCOPE,
-            module.ABSOLUTE_QUALITY_SCOPE,
-            module.ABSOLUTE_JUDGE_AUDIT_SCOPE,
             module.SOCIAL_PNG_METADATA["instruction_snapshot_scope"],
         ]:
             self.assertIn(caveat, scope)
+        for scope in [module.ABSOLUTE_QUALITY_SCOPE, module.ABSOLUTE_JUDGE_AUDIT_SCOPE]:
+            self.assertNotIn(caveat, scope)
+            self.assertIn("current-only", scope)
+            self.assertIn("163", scope)
         self.assertEqual(module.SOCIAL_PNG_METADATA["instruction_snapshot_models"], "6")
         self.assertEqual(
             module.SOCIAL_PNG_METADATA["instruction_snapshot_aggregation"],
