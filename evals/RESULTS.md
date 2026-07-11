@@ -19,6 +19,10 @@ when cases, instruction files, model presets, or reference bundles change.
 
 ## Blinded Six-Model Snapshot
 
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
+
 The 2026-07-10 snapshot uses clean blinded `With instructions v4.13` and
 `Empty instructions` runs for six model/runner rows. Primary hard-gate results:
 
@@ -56,6 +60,10 @@ Canonical dual-order artifacts live under
 `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
 
 ## Absolute Cross-Model Quality Snapshot
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 Absolute scores judge one saved response at a time against the fixed rubric;
 the judge sees neither a competitor nor model identity. Hard-gate pass rate

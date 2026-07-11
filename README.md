@@ -15,6 +15,10 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## Blinded Six-Model Evidence
 
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
+
 The 2026-07-10 publication uses clean blinded `With instructions v4.13` and
 `Empty instructions` runs for six model/runner rows. Primary hard-gate results:
 
@@ -59,6 +63,10 @@ Current blinded visual snapshot:
 ![Blinded coverage watchlist](docs/assets/readme/coverage-watchlist.svg)
 
 ## Absolute Cross-Model Quality
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 Absolute scores judge each saved response independently; no model pair or
 presentation order is shown to the judge. Hard-gate pass rate and quality

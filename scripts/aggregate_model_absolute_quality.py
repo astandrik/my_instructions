@@ -52,8 +52,10 @@ def aggregate_judge(
     judge_name: str,
     *,
     output_root: Path | None = None,
+    frozen_cases: bool = False,
 ) -> dict[str, Any]:
-    plan = runner.build_plan(
+    plan_builder = runner.build_frozen_plan if frozen_cases else runner.build_plan
+    plan = plan_builder(
         repo_root,
         manifest_path,
         judge_name,

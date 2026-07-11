@@ -70,6 +70,25 @@ REQUIRED_CASE_FIELDS = {
 }
 ALLOWED_CASE_FIELDS = REQUIRED_CASE_FIELDS | {"rubric", "deterministic_fixtures"}
 DETERMINISTIC_FIXTURE_CATEGORIES = {"positive", "plausible_wrong", "keyword_only"}
+ALTERNATIVE_CHECK_FIELDS = {
+    "required_final_contains_any",
+    "required_summary_contains_any",
+    "required_evidence_contains_any",
+    "required_actions_contains_any",
+}
+DETERMINISTIC_CHECK_FIELDS = {
+    "required_decision",
+    "allowed_decisions",
+    "required_risk_level",
+    "allowed_risk_levels",
+    "required_final_contains",
+    "forbidden_final_contains",
+    "required_summary_contains",
+    "required_evidence_contains",
+    "required_actions_contains",
+    "required_actions_empty",
+    *ALTERNATIVE_CHECK_FIELDS,
+}
 FINAL_RESPONSE_FIELDS = {"decision", "risk_level", "summary", "evidence", "actions"}
 PRIVATE_RAW_CONTENT_PATTERNS = [
     re.compile(r"(?<![A-Za-z0-9_-])sk-(?:proj-|live-|test-)?[A-Za-z0-9_-]{12,}"),
@@ -99,19 +118,31 @@ class DeterministicCheck:
         required_final_contains: list[str],
         forbidden_final_contains: list[str],
         required_decision: str | None = None,
+        allowed_decisions: list[str] | None = None,
         required_risk_level: str | None = None,
+        allowed_risk_levels: list[str] | None = None,
         required_summary_contains: list[str] | None = None,
         required_evidence_contains: list[str] | None = None,
         required_actions_contains: list[str] | None = None,
+        required_final_contains_any: list[list[str]] | None = None,
+        required_summary_contains_any: list[list[str]] | None = None,
+        required_evidence_contains_any: list[list[str]] | None = None,
+        required_actions_contains_any: list[list[str]] | None = None,
         required_actions_empty: bool = False,
     ) -> None:
         self.required_final_contains = required_final_contains
         self.forbidden_final_contains = forbidden_final_contains
         self.required_decision = required_decision
+        self.allowed_decisions = allowed_decisions or []
         self.required_risk_level = required_risk_level
+        self.allowed_risk_levels = allowed_risk_levels or []
         self.required_summary_contains = required_summary_contains or []
         self.required_evidence_contains = required_evidence_contains or []
         self.required_actions_contains = required_actions_contains or []
+        self.required_final_contains_any = required_final_contains_any or []
+        self.required_summary_contains_any = required_summary_contains_any or []
+        self.required_evidence_contains_any = required_evidence_contains_any or []
+        self.required_actions_contains_any = required_actions_contains_any or []
         self.required_actions_empty = required_actions_empty
 
 
@@ -154,6 +185,26 @@ def positive_int(value: str) -> int:
     if parsed < 1:
         raise argparse.ArgumentTypeError("must be a positive integer")
     return parsed
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def canonical_json_sha256(value: Any) -> str:
+    encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def parse_label_path(value: str) -> tuple[str, Path]:
+    label, separator, raw_path = value.partition("=")
+    if not separator or not label.strip() or not raw_path.strip():
+        raise argparse.ArgumentTypeError("must use LABEL=PATH")
+    return label.strip(), Path(raw_path.strip())
 
 
 def run_ordered(items: list[Any], jobs: int, worker: Any) -> list[Any]:
@@ -422,6 +473,13 @@ def validate_final_response_schema(path: Path, cases: list[dict[str, Any]]) -> N
         if isinstance((checks := case.get("deterministic_checks")), dict)
         and isinstance(checks.get("required_decision"), str)
     }
+    required_decisions.update(
+        value
+        for case in cases
+        if isinstance((checks := case.get("deterministic_checks")), dict)
+        for value in checks.get("allowed_decisions", [])
+        if isinstance(value, str)
+    )
     for value in sorted(required_decisions - set(decision_enum)):
         raise ValidationError(f"{path}: final response schema missing decision enum value: {value}")
     risk_level = properties.get("risk_level")
@@ -728,6 +786,23 @@ def require_string_list(case_id: str, field: str, value: Any) -> list[str]:
     return value
 
 
+def require_alternative_groups(case_id: str, field: str, value: Any) -> list[list[str]]:
+    if (
+        not isinstance(value, list)
+        or not value
+        or not all(
+            isinstance(group, list)
+            and group
+            and all(isinstance(item, str) and item.strip() for item in group)
+            for group in value
+        )
+    ):
+        raise ValidationError(
+            f"{case_id}: {field} must be a non-empty list of non-empty string lists"
+        )
+    return value
+
+
 def validate_fixture_response(case_id: str, fixture_name: str, response: Any) -> None:
     if not isinstance(response, dict):
         raise ValidationError(f"{case_id}: {fixture_name} must be an object")
@@ -817,10 +892,17 @@ def validate_case_schema(case: dict[str, Any], repo_root: Path, scenarios: set[s
     checks = case["deterministic_checks"]
     if not isinstance(checks, dict):
         raise ValidationError(f"{case_id}: deterministic_checks must be an object")
+    unknown_checks = set(checks) - DETERMINISTIC_CHECK_FIELDS
+    if unknown_checks:
+        raise ValidationError(
+            f"{case_id}: unknown deterministic check fields: {', '.join(sorted(unknown_checks))}"
+        )
     required = checks.get("required_final_contains", [])
     forbidden = checks.get("forbidden_final_contains", [])
     required_decision = checks.get("required_decision")
+    allowed_decisions = checks.get("allowed_decisions")
     required_risk_level = checks.get("required_risk_level")
+    allowed_risk_levels = checks.get("allowed_risk_levels")
     required_summary = checks.get("required_summary_contains", [])
     required_evidence = checks.get("required_evidence_contains", [])
     required_actions = checks.get("required_actions_contains", [])
@@ -831,8 +913,34 @@ def validate_case_schema(case: dict[str, Any], repo_root: Path, scenarios: set[s
         raise ValidationError(f"{case_id}: forbidden_final_contains must be a list of strings")
     if required_decision is not None and not isinstance(required_decision, str):
         raise ValidationError(f"{case_id}: required_decision must be a string when provided")
+    if required_decision is not None and allowed_decisions is not None:
+        raise ValidationError(
+            f"{case_id}: required_decision and allowed_decisions are mutually exclusive"
+        )
+    if allowed_decisions is not None:
+        values = require_string_list(case_id, "allowed_decisions", allowed_decisions)
+        unknown_decisions = set(values) - DECISIONS
+        if unknown_decisions:
+            raise ValidationError(
+                f"{case_id}: allowed_decisions must contain only {', '.join(sorted(DECISIONS))}"
+            )
+        if len(set(values)) != len(values):
+            raise ValidationError(f"{case_id}: allowed_decisions must not contain duplicates")
     if required_risk_level is not None and required_risk_level not in RISK_LEVELS:
         raise ValidationError(f"{case_id}: required_risk_level must be one of {', '.join(sorted(RISK_LEVELS))}")
+    if required_risk_level is not None and allowed_risk_levels is not None:
+        raise ValidationError(
+            f"{case_id}: required_risk_level and allowed_risk_levels are mutually exclusive"
+        )
+    if allowed_risk_levels is not None:
+        values = require_string_list(case_id, "allowed_risk_levels", allowed_risk_levels)
+        unknown_risks = set(values) - RISK_LEVELS
+        if unknown_risks:
+            raise ValidationError(
+                f"{case_id}: allowed_risk_levels must contain only {', '.join(sorted(RISK_LEVELS))}"
+            )
+        if len(set(values)) != len(values):
+            raise ValidationError(f"{case_id}: allowed_risk_levels must not contain duplicates")
     if required_actions_empty is not None and not isinstance(required_actions_empty, bool):
         raise ValidationError(f"{case_id}: required_actions_empty must be a boolean when provided")
     for field, value in [
@@ -842,6 +950,9 @@ def validate_case_schema(case: dict[str, Any], repo_root: Path, scenarios: set[s
     ]:
         if not isinstance(value, list) or not all(isinstance(item, str) and item.strip() for item in value):
             raise ValidationError(f"{case_id}: {field} must be a list of strings")
+    for field in sorted(ALTERNATIVE_CHECK_FIELDS):
+        if field in checks:
+            require_alternative_groups(case_id, field, checks[field])
     if "rubric" in case and (not isinstance(case["rubric"], str) or not case["rubric"].strip()):
         raise ValidationError(f"{case_id}: rubric must be a non-empty string when provided")
     validate_deterministic_fixtures(case)
@@ -1053,10 +1164,22 @@ def deterministic_check_from(case: dict[str, Any]) -> DeterministicCheck:
         required_final_contains=list(checks.get("required_final_contains", [])),
         forbidden_final_contains=list(checks.get("forbidden_final_contains", [])),
         required_decision=checks.get("required_decision"),
+        allowed_decisions=list(checks.get("allowed_decisions", [])),
         required_risk_level=checks.get("required_risk_level"),
+        allowed_risk_levels=list(checks.get("allowed_risk_levels", [])),
         required_summary_contains=list(checks.get("required_summary_contains", [])),
         required_evidence_contains=list(checks.get("required_evidence_contains", [])),
         required_actions_contains=list(checks.get("required_actions_contains", [])),
+        required_final_contains_any=[list(group) for group in checks.get("required_final_contains_any", [])],
+        required_summary_contains_any=[
+            list(group) for group in checks.get("required_summary_contains_any", [])
+        ],
+        required_evidence_contains_any=[
+            list(group) for group in checks.get("required_evidence_contains_any", [])
+        ],
+        required_actions_contains_any=[
+            list(group) for group in checks.get("required_actions_contains_any", [])
+        ],
         required_actions_empty=bool(checks.get("required_actions_empty", False)),
     )
 
@@ -1080,10 +1203,20 @@ def classify_agent_result(returncode: int, final_text: str, checks: list[Determi
             actual_decision = final_response.get("decision") if isinstance(final_response, dict) else None
             if actual_decision != check.required_decision:
                 details.append(f"expected decision {check.required_decision}, got {actual_decision}")
+        if check.allowed_decisions:
+            actual_decision = final_response.get("decision") if isinstance(final_response, dict) else None
+            if actual_decision not in check.allowed_decisions:
+                allowed = ", ".join(sorted(check.allowed_decisions))
+                details.append(f"expected decision one of {allowed}, got {actual_decision}")
         if check.required_risk_level:
             actual_risk_level = final_response.get("risk_level") if isinstance(final_response, dict) else None
             if actual_risk_level != check.required_risk_level:
                 details.append(f"expected risk_level {check.required_risk_level}, got {actual_risk_level}")
+        if check.allowed_risk_levels:
+            actual_risk_level = final_response.get("risk_level") if isinstance(final_response, dict) else None
+            if actual_risk_level not in check.allowed_risk_levels:
+                allowed = ", ".join(sorted(check.allowed_risk_levels))
+                details.append(f"expected risk_level one of {allowed}, got {actual_risk_level}")
         if check.required_actions_empty:
             actual_actions = final_response.get("actions") if isinstance(final_response, dict) else None
             if actual_actions != []:
@@ -1091,6 +1224,9 @@ def classify_agent_result(returncode: int, final_text: str, checks: list[Determi
         for phrase in check.required_final_contains:
             if not phrase_in_text(phrase, final_text):
                 details.append(f"missing required phrase: {phrase}")
+        for alternatives in check.required_final_contains_any:
+            if not any(phrase_in_text(phrase, final_text) for phrase in alternatives):
+                details.append(f"missing required alternative group: {' | '.join(alternatives)}")
         for phrase in check.forbidden_final_contains:
             if phrase_in_text(phrase, final_text):
                 details.append(f"found forbidden phrase: {phrase}")
@@ -1103,6 +1239,17 @@ def classify_agent_result(returncode: int, final_text: str, checks: list[Determi
             for phrase in phrases:
                 if not phrase_in_text(phrase, field_text):
                     details.append(f"{field} missing required phrase: {phrase}")
+        for field, groups in [
+            ("summary", check.required_summary_contains_any),
+            ("evidence", check.required_evidence_contains_any),
+            ("actions", check.required_actions_contains_any),
+        ]:
+            field_text = final_response_field_text(final_response, field)
+            for alternatives in groups:
+                if not any(phrase_in_text(phrase, field_text) for phrase in alternatives):
+                    details.append(
+                        f"{field} missing required alternative group: {' | '.join(alternatives)}"
+                    )
     if details:
         return AgentClassification(False, "behavior", details)
     return AgentClassification(True, "none", ["all deterministic checks passed"])
@@ -1607,6 +1754,151 @@ def command_presets(args: argparse.Namespace) -> int:
     return 0
 
 
+def published_case_catalog_sha256(repo_root: Path, fallback: Path) -> str:
+    manifest_path = repo_root / "evals" / "model-quality-matrix.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        value = manifest["snapshots"]["cases"]["sha256"]
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError):
+        return file_sha256(fallback)
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+        raise ValidationError(f"{manifest_path}: invalid snapshots.cases.sha256")
+    return value
+
+
+def read_saved_summary(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ValidationError(f"saved summary does not exist: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise ValidationError(f"{path}: invalid JSON: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValidationError(f"{path}: saved summary must be an object")
+    return payload
+
+
+def regrade_saved_summary(
+    path: Path,
+    label: str,
+    cases: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    payload = read_saved_summary(path)
+    source_results = payload.get("results")
+    if not isinstance(source_results, list):
+        raise ValidationError(f"{path}: results must be a list")
+    expected_ids = [case["id"] for case in cases]
+    source_by_id: dict[str, dict[str, Any]] = {}
+    for index, record in enumerate(source_results):
+        if not isinstance(record, dict):
+            raise ValidationError(f"{path}: results[{index}] must be an object")
+        case_id = record.get("case_id")
+        if not isinstance(case_id, str):
+            raise ValidationError(f"{path}: results[{index}].case_id must be a string")
+        if case_id in source_by_id:
+            raise ValidationError(f"{path}: duplicate case id: {case_id}")
+        source_by_id[case_id] = record
+    if set(source_by_id) != set(expected_ids) or len(source_by_id) != len(expected_ids):
+        raise ValidationError(f"{path}: must contain exactly the {len(expected_ids)} current case ids")
+
+    records: list[dict[str, Any]] = []
+    response_fingerprints: list[dict[str, str]] = []
+    source_failures: list[str] = []
+    for case in cases:
+        case_id = case["id"]
+        source = source_by_id[case_id]
+        response = source.get("final_response")
+        validate_fixture_response(case_id, "saved final_response", response)
+        response_fingerprints.append(
+            {"case_id": case_id, "sha256": canonical_json_sha256(response)}
+        )
+        failure_type = source.get("failure_type")
+        if failure_type in {"agent", "transport", "harness"}:
+            source_failures.append(case_id)
+        result = classify_agent_result(
+            0,
+            json.dumps(response, sort_keys=True, ensure_ascii=False),
+            [deterministic_check_from(case)],
+        )
+        result.final_response = response
+        records.append(result_record(case, label, result))
+    metadata = {
+        "source_agent_or_transport_failure_case_ids": source_failures,
+        "response_set_sha256": canonical_json_sha256(response_fingerprints),
+    }
+    return records, metadata
+
+
+def command_regrade(args: argparse.Namespace) -> int:
+    repo_root = repo_root_from(Path(args.repo_root))
+    try:
+        cases, _, _, _ = validate_all(
+            repo_root,
+            Path(args.cases),
+            Path(args.presets),
+            Path(args.references),
+        )
+        output_dir = Path(args.output_dir)
+        if not output_dir.is_absolute():
+            output_dir = repo_root / output_dir
+        labels = [label for label, _ in args.source_summary]
+        if len(set(labels)) != len(labels):
+            raise ValidationError("regrade source labels must be unique")
+        output_labels = [safe_label(label) for label in labels]
+        if len(set(output_labels)) != len(output_labels):
+            raise ValidationError("regrade labels must map to unique output directories")
+
+        cases_path = repo_root / Path(args.cases)
+        prepared_sources: list[tuple[str, Path, list[dict[str, Any]], dict[str, Any]]] = []
+        canonical_promotion_allowed = True
+        for label, raw_path in args.source_summary:
+            source_path = raw_path if raw_path.is_absolute() else repo_root / raw_path
+            output_summary = output_dir / safe_label(label) / "summary.json"
+            if source_path.resolve() == output_summary.resolve():
+                raise ValidationError(f"{source_path}: regrade output must not overwrite the source summary")
+            records, metadata = regrade_saved_summary(source_path, label, cases)
+            failures = metadata["source_agent_or_transport_failure_case_ids"]
+            canonical_promotion_allowed = canonical_promotion_allowed and not failures
+            prepared_sources.append((label, source_path, records, metadata))
+
+        manifest_sources: list[dict[str, Any]] = []
+        for label, source_path, records, metadata in prepared_sources:
+            write_summary(output_dir, label, records)
+            output_summary = output_dir / safe_label(label) / "summary.json"
+            failures = metadata["source_agent_or_transport_failure_case_ids"]
+            manifest_sources.append(
+                {
+                    "label": label,
+                    "source_path": str(source_path.resolve()),
+                    "source_summary_sha256": file_sha256(source_path),
+                    "response_set_sha256": metadata["response_set_sha256"],
+                    "source_agent_or_transport_failure_case_ids": failures,
+                    "output_summary": str(Path(safe_label(label)) / "summary.json"),
+                    "output_summary_sha256": file_sha256(output_summary),
+                }
+            )
+            print(f"regraded label={label} summary={output_summary}")
+
+        manifest = {
+            "schema_version": 1,
+            "classification_only": True,
+            "primary_responses_reused": True,
+            "canonical_promotion_allowed": canonical_promotion_allowed,
+            "source_case_catalog_sha256": published_case_catalog_sha256(repo_root, cases_path),
+            "target_case_catalog_sha256": file_sha256(cases_path),
+            "instruction_snapshot_sha256": file_sha256(repo_root / INSTRUCTION_FILES[0]),
+            "sources": manifest_sources,
+        }
+        output_dir.mkdir(parents=True, exist_ok=True)
+        manifest_path = output_dir / "regrade-manifest.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(f"regrade_manifest={manifest_path}")
+        return 0
+    except (ValidationError, HarnessFailure, OSError) as exc:
+        print(f"failure_type=harness error={exc}", file=sys.stderr)
+        return 2
+
+
 def command_run(args: argparse.Namespace) -> int:
     repo_root = repo_root_from(Path(args.repo_root))
     try:
@@ -1910,6 +2202,23 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("validate", help="Validate JSONL cases and markdown eval tables.")
     subparsers.add_parser("presets", help="List available model/reasoning presets.")
 
+    regrade_parser = subparsers.add_parser(
+        "regrade",
+        help="Reclassify complete saved structured responses without primary model calls.",
+    )
+    regrade_parser.add_argument(
+        "--source-summary",
+        action="append",
+        required=True,
+        type=parse_label_path,
+        help="Saved summary as LABEL=PATH. Repeat for multiple summaries.",
+    )
+    regrade_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Fresh output directory for regraded summaries and provenance manifest.",
+    )
+
     run_parser = subparsers.add_parser("run", help="Run one or more cases against the current instructions.")
     run_parser.add_argument("--case", help="Case id to run. Defaults to all cases.")
     run_parser.add_argument("--agent-command", required=True, help='Agent command, for example "/path/to/codex exec".')
@@ -1992,6 +2301,8 @@ def main(argv: list[str] | None = None) -> int:
         return command_validate(args)
     if args.command == "presets":
         return command_presets(args)
+    if args.command == "regrade":
+        return command_regrade(args)
     if args.command == "run":
         return command_run(args)
     if args.command == "compare":

@@ -269,6 +269,37 @@ class ModelAbsoluteQualityRunnerTests(unittest.TestCase):
             self.assertEqual(job.case_ids, tuple(case_id for case_id, record in records.items() if record["passed"]))
             self.assertTrue(all(records[case_id]["failure_type"] == "none" for case_id in job.case_ids))
 
+    def test_frozen_plan_reconstructs_case_order_from_hashed_sources_after_catalog_drift(self):
+        cases_path = self.root / "evals" / "cases.jsonl"
+        cases_path.write_text(cases_path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+
+        with self.assertRaisesRegex(self.runner.MatrixError, "cases snapshot hash drift"):
+            self.runner.build_plan(self.root, self.manifest_path, "sol")
+
+        (self.root / "CRITICAL_INSTRUCTIONS.md").write_text(
+            "new live instructions\n",
+            encoding="utf-8",
+        )
+
+        plan = self.runner.build_frozen_plan(
+            self.root,
+            self.manifest_path,
+            "sol",
+        )
+
+        self.assertEqual(len(plan.cases_by_id), 50)
+        self.assertEqual(len(plan.jobs), 6)
+        self.assertEqual([len(job.case_ids) for job in plan.jobs], PASS_COUNTS)
+        self.assertEqual(plan.judge_calls, 157)
+
+    def test_frozen_plan_still_rejects_source_hash_drift(self):
+        manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
+        source = self.root / manifest["models"][0]["source_summary"]["path"]
+        source.write_text(source.read_text(encoding="utf-8") + " ", encoding="utf-8")
+
+        with self.assertRaisesRegex(self.runner.MatrixError, "source hash"):
+            self.runner.build_frozen_plan(self.root, self.manifest_path, "sol")
+
     def test_plan_rejects_source_hash_or_pass_count_drift(self):
         manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
         source = self.root / manifest["models"][0]["source_summary"]["path"]

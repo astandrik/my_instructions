@@ -575,6 +575,29 @@ class AggregateSavedModelQualityTests(unittest.TestCase):
         self.assertEqual(reports["baseline_first"]["baseline_label"], BASELINE_LABEL)
         self.assertEqual(reports["current_first"]["baseline_label"], CURRENT_LABEL)
 
+    def test_load_order_reports_accepts_absolute_pointer_from_another_checkout(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture = write_complete_fixture(root)
+            summary_path = fixture["current_first"]["summary"]
+            expected_quality = fixture["current_first"]["quality"]
+            wrapper = read_json(summary_path)
+            checkout_relative = expected_quality.relative_to(root)
+            wrapper["pairs"][0]["quality_json"] = str(
+                Path("/another/checkout") / checkout_relative
+            )
+            write_json(summary_path, wrapper)
+
+            reports = module.load_order_reports(
+                [summary_path, fixture["baseline_first"]["summary"]],
+                repo_root=root,
+                baseline_label=BASELINE_LABEL,
+                current_label=CURRENT_LABEL,
+            )
+
+        self.assertEqual(set(reports), {"baseline_first", "current_first"})
+
     def test_load_order_reports_rejects_wrong_count_orientation_and_quality_pointer(self):
         module = load_script()
         for scenario in ["one-wrapper", "three-wrappers", "same-orientation", "wrong-pointer"]:

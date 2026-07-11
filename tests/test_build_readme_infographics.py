@@ -19,12 +19,12 @@ LEGACY_SCOPE = (
 )
 BLINDED_HARD_GATE_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
-    "50 cases, 6 model/runner rows; no reference rows."
+    "50 cases, 6 model/runner rows; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 BLINDED_DUAL_ORDER_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
     "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
-    "order-sensitive verdicts are separate; no reference rows."
+    "order-sensitive verdicts are separate; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 SIX_MODEL_IDS = [
     "gpt-5.6-sol",
@@ -557,6 +557,20 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
             module.SOCIAL_PNG_METADATA["instruction_snapshot_scope"],
             module.BLINDED_DUAL_ORDER_SCOPE,
         )
+
+    def test_current_publication_scopes_mark_pre_semantic_alternative_scorer_snapshot(self):
+        module = load_script()
+        caveat = "Pre-semantic-alternative scorer snapshot."
+
+        self.assertEqual(module.PRE_SEMANTIC_SCORER_SCOPE, caveat)
+        for scope in [
+            module.BLINDED_HARD_GATE_SCOPE,
+            module.BLINDED_DUAL_ORDER_SCOPE,
+            module.ABSOLUTE_QUALITY_SCOPE,
+            module.ABSOLUTE_JUDGE_AUDIT_SCOPE,
+            module.SOCIAL_PNG_METADATA["instruction_snapshot_scope"],
+        ]:
+            self.assertIn(caveat, scope)
         self.assertEqual(module.SOCIAL_PNG_METADATA["instruction_snapshot_models"], "6")
         self.assertEqual(
             module.SOCIAL_PNG_METADATA["instruction_snapshot_aggregation"],

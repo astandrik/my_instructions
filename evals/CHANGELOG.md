@@ -65,7 +65,23 @@ as uniform improvement:
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
 
+## 2026-07-11 - Semantic-Alternative Scorer Calibration
+
+- Added deterministic any-of phrase groups and allowed risk-level sets without
+  adding a model-backed scorer or dependency.
+- Added positive, plausible-wrong, and keyword-only fixtures to five asymmetric
+  cases; the suite now has 19 semantic-fixture cases.
+- Added a classification-only `regrade` command with source/response/case and
+  instruction fingerprints plus a canonical-promotion guard.
+- Kept primary case prompts and `CRITICAL_INSTRUCTIONS.md` unchanged.
+- Regraded saved structured outputs only as diagnostic evidence. The published
+  figures below remain unchanged until a fresh primary and quality rerun.
+
 ## 2026-07-10 - Absolute Cross-Model Quality
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 - Replaced the unexecuted 826-call all-pairs judge plan with independent
   single-response scoring: 157 Sol medium calls plus the identical 157 Terra
@@ -99,6 +115,10 @@ frozen 50-case catalog:
 `aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
 
 ## 2026-07-10 - Blinded Six-Model Refresh
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 - Published six clean blinded `With instructions v4.13` versus
   `Empty instructions` model/runner pairs and executable dual-order consensus from

@@ -12,6 +12,10 @@ metric deltas, conclusions, and caveats.
 
 ## Blinded Six-Model Publication
 
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
+
 The current publication covers six clean blinded `With instructions v4.13`
 versus `Empty instructions` model/runner pairs and dual-order consensus from
 `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
@@ -27,6 +31,10 @@ No OpenHands, Claude/Fable, or other reference rows are included.
 Grok Build is excluded because repeated transport failures prevented a clean primary pair.
 
 ## Absolute Cross-Model Quality
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 The direct model-quality publication uses independent single-response scoring,
 not pairwise judge prompts. Only the 157 saved responses that passed their
@@ -85,6 +93,25 @@ python3 -B scripts/check_published_eval_metrics.py
 The SVG scope check also rejects forbidden all-model/provider overclaims inside
 generated README SVG text, so standalone images cannot publish a broader claim
 than the Markdown allows.
+
+## Regrade Saved Structured Responses
+
+Use `regrade` when grader-only checks change but primary prompts and instruction
+contents do not. It reclassifies complete saved 50-case structured responses;
+it does not call a model or modify the source summaries.
+
+```bash
+python3 -B scripts/run_instruction_evals.py regrade \
+  --source-summary current=.eval-results/source/current/summary.json \
+  --source-summary empty=.eval-results/source/empty/summary.json \
+  --output-dir .eval-results/semantic-regrade-v1
+```
+
+The output includes normal per-label summaries and `regrade-manifest.json`
+with source, response-set, instruction, old-case, and new-case fingerprints.
+Missing or malformed responses reject the source before any output is written.
+Source agent/transport failures keep the regrade diagnostic and set
+`canonical_promotion_allowed=false`.
 
 ## Real agent run
 

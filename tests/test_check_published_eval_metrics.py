@@ -58,20 +58,21 @@ EXPECTED_BLINDED_SVGS = [
 ]
 BLINDED_HARD_GATE_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
-    "50 cases, 6 model/runner rows; no reference rows."
+    "50 cases, 6 model/runner rows; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 BLINDED_DUAL_ORDER_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
     "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
-    "order-sensitive verdicts are separate; no reference rows."
+    "order-sensitive verdicts are separate; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 ABSOLUTE_QUALITY_SCOPE = (
     "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
+    "Pre-semantic-alternative scorer snapshot."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
     "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    "judge scores are shown separately and are not averaged."
+    "judge scores are shown separately and are not averaged. Pre-semantic-alternative scorer snapshot."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
@@ -107,6 +108,10 @@ WITHIN_RUNNER_CAVEAT = (
 NO_REFERENCE_CAVEAT = "No OpenHands, Claude/Fable, or other reference rows are included."
 GROK_BUILD_EXCLUSION_CAVEAT = (
     "Grok Build is excluded because repeated transport failures prevented a clean primary pair."
+)
+PRE_SEMANTIC_SCORER_CAVEAT = (
+    "Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior "
+    "exact-phrase and exact-risk grader; deterministic regrade results are diagnostic and not published."
 )
 
 
@@ -773,6 +778,7 @@ def six_model_doc_sections(module, metrics):
     hard_gate_rows = [blinded_hard_gate_doc_row(row) for row in metrics.model_rows]
     dual_order_rows = [blinded_dual_order_doc_row(row) for row in metrics.model_rows]
     caveats = [
+        PRE_SEMANTIC_SCORER_CAVEAT,
         FIXED_JUDGE_CAVEAT,
         SAME_MODEL_JUDGE_CAVEAT,
         WITHIN_RUNNER_CAVEAT,
@@ -899,11 +905,101 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         module = load_script()
 
         self.assertEqual(module.BLINDED_DOC_HEADINGS, EXPECTED_BLINDED_DOC_HEADINGS)
+        self.assertEqual(
+            module.PRE_SEMANTIC_SCORER_CAVEAT,
+            "Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior "
+            "exact-phrase and exact-risk grader; deterministic regrade results are diagnostic and not published.",
+        )
+        for scope in [
+            module.BLINDED_HARD_GATE_SCOPE,
+            module.BLINDED_DUAL_ORDER_SCOPE,
+            module.ABSOLUTE_QUALITY_SCOPE,
+            module.ABSOLUTE_JUDGE_AUDIT_SCOPE,
+        ]:
+            self.assertIn(module.PRE_SEMANTIC_SCORER_SCOPE, scope)
 
     def test_absolute_publication_contract_uses_exact_headings_and_scopes(self):
         module = load_script()
 
         self.assertEqual(module.ABSOLUTE_DOC_HEADINGS, EXPECTED_ABSOLUTE_DOC_HEADINGS)
+
+    def test_absolute_publication_uses_frozen_plan_after_case_catalog_drift(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "evals").mkdir(parents=True)
+            cases_path = root / "evals" / "cases.jsonl"
+            cases_path.write_text('{"id":"new-case"}\n', encoding="utf-8")
+            manifest_path = root / "evals" / "model-quality-matrix.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "snapshots": {
+                            "cases": {
+                                "path": "evals/cases.jsonl",
+                                "count": 50,
+                                "sha256": "0" * 64,
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            sol = {"judge": {"key": "sol"}}
+            terra = {"judge": {"key": "terra"}}
+            audit = {"methodology": "audit"}
+            for relative, payload in [
+                (module.ABSOLUTE_SOL_QUALITY, sol),
+                (module.ABSOLUTE_TERRA_QUALITY, terra),
+                (module.ABSOLUTE_JUDGE_AUDIT, audit),
+            ]:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(payload), encoding="utf-8")
+
+            with (
+                mock.patch.object(
+                    module.absolute_aggregator,
+                    "aggregate_judge",
+                    side_effect=[sol, terra],
+                ) as aggregate,
+                mock.patch.object(
+                    module.absolute_aggregator,
+                    "aggregate_judge_audit",
+                    return_value=audit,
+                ),
+            ):
+                loaded = module.load_absolute_publication(root)
+
+        self.assertEqual(loaded, (sol, terra, audit))
+        self.assertEqual(aggregate.call_count, 2)
+        self.assertTrue(all(call.kwargs["frozen_cases"] for call in aggregate.call_args_list))
+
+    def test_absolute_publication_rejects_case_snapshot_path_outside_repo(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            outside = root.parent / "outside.jsonl"
+            outside.write_text('{"id":"outside"}\n', encoding="utf-8")
+            (root / "evals").mkdir()
+            (root / "evals" / "model-quality-matrix.json").write_text(
+                json.dumps(
+                    {
+                        "snapshots": {
+                            "cases": {
+                                "path": "../outside.jsonl",
+                                "count": 50,
+                                "sha256": hashlib.sha256(outside.read_bytes()).hexdigest(),
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "outside repo root"):
+                module.load_absolute_publication(root)
         self.assertEqual(module.ABSOLUTE_QUALITY_SCOPE, ABSOLUTE_QUALITY_SCOPE)
         self.assertEqual(module.ABSOLUTE_JUDGE_AUDIT_SCOPE, ABSOLUTE_JUDGE_AUDIT_SCOPE)
         self.assertEqual(module.ABSOLUTE_QUALITY_ROOT, Path(".eval-results/blinded-model-absolute-v1/canonical"))

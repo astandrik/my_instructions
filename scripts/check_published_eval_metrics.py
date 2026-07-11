@@ -60,22 +60,28 @@ EXPECTED_SVG_SCOPE = (
     "Scope: legacy pre-blinding snapshot, 50 cases; primary prompts exposed case id/scenario metadata; "
     "all-model reference rows included."
 )
+PRE_SEMANTIC_SCORER_SCOPE = "Pre-semantic-alternative scorer snapshot."
+PRE_SEMANTIC_SCORER_CAVEAT = (
+    "Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior "
+    "exact-phrase and exact-risk grader; deterministic regrade results are diagnostic and not published."
+)
 BLINDED_HARD_GATE_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
-    "50 cases, 6 model/runner rows; no reference rows."
+    f"50 cases, 6 model/runner rows; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 BLINDED_DUAL_ORDER_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
     "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
-    "order-sensitive verdicts are separate; no reference rows."
+    f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
     "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
+    f"{PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
     "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    "judge scores are shown separately and are not averaged."
+    f"judge scores are shown separately and are not averaged. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
@@ -1436,6 +1442,7 @@ def expected_blinded_doc_sections(
     hard_gate_rows = [blinded_hard_gate_doc_row(row) for row in metrics.model_rows]
     dual_order_rows = [blinded_dual_order_doc_row(row) for row in metrics.model_rows]
     caveats = [
+        PRE_SEMANTIC_SCORER_CAVEAT,
         FIXED_JUDGE_CAVEAT,
         SAME_MODEL_JUDGE_CAVEAT,
         WITHIN_RUNNER_CAVEAT,
@@ -1480,11 +1487,28 @@ def expected_blinded_doc_sections(
 def load_absolute_publication(repo_root: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     manifest_path = repo_root / "evals/model-quality-matrix.json"
     output_root = repo_root / ".eval-results/blinded-model-absolute-v1"
+    manifest = read_json(manifest_path)
+    cases_snapshot = manifest.get("snapshots", {}).get("cases", {})
+    cases_path_value = cases_snapshot.get("path") if isinstance(cases_snapshot, dict) else None
+    cases_sha256 = cases_snapshot.get("sha256") if isinstance(cases_snapshot, dict) else None
+    if not isinstance(cases_path_value, str) or not cases_path_value:
+        raise ValueError(f"{manifest_path}: invalid cases snapshot path")
+    cases_path = repo_root / cases_path_value
+    repo_relative_artifact_path(cases_path, repo_root)
+    frozen_cases = artifact_sha256(cases_path) != cases_sha256
     sol = absolute_aggregator.aggregate_judge(
-        repo_root, manifest_path, "sol", output_root=output_root
+        repo_root,
+        manifest_path,
+        "sol",
+        output_root=output_root,
+        frozen_cases=frozen_cases,
     )
     terra = absolute_aggregator.aggregate_judge(
-        repo_root, manifest_path, "terra", output_root=output_root
+        repo_root,
+        manifest_path,
+        "terra",
+        output_root=output_root,
+        frozen_cases=frozen_cases,
     )
     audit = absolute_aggregator.aggregate_judge_audit(sol, terra)
     expected = {
@@ -1521,6 +1545,7 @@ def expected_absolute_doc_sections(
     changed = sum(row["changed_case_directions"] for row in audit["common_case_comparisons"])
     relations = sum(row["overlap"] for row in audit["common_case_comparisons"])
     caveats = [
+        PRE_SEMANTIC_SCORER_CAVEAT,
         ABSOLUTE_SEPARATE_METRICS_CAVEAT,
         ABSOLUTE_COMMON_CASE_CAVEAT,
         ABSOLUTE_JUDGES_CAVEAT,

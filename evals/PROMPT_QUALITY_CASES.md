@@ -20,6 +20,10 @@ without committing raw `.eval-results/` artifacts or local prompt mirrors.
 
 ## Blinded Six-Model Publication Scope
 
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
+
 The current publication aggregates both semantic orders and keeps every
 order-sensitive verdict separate from directional wins. Canonical artifacts
 live under `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
@@ -35,6 +39,10 @@ No OpenHands, Claude/Fable, or other reference rows are included.
 Grok Build is excluded because repeated transport failures prevented a clean primary pair.
 
 ## Absolute Cross-Model Quality Scope
+
+Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
+exact-phrase and exact-risk grader; deterministic regrade results are
+diagnostic and not published.
 
 The newer direct model-quality view does not use the pairwise/reference marks
 tracked below. It judges each of the 157 hard-gate-passed saved responses

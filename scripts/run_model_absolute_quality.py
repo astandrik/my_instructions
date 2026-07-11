@@ -204,31 +204,17 @@ def validate_manifest_contract(manifest: dict[str, Any]) -> None:
             raise MatrixError(f"judge {judge_name} budget drift")
 
 
-def build_plan(
+def _build_plan_from_cases(
     repo_root: Path,
     manifest_path: Path,
     judge_name: str,
+    manifest: dict[str, Any],
+    snapshots: dict[str, Any],
+    cases_by_id: dict[str, dict[str, Any]],
+    case_ids: tuple[str, ...],
     *,
     output_root: Path | None = None,
 ) -> AbsolutePlan:
-    repo_root = repo_root.resolve()
-    manifest_path = manifest_path.resolve()
-    if judge_name not in CANONICAL_JUDGES:
-        raise MatrixError(f"unknown judge: {judge_name}")
-    manifest = require_object(json.loads(manifest_path.read_text(encoding="utf-8")), "manifest")
-    validate_manifest_contract(manifest)
-
-    snapshots = require_object(manifest.get("snapshots"), "snapshots")
-    instruction_snapshot = require_object(snapshots.get("instructions"), "instruction snapshot")
-    instruction_path = repo_root / "CRITICAL_INSTRUCTIONS.md"
-    if file_sha256(instruction_path) != instruction_snapshot.get("sha256"):
-        raise MatrixError("instruction snapshot hash drift")
-    cases_snapshot = require_object(snapshots.get("cases"), "cases snapshot")
-    cases_path = confined_path(repo_root, cases_snapshot.get("path", ""), "cases path")
-    if file_sha256(cases_path) != cases_snapshot.get("sha256"):
-        raise MatrixError("cases snapshot hash drift")
-    cases_by_id, case_ids = load_cases(cases_path, cases_snapshot.get("count"))
-
     presets_path = repo_root / "evals" / "model-presets.json"
     presets = require_object(json.loads(presets_path.read_text(encoding="utf-8")), "presets")
     judge_manifest = manifest["judges"][judge_name]
@@ -286,6 +272,105 @@ def build_plan(
         jobs=tuple(jobs),
         judge_calls=total,
         timeout_seconds=manifest["execution"]["per_case_timeout_seconds"],
+    )
+
+
+def build_plan(
+    repo_root: Path,
+    manifest_path: Path,
+    judge_name: str,
+    *,
+    output_root: Path | None = None,
+) -> AbsolutePlan:
+    repo_root = repo_root.resolve()
+    manifest_path = manifest_path.resolve()
+    if judge_name not in CANONICAL_JUDGES:
+        raise MatrixError(f"unknown judge: {judge_name}")
+    manifest = require_object(json.loads(manifest_path.read_text(encoding="utf-8")), "manifest")
+    validate_manifest_contract(manifest)
+
+    snapshots = require_object(manifest.get("snapshots"), "snapshots")
+    instruction_snapshot = require_object(snapshots.get("instructions"), "instruction snapshot")
+    instruction_path = repo_root / "CRITICAL_INSTRUCTIONS.md"
+    if file_sha256(instruction_path) != instruction_snapshot.get("sha256"):
+        raise MatrixError("instruction snapshot hash drift")
+    cases_snapshot = require_object(snapshots.get("cases"), "cases snapshot")
+    cases_path = confined_path(repo_root, cases_snapshot.get("path", ""), "cases path")
+    if file_sha256(cases_path) != cases_snapshot.get("sha256"):
+        raise MatrixError("cases snapshot hash drift")
+    cases_by_id, case_ids = load_cases(cases_path, cases_snapshot.get("count"))
+    return _build_plan_from_cases(
+        repo_root,
+        manifest_path,
+        judge_name,
+        manifest,
+        snapshots,
+        cases_by_id,
+        case_ids,
+        output_root=output_root,
+    )
+
+
+def frozen_case_ids(
+    repo_root: Path,
+    manifest: dict[str, Any],
+    expected_count: int,
+) -> tuple[str, ...]:
+    first_model = manifest["models"][0]
+    source = require_object(first_model.get("source_summary"), f"source {first_model['id']}")
+    source_path = confined_path(repo_root, source.get("path", ""), f"source {first_model['id']}")
+    if file_sha256(source_path) != source.get("sha256"):
+        raise MatrixError(f"source hash drift: {source_path}")
+    parsed = require_object(json.loads(source_path.read_text(encoding="utf-8")), str(source_path))
+    results = parsed.get("results")
+    if not isinstance(results, list):
+        raise MatrixError(f"{source_path}: results must be an array")
+    case_ids: list[str] = []
+    seen: set[str] = set()
+    for record in results:
+        if not isinstance(record, dict) or not isinstance(record.get("case_id"), str):
+            raise MatrixError(f"{source_path}: invalid result record")
+        case_id = record["case_id"]
+        if case_id in seen:
+            raise MatrixError(f"{source_path}: duplicate case id {case_id}")
+        seen.add(case_id)
+        case_ids.append(case_id)
+    if len(case_ids) != expected_count:
+        raise MatrixError(f"{source_path}: expected {expected_count} frozen case ids")
+    return tuple(case_ids)
+
+
+def build_frozen_plan(
+    repo_root: Path,
+    manifest_path: Path,
+    judge_name: str,
+    *,
+    output_root: Path | None = None,
+) -> AbsolutePlan:
+    """Rebuild a frozen publication from hashed sources after the live case catalog changes."""
+    repo_root = repo_root.resolve()
+    manifest_path = manifest_path.resolve()
+    if judge_name not in CANONICAL_JUDGES:
+        raise MatrixError(f"unknown judge: {judge_name}")
+    manifest = require_object(json.loads(manifest_path.read_text(encoding="utf-8")), "manifest")
+    validate_manifest_contract(manifest)
+    snapshots = require_object(manifest.get("snapshots"), "snapshots")
+    require_object(snapshots.get("instructions"), "instruction snapshot")
+    cases_snapshot = require_object(snapshots.get("cases"), "cases snapshot")
+    expected_count = cases_snapshot.get("count")
+    if isinstance(expected_count, bool) or not isinstance(expected_count, int) or expected_count < 1:
+        raise MatrixError("cases snapshot count must be a positive integer")
+    case_ids = frozen_case_ids(repo_root, manifest, expected_count)
+    cases_by_id = {case_id: {"id": case_id} for case_id in case_ids}
+    return _build_plan_from_cases(
+        repo_root,
+        manifest_path,
+        judge_name,
+        manifest,
+        snapshots,
+        cases_by_id,
+        case_ids,
+        output_root=output_root,
     )
 
 

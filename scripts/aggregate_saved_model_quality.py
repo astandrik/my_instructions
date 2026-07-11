@@ -101,6 +101,29 @@ def _read_json(path: Path) -> dict[str, Any]:
     return parsed
 
 
+def _quality_pointer_matches_checkout(
+    pointer: Path,
+    *,
+    summary_dir: Path,
+    expected_quality: Path,
+    repo_root: Path,
+) -> bool:
+    resolved_pointer = pointer.resolve() if pointer.is_absolute() else (summary_dir / pointer).resolve()
+    if resolved_pointer == expected_quality:
+        return True
+    if not pointer.is_absolute():
+        return False
+    try:
+        expected_relative = expected_quality.relative_to(repo_root.resolve())
+    except ValueError:
+        return False
+    expected_parts = expected_relative.parts
+    return (
+        len(pointer.parts) >= len(expected_parts)
+        and pointer.parts[-len(expected_parts) :] == expected_parts
+    )
+
+
 def _resolve_path(path: Path, repo_root: Path) -> Path:
     resolved = path if path.is_absolute() else repo_root / path
     return resolved.resolve()
@@ -182,12 +205,12 @@ def load_order_reports(
         if not isinstance(pointer, str) or not pointer.strip():
             raise evals.ValidationError(f"{summary_path}: invalid quality_json pointer")
         pointer_path = Path(pointer)
-        resolved_pointer = (
-            pointer_path.resolve()
-            if pointer_path.is_absolute()
-            else (summary_path.parent / pointer_path).resolve()
-        )
-        if resolved_pointer != expected_quality:
+        if not _quality_pointer_matches_checkout(
+            pointer_path,
+            summary_dir=summary_path.parent,
+            expected_quality=expected_quality,
+            repo_root=repo_root,
+        ):
             raise evals.ValidationError(
                 f"{summary_path}: quality_json must point to the expected sibling artifact"
             )

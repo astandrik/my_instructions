@@ -42,22 +42,24 @@ SNAPSHOT_SCOPE = (
     "Scope: legacy pre-blinding snapshot, 50 cases; primary prompts exposed case id/scenario metadata; "
     "all-model reference rows included."
 )
+PRE_SEMANTIC_SCORER_SCOPE = "Pre-semantic-alternative scorer snapshot."
 BLINDED_HARD_GATE_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
-    "50 cases, 6 model/runner rows; no reference rows."
+    f"50 cases, 6 model/runner rows; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 BLINDED_DUAL_ORDER_SCOPE = (
     "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
     "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
-    "order-sensitive verdicts are separate; no reference rows."
+    f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
     "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
-    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking. "
+    f"{PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
     "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
-    "judge scores are shown separately and are not averaged."
+    f"judge scores are shown separately and are not averaged. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 SAME_MODEL_JUDGE_CAVEAT = (
     "The GPT-5.6 Sol row uses the same model family as the fixed quality judge; "
