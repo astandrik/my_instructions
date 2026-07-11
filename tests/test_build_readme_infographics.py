@@ -572,6 +572,7 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
         for scope in [module.ABSOLUTE_QUALITY_SCOPE, module.ABSOLUTE_JUDGE_AUDIT_SCOPE]:
             self.assertNotIn(caveat, scope)
             self.assertIn("current-only", scope)
+            self.assertIn("v4.14 behavior", scope)
             self.assertIn("163", scope)
         self.assertEqual(module.SOCIAL_PNG_METADATA["instruction_snapshot_models"], "6")
         self.assertEqual(

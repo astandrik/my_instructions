@@ -56,12 +56,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    "Scope: current-only v4.14 behavior evaluated at 762db4f before metadata-only version bump, "
     f"{ABSOLUTE_JUDGMENT_COUNT} hard-gate-passed responses across 6 models; "
     "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only responses; "
+    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only v4.14 behavior responses "
+    "evaluated at 762db4f before metadata-only version bump; "
     "judge scores are shown separately and are not averaged."
 )
 SAME_MODEL_JUDGE_CAVEAT = (

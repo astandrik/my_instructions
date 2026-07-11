@@ -61,8 +61,9 @@ Canonical dual-order artifacts live under
 
 ## Absolute Cross-Model Quality Snapshot
 
-Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
-empty baseline is used for this absolute-quality publication.
+Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the
+metadata-only version/date bump; no fresh empty baseline is used for this
+absolute-quality publication.
 
 Absolute scores judge one saved response at a time against the fixed rubric;
 the judge sees neither a competitor nor model identity. Hard-gate pass rate
@@ -106,7 +107,7 @@ Sol and Terra agree on all 15 aggregate pair directions. They differ on 107 of
 combined into one score. No global leaderboard or rank is computed.
 
 Canonical JSON and Markdown artifacts live under
-`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen provenance:
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen evaluated provenance:
 instructions SHA-256
 `66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 cases SHA-256

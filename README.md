@@ -64,8 +64,9 @@ Current blinded visual snapshot:
 
 ## Absolute Cross-Model Quality
 
-Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
-empty baseline is used for this absolute-quality publication.
+Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the
+metadata-only version/date bump; no fresh empty baseline is used for this
+absolute-quality publication.
 
 Absolute scores judge each saved response independently; no model pair or
 presentation order is shown to the judge. Hard-gate pass rate and quality
@@ -113,8 +114,8 @@ Sol and Terra agree on all 15 aggregate pair directions. They differ on 107 of
 instead of being averaged. No global leaderboard or rank is computed.
 
 Canonical artifacts live under
-`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. The instruction snapshot
-SHA-256 is
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. The evaluated instruction
+snapshot SHA-256 is
 `66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 the 50-case catalog SHA-256 is
 `835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.

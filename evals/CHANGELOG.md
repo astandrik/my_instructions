@@ -29,6 +29,7 @@ below when the question is specifically "v4.11 vs v4.13".
 
 | Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
 |---|---|---|---:|---|---:|---|
+| v4.14 current-only | 50 semantic-alternative cases, six canonical model rows | `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/` | Sol 33 / 50, GPT-5.5 35 / 50, GLM 29 / 50 | 163 Sol absolute judgments plus 163 Terra audit judgments; all 15 aggregate directions stable | Sol 98.15, GPT-5.5 96.86, GLM 95.45 | evaluated behavior at `762db4f`; no fresh empty baseline |
 | 2026-07-08 legacy pre-blinding snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
 | v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |
 | v4.12 GPT watchlist | 7 focused GPT/Codex cases | `.eval-results/v4.12-watchlist-compare-gpt55/compare-HEAD-current/summary.md` | 6 / 7 | descriptive quality only; current hard-gate wins 5, pass/pass ties 1, both-fail residual 1 | no numeric judge score | v4.11 baseline 1 / 7 |
@@ -65,10 +66,11 @@ as uniform improvement:
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
 
-## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality
+## 2026-07-11 - v4.14 Semantic-Alternative Scorer and Current-Only Absolute Quality
 
-Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
-empty baseline is used for this absolute-quality publication.
+Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the
+metadata-only version/date bump; no fresh empty baseline is used for this
+absolute-quality publication.
 
 Hard-gate pass rate and quality among passed responses are separate metrics.
 Direct model comparisons use only common hard-gate-passed cases and are derived
@@ -80,6 +82,9 @@ leaderboard or rank is computed.
   semantic-fixture cases, and classification-only regrade provenance.
 - Accepted the compact request-authority matrix after the GPT-5.6 Sol A/B;
   the instruction core is 762 bytes smaller than the prior snapshot.
+- Released the evaluated behavior as Custom Instructions v4.14. The only
+  post-eval content change is the version/date line from v4.13 to v4.14, so the
+  evaluated commit and SHA remain the frozen behavioral provenance.
 - Ran fresh current-only primary evaluations for all six canonical rows with
   50 identical case IDs and zero agent/transport failures.
 - Scored all 163 hard-gate-passed responses independently with Sol medium and
@@ -102,7 +107,7 @@ leaderboard or rank is computed.
 | DeepSeek V4 Flash thinking | External | 23 / 50 | 88.87 | 86.70 | -2.17 |
 
 Canonical artifacts live under
-`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen instructions:
+`.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/`. Frozen evaluated instructions:
 `66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 frozen 50-case catalog:
 `835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.

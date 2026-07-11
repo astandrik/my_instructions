@@ -32,8 +32,9 @@ Grok Build is excluded because repeated transport failures prevented a clean pri
 
 ## Absolute Cross-Model Quality
 
-Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
-empty baseline is used for this absolute-quality publication.
+Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the
+metadata-only version/date bump; no fresh empty baseline is used for this
+absolute-quality publication.
 
 The direct model-quality publication uses independent single-response scoring,
 not pairwise judge prompts. Only the 163 saved responses that passed their
@@ -60,7 +61,7 @@ python3 -B scripts/run_model_absolute_quality.py plan --judge terra
 python3 -B scripts/aggregate_model_absolute_quality.py --check
 ```
 
-The frozen instruction SHA-256 is
+The frozen evaluated instruction SHA-256 is
 `66d8d3c5ba5c33924f54ddc83be209741a69a65b6b832aa655c5d4a5cc7140ac`;
 the cases SHA-256 is
 `835b074ca94be96da328e6e6a9470a0259aaa1932a5786629a0776889375ec88`.

@@ -66,12 +66,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     "order-sensitive verdicts are separate; no reference rows. Pre-semantic-alternative scorer snapshot."
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    "Scope: current-only v4.14 behavior evaluated at 762db4f before metadata-only version bump, "
     "163 hard-gate-passed responses across 6 models; single-response gpt-5.6-sol-medium judge; "
     "comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    "Scope: Sol medium vs Terra high audit on the same 163 current-only responses; "
+    "Scope: Sol medium vs Terra high audit on the same 163 current-only v4.14 behavior responses "
+    "evaluated at 762db4f before metadata-only version bump; "
     "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
@@ -95,7 +96,7 @@ EXPECTED_ABSOLUTE_DOC_HEADINGS = {
     "evals/README.md": "## Absolute Cross-Model Quality",
     "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
     "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
-    "evals/CHANGELOG.md": "## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality",
+    "evals/CHANGELOG.md": "## 2026-07-11 - v4.14 Semantic-Alternative Scorer and Current-Only Absolute Quality",
 }
 FIXED_JUDGE_CAVEAT = "Fixed dual-order quality judge: `gpt-5.6-sol-medium`."
 SAME_MODEL_JUDGE_CAVEAT = (
@@ -918,6 +919,7 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         for scope in [module.ABSOLUTE_QUALITY_SCOPE, module.ABSOLUTE_JUDGE_AUDIT_SCOPE]:
             self.assertNotIn(module.PRE_SEMANTIC_SCORER_SCOPE, scope)
             self.assertIn("current-only", scope)
+            self.assertIn("v4.14 behavior", scope)
             self.assertIn("163", scope)
 
     def test_absolute_publication_contract_uses_exact_headings_and_scopes(self):
@@ -975,6 +977,62 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
 
         self.assertEqual(loaded, (sol, terra, audit))
         self.assertEqual(aggregate.call_count, 2)
+        self.assertTrue(all(call.kwargs["frozen_cases"] for call in aggregate.call_args_list))
+
+    def test_absolute_publication_uses_frozen_plan_after_instruction_metadata_drift(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "evals").mkdir(parents=True)
+            cases_path = root / "evals" / "cases.jsonl"
+            cases_path.write_text('{"id":"case-1"}\n', encoding="utf-8")
+            (root / "CRITICAL_INSTRUCTIONS.md").write_text(
+                "Custom Instructions v4.14 metadata-only release\n",
+                encoding="utf-8",
+            )
+            manifest_path = root / "evals" / "model-quality-matrix.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "snapshots": {
+                            "instructions": {"sha256": "0" * 64},
+                            "cases": {
+                                "path": "evals/cases.jsonl",
+                                "count": 1,
+                                "sha256": hashlib.sha256(cases_path.read_bytes()).hexdigest(),
+                            },
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            sol = {"judge": {"key": "sol"}}
+            terra = {"judge": {"key": "terra"}}
+            audit = {"methodology": "audit"}
+            for relative, payload in [
+                (module.ABSOLUTE_SOL_QUALITY, sol),
+                (module.ABSOLUTE_TERRA_QUALITY, terra),
+                (module.ABSOLUTE_JUDGE_AUDIT, audit),
+            ]:
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(payload), encoding="utf-8")
+
+            with (
+                mock.patch.object(
+                    module.absolute_aggregator,
+                    "aggregate_judge",
+                    side_effect=[sol, terra],
+                ) as aggregate,
+                mock.patch.object(
+                    module.absolute_aggregator,
+                    "aggregate_judge_audit",
+                    return_value=audit,
+                ),
+            ):
+                loaded = module.load_absolute_publication(root)
+
+        self.assertEqual(loaded, (sol, terra, audit))
         self.assertTrue(all(call.kwargs["frozen_cases"] for call in aggregate.call_args_list))
 
     def test_absolute_publication_rejects_case_snapshot_path_outside_repo(self):

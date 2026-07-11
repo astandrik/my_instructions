@@ -581,6 +581,24 @@ class ModelAbsoluteQualityAggregatorTests(unittest.TestCase):
         after = {path.name: path.read_bytes() for path in canonical_root.iterdir()}
         self.assertEqual(after, before)
 
+    def test_write_uses_frozen_plan_after_instruction_metadata_drift(self):
+        (self.root / "CRITICAL_INSTRUCTIONS.md").write_text(
+            "Custom Instructions v4.14 metadata-only release\n",
+            encoding="utf-8",
+        )
+        canonical_root = self.plans["sol"].output_root / "canonical"
+
+        self.aggregator.write_all(
+            self.root,
+            self.manifest_path,
+            output_root=self.plans["sol"].output_root,
+            canonical_root=canonical_root,
+            check=False,
+        )
+
+        self.assertTrue((canonical_root / "sol-absolute.json").is_file())
+        self.assertTrue((canonical_root / "terra-absolute.json").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

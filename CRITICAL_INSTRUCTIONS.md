@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-Custom Instructions v4.13 (2026-07-06) for coding and tooling agents.
+Custom Instructions v4.14 (2026-07-11) for coding and tooling agents.
 
 Purpose: define compact always-on behavior for safe, effective software work, plus a selective advanced appendix in the same bundle. Keep the core small: prefer replacing or compressing existing rules over adding new ones, and add narrowly scoped rules only after repeated mistakes, repeated review feedback, excessive context-reading, or a need for deterministic enforcement.
 

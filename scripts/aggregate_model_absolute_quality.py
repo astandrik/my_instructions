@@ -254,6 +254,30 @@ def aggregate_judge_audit(sol: dict[str, Any], terra: dict[str, Any]) -> dict[st
     }
 
 
+def snapshot_requires_frozen_plan(repo_root: Path, manifest_path: Path) -> bool:
+    manifest = runner.require_object(
+        json.loads(manifest_path.read_text(encoding="utf-8")),
+        "manifest",
+    )
+    snapshots = runner.require_object(manifest.get("snapshots"), "snapshots")
+    cases_snapshot = runner.require_object(snapshots.get("cases"), "cases snapshot")
+    cases_path = runner.confined_path(
+        repo_root,
+        cases_snapshot.get("path", ""),
+        "cases snapshot",
+    )
+    cases_drift = runner.file_sha256(cases_path) != cases_snapshot.get("sha256")
+    instructions_snapshot = runner.require_object(
+        snapshots.get("instructions"),
+        "instruction snapshot",
+    )
+    instructions_path = repo_root / "CRITICAL_INSTRUCTIONS.md"
+    instructions_drift = (
+        runner.file_sha256(instructions_path) != instructions_snapshot.get("sha256")
+    )
+    return cases_drift or instructions_drift
+
+
 def markdown_for_judge(result: dict[str, Any]) -> str:
     lines = [
         f"# Absolute quality — {result['judge']['key']}",
@@ -336,8 +360,21 @@ def write_all(
     canonical_root: Path,
     check: bool,
 ) -> None:
-    sol = aggregate_judge(repo_root, manifest_path, "sol", output_root=output_root)
-    terra = aggregate_judge(repo_root, manifest_path, "terra", output_root=output_root)
+    frozen_snapshot = snapshot_requires_frozen_plan(repo_root, manifest_path)
+    sol = aggregate_judge(
+        repo_root,
+        manifest_path,
+        "sol",
+        output_root=output_root,
+        frozen_cases=frozen_snapshot,
+    )
+    terra = aggregate_judge(
+        repo_root,
+        manifest_path,
+        "terra",
+        output_root=output_root,
+        frozen_cases=frozen_snapshot,
+    )
     audit = aggregate_judge_audit(sol, terra)
     artifacts = {
         "sol-absolute.json": encoded_json(sol),

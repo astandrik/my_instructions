@@ -67,8 +67,9 @@ PRE_SEMANTIC_SCORER_CAVEAT = (
     "exact-phrase and exact-risk grader; deterministic regrade results are diagnostic and not published."
 )
 ABSOLUTE_CURRENT_SNAPSHOT_CAVEAT = (
-    "Current-only semantic-alternative scorer snapshot at commit `762db4f`; "
-    "no fresh empty baseline is used for this absolute-quality publication."
+    "Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the "
+    "metadata-only version/date bump; no fresh empty baseline is used for this "
+    "absolute-quality publication."
 )
 ABSOLUTE_JUDGMENT_COUNT = 163
 BLINDED_HARD_GATE_SCOPE = (
@@ -81,12 +82,13 @@ BLINDED_DUAL_ORDER_SCOPE = (
     f"order-sensitive verdicts are separate; no reference rows. {PRE_SEMANTIC_SCORER_SCOPE}"
 )
 ABSOLUTE_QUALITY_SCOPE = (
-    "Scope: current-only semantic-alternative absolute quality at 762db4f, "
+    "Scope: current-only v4.14 behavior evaluated at 762db4f before metadata-only version bump, "
     f"{ABSOLUTE_JUDGMENT_COUNT} hard-gate-passed responses across 6 models; "
     "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
 )
 ABSOLUTE_JUDGE_AUDIT_SCOPE = (
-    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only responses; "
+    f"Scope: Sol medium vs Terra high audit on the same {ABSOLUTE_JUDGMENT_COUNT} current-only v4.14 behavior responses "
+    "evaluated at 762db4f before metadata-only version bump; "
     "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
@@ -132,7 +134,7 @@ ABSOLUTE_DOC_HEADINGS = {
     "evals/README.md": "## Absolute Cross-Model Quality",
     "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
     "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
-    "evals/CHANGELOG.md": "## 2026-07-11 - Semantic-Alternative Scorer and Current-Only Absolute Quality",
+    "evals/CHANGELOG.md": "## 2026-07-11 - v4.14 Semantic-Alternative Scorer and Current-Only Absolute Quality",
 }
 LEGACY_DOC_CAVEAT = (
     "Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata "
@@ -1494,7 +1496,8 @@ def load_absolute_publication(repo_root: Path) -> tuple[dict[str, Any], dict[str
     manifest_path = repo_root / "evals/model-quality-matrix.json"
     output_root = repo_root / ABSOLUTE_OUTPUT_ROOT
     manifest = read_json(manifest_path)
-    cases_snapshot = manifest.get("snapshots", {}).get("cases", {})
+    snapshots = manifest.get("snapshots", {})
+    cases_snapshot = snapshots.get("cases", {})
     cases_path_value = cases_snapshot.get("path") if isinstance(cases_snapshot, dict) else None
     cases_sha256 = cases_snapshot.get("sha256") if isinstance(cases_snapshot, dict) else None
     if not isinstance(cases_path_value, str) or not cases_path_value:
@@ -1502,19 +1505,32 @@ def load_absolute_publication(repo_root: Path) -> tuple[dict[str, Any], dict[str
     cases_path = repo_root / cases_path_value
     repo_relative_artifact_path(cases_path, repo_root)
     frozen_cases = artifact_sha256(cases_path) != cases_sha256
+    instructions_snapshot = snapshots.get("instructions", {})
+    instructions_sha256 = (
+        instructions_snapshot.get("sha256")
+        if isinstance(instructions_snapshot, dict)
+        else None
+    )
+    instructions_path = repo_root / "CRITICAL_INSTRUCTIONS.md"
+    frozen_instructions = (
+        isinstance(instructions_sha256, str)
+        and instructions_path.is_file()
+        and artifact_sha256(instructions_path) != instructions_sha256
+    )
+    frozen_snapshot = frozen_cases or frozen_instructions
     sol = absolute_aggregator.aggregate_judge(
         repo_root,
         manifest_path,
         "sol",
         output_root=output_root,
-        frozen_cases=frozen_cases,
+        frozen_cases=frozen_snapshot,
     )
     terra = absolute_aggregator.aggregate_judge(
         repo_root,
         manifest_path,
         "terra",
         output_root=output_root,
-        frozen_cases=frozen_cases,
+        frozen_cases=frozen_snapshot,
     )
     audit = absolute_aggregator.aggregate_judge_audit(sol, terra)
     expected = {

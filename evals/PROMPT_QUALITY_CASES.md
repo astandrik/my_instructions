@@ -40,8 +40,9 @@ Grok Build is excluded because repeated transport failures prevented a clean pri
 
 ## Absolute Cross-Model Quality Scope
 
-Current-only semantic-alternative scorer snapshot at commit `762db4f`; no fresh
-empty baseline is used for this absolute-quality publication.
+Current-only v4.14 behavior snapshot evaluated at commit `762db4f` before the
+metadata-only version/date bump; no fresh empty baseline is used for this
+absolute-quality publication.
 
 The newer direct model-quality view does not use the pairwise/reference marks
 tracked below. It judges each of the 163 hard-gate-passed saved responses
