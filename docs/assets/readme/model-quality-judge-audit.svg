@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="760" viewBox="0 0 1360 760" role="img" aria-labelledby="title desc">
+<title id="title">Sol vs Terra judge audit</title>
+<desc id="desc">Independent absolute-score audit on the same 157 blinded hard-gate-passed responses.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="1360" height="760" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Sol vs Terra judge audit</text>
+<text x="40.0" y="84.0" class="subtitle">Same 157 responses, same rubric, separate scores; judge outputs are not averaged.</text>
+<rect x="40.0" y="110.0" width="1280.0" height="456.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="72.0" y="144.0" class="axis">Model / role</text>
+<text x="420.0" y="144.0" class="axis">Absolute quality score (0-100)</text>
+<text x="1100.0" y="144.0" class="axis">Sol -&gt; Terra (delta)</text>
+<rect x="64.0" y="164.0" width="1230.0" height="50.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="192.0" class="label">GPT-5.6 Sol medium</text>
+<text x="72.0" y="210.0" class="small">primary</text>
+<rect x="420.0" y="179.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="179.0" width="636.2" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="198.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="198.0" width="633.4" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="196.0" class="value">97.87 -&gt; 97.45 (-0.42)</text>
+<text x="72.0" y="252.0" class="label">GPT-5.5</text>
+<text x="72.0" y="270.0" class="small">historical</text>
+<rect x="420.0" y="239.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="239.0" width="635.3" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="258.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="258.0" width="630.7" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="256.0" class="value">97.74 -&gt; 97.03 (-0.71)</text>
+<rect x="64.0" y="284.0" width="1230.0" height="50.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="312.0" class="label">GLM-5.2</text>
+<text x="72.0" y="330.0" class="small">external</text>
+<rect x="420.0" y="299.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="299.0" width="605.6" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="318.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="318.0" width="606.7" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="316.0" class="value">93.17 -&gt; 93.34 (+0.17)</text>
+<text x="72.0" y="372.0" class="label">Grok 4.3</text>
+<text x="72.0" y="390.0" class="small">external</text>
+<rect x="420.0" y="359.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="359.0" width="577.9" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="378.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="378.0" width="570.2" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="376.0" class="value">88.91 -&gt; 87.73 (-1.18)</text>
+<rect x="64.0" y="404.0" width="1230.0" height="50.0" rx="0.0" fill="#f8fafc"/>
+<text x="72.0" y="432.0" class="label">DeepSeek V4 Flash</text>
+<text x="72.0" y="450.0" class="small">external</text>
+<rect x="420.0" y="419.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="419.0" width="535.1" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="438.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="438.0" width="494.3" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="436.0" class="value">82.32 -&gt; 76.05 (-6.27)</text>
+<text x="72.0" y="492.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="72.0" y="510.0" class="small">external</text>
+<rect x="420.0" y="479.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="479.0" width="578.5" height="11.0" rx="6.0" fill="#4f46e5"/>
+<rect x="420.0" y="498.0" width="650.0" height="11.0" rx="6.0" fill="#f1f5f9"/>
+<rect x="420.0" y="498.0" width="548.8" height="11.0" rx="6.0" fill="#ea580c"/>
+<text x="1100.0" y="496.0" class="value">89.00 -&gt; 84.43 (-4.57)</text>
+<circle cx="72.0" cy="612.0" r="7.0" fill="#4f46e5" stroke="#ffffff" stroke-width="2.0"/>
+<text x="88.0" y="616.0" class="axis">Sol medium (primary judge)</text>
+<circle cx="274.0" cy="612.0" r="7.0" fill="#ea580c" stroke="#ffffff" stroke-width="2.0"/>
+<text x="290.0" y="616.0" class="axis">Terra high (audit judge)</text>
+<text x="72.0" y="648.0" class="label">15/15 aggregate pair directions stable</text>
+<text x="450.0" y="648.0" class="label">96/301 pair-case directions changed</text>
+<line x1="32.0" y1="710.0" x2="1328.0" y2="710.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="728.0" class="small">Scope: Sol medium vs Terra high audit on the same 157 blinded responses; judge scores are shown separately and are not averaged.</text>
+<text x="32.0" y="740.0" class="small">Source: canonical sol-terra-audit.json; scores remain judge-specific.</text>
+<text x="1328.0" y="740.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

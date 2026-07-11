@@ -15,6 +15,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import aggregate_saved_model_quality as quality_aggregator
+import aggregate_model_absolute_quality as absolute_aggregator
 
 
 CASE_FILE = Path("evals/cases.jsonl")
@@ -25,6 +26,10 @@ QUALITY_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-quality-v1")
 BLINDED_ROOT = Path(".eval-results/blinded-50-case-v1")
 BLINDED_EXTERNAL_ROOT = Path(".eval-results/blinded-all-models-50-case-v1")
 BLINDED_QUALITY_ROOT = BLINDED_ROOT / "dual-order-quality-v2"
+ABSOLUTE_QUALITY_ROOT = Path(".eval-results/blinded-model-absolute-v1/canonical")
+ABSOLUTE_SOL_QUALITY = ABSOLUTE_QUALITY_ROOT / "sol-absolute.json"
+ABSOLUTE_TERRA_QUALITY = ABSOLUTE_QUALITY_ROOT / "terra-absolute.json"
+ABSOLUTE_JUDGE_AUDIT = ABSOLUTE_QUALITY_ROOT / "sol-terra-audit.json"
 BLINDED_SOL_CURRENT = BLINDED_ROOT / "current-sol56-medium-v1/current/summary.json"
 BLINDED_SOL_EMPTY = BLINDED_ROOT / "empty-sol56-medium-v1/empty/summary.json"
 EXPECTED_JUDGE_IDENTITY = {
@@ -56,17 +61,30 @@ EXPECTED_SVG_SCOPE = (
     "all-model reference rows included."
 )
 BLINDED_HARD_GATE_SCOPE = (
-    "Scope: blinded current-vs-empty hard gates, 50 cases, 6 model/runner rows; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
+    "50 cases, 6 model/runner rows; no reference rows."
 )
 BLINDED_DUAL_ORDER_SCOPE = (
-    "Scope: blinded current-vs-empty dual-order quality, 50 cases, 6 model/runner rows; "
-    "fixed gpt-5.6-sol-medium judge; order-sensitive verdicts are separate; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
+    "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
+    "order-sensitive verdicts are separate; no reference rows."
+)
+ABSOLUTE_QUALITY_SCOPE = (
+    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+)
+ABSOLUTE_JUDGE_AUDIT_SCOPE = (
+    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
+    "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
     "empty-current-lift.svg": BLINDED_DUAL_ORDER_SCOPE,
     "hard-gates-50.svg": BLINDED_HARD_GATE_SCOPE,
     "quality-only-comparisons.svg": BLINDED_DUAL_ORDER_SCOPE,
+    "model-quality-absolute.svg": ABSOLUTE_QUALITY_SCOPE,
+    "model-quality-common-cases.svg": ABSOLUTE_QUALITY_SCOPE,
+    "model-quality-judge-audit.svg": ABSOLUTE_JUDGE_AUDIT_SCOPE,
 }
 FIXED_JUDGE_CAVEAT = "Fixed dual-order quality judge: `gpt-5.6-sol-medium`."
 SAME_MODEL_JUDGE_CAVEAT = (
@@ -74,18 +92,35 @@ SAME_MODEL_JUDGE_CAVEAT = (
     "this is instruction-lift evidence, not a cross-model leaderboard."
 )
 WITHIN_RUNNER_CAVEAT = (
-    "These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard."
+    "These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard."
 )
 NO_REFERENCE_CAVEAT = "No OpenHands, Claude/Fable, or other reference rows are included."
 GROK_BUILD_EXCLUSION_CAVEAT = (
     "Grok Build is excluded because repeated transport failures prevented a clean primary pair."
 )
+ABSOLUTE_SEPARATE_METRICS_CAVEAT = (
+    "Hard-gate pass rate and quality among passed responses are separate metrics."
+)
+ABSOLUTE_COMMON_CASE_CAVEAT = (
+    "Direct model comparisons use only common hard-gate-passed cases and are derived from saved absolute scores."
+)
+ABSOLUTE_JUDGES_CAVEAT = (
+    "Sol medium is the primary judge; Terra high is an audit judge. Their scores are shown separately and are not averaged."
+)
+ABSOLUTE_NO_RANK_CAVEAT = "No global leaderboard or rank is computed."
 BLINDED_DOC_HEADINGS = {
     "README.md": "## Blinded Six-Model Evidence",
     "evals/README.md": "## Blinded Six-Model Publication",
     "evals/RESULTS.md": "## Blinded Six-Model Snapshot",
     "evals/PROMPT_QUALITY_CASES.md": "## Blinded Six-Model Publication Scope",
     "evals/CHANGELOG.md": "## 2026-07-10 - Blinded Six-Model Refresh",
+}
+ABSOLUTE_DOC_HEADINGS = {
+    "README.md": "## Absolute Cross-Model Quality",
+    "evals/README.md": "## Absolute Cross-Model Quality",
+    "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
+    "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
+    "evals/CHANGELOG.md": "## 2026-07-10 - Absolute Cross-Model Quality",
 }
 LEGACY_DOC_CAVEAT = (
     "Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata "
@@ -106,20 +141,20 @@ README_SVG_PREFIX = "docs/assets/readme/"
 
 BLINDED_MODEL_ARTIFACTS = [
     {
-        "model_id": "gpt-5.5",
-        "model_label": "GPT-5.5",
-        "current": BLINDED_ROOT / "current-gpt55/current/summary.json",
-        "empty": BLINDED_ROOT / "empty-gpt55/empty/summary.json",
-        "quality": BLINDED_QUALITY_ROOT / "gpt-5.5/dual-order-summary.json",
-        "same_model_judge": False,
-    },
-    {
         "model_id": "gpt-5.6-sol",
         "model_label": "GPT-5.6 Sol medium",
         "current": BLINDED_SOL_CURRENT,
         "empty": BLINDED_SOL_EMPTY,
         "quality": BLINDED_QUALITY_ROOT / "gpt-5.6-sol/dual-order-summary.json",
         "same_model_judge": True,
+    },
+    {
+        "model_id": "gpt-5.5",
+        "model_label": "GPT-5.5",
+        "current": BLINDED_ROOT / "current-gpt55/current/summary.json",
+        "empty": BLINDED_ROOT / "empty-gpt55/empty/summary.json",
+        "quality": BLINDED_QUALITY_ROOT / "gpt-5.5/dual-order-summary.json",
+        "same_model_judge": False,
     },
     {
         "model_id": "glm-5.2",
@@ -1442,6 +1477,103 @@ def expected_blinded_doc_sections(
     }
 
 
+def load_absolute_publication(repo_root: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    manifest_path = repo_root / "evals/model-quality-matrix.json"
+    output_root = repo_root / ".eval-results/blinded-model-absolute-v1"
+    sol = absolute_aggregator.aggregate_judge(
+        repo_root, manifest_path, "sol", output_root=output_root
+    )
+    terra = absolute_aggregator.aggregate_judge(
+        repo_root, manifest_path, "terra", output_root=output_root
+    )
+    audit = absolute_aggregator.aggregate_judge_audit(sol, terra)
+    expected = {
+        ABSOLUTE_SOL_QUALITY: sol,
+        ABSOLUTE_TERRA_QUALITY: terra,
+        ABSOLUTE_JUDGE_AUDIT: audit,
+    }
+    for relative_path, recomputed in expected.items():
+        path = repo_root / relative_path
+        saved = read_json(path)
+        if saved != recomputed:
+            raise ValueError(f"{path}: canonical absolute-quality artifact is stale")
+    return sol, terra, audit
+
+
+def absolute_doc_row(sol_row: dict[str, Any], terra_row: dict[str, Any]) -> str:
+    role = {"primary": "Primary", "historical": "Historical", "external": "External"}[
+        sol_row["role"]
+    ]
+    delta = terra_row["mean_absolute_score"] - sol_row["mean_absolute_score"]
+    return (
+        f"| {sol_row['model_label']} | {role} | {sol_row['hard_gate_passed']} / "
+        f"{sol_row['hard_gate_total']} | {sol_row['mean_absolute_score']:.2f} | "
+        f"{terra_row['mean_absolute_score']:.2f} | {delta:+.2f} |"
+    )
+
+
+def expected_absolute_doc_sections(
+    sol: dict[str, Any], terra: dict[str, Any], audit: dict[str, Any]
+) -> dict[str, list[tuple[str, list[str]]]]:
+    terra_by_id = {row["model_id"]: row for row in terra["models"]}
+    rows = [absolute_doc_row(row, terra_by_id[row["model_id"]]) for row in sol["models"]]
+    stable = sum(not row["judge_sensitive"] for row in audit["common_case_comparisons"])
+    changed = sum(row["changed_case_directions"] for row in audit["common_case_comparisons"])
+    relations = sum(row["overlap"] for row in audit["common_case_comparisons"])
+    caveats = [
+        ABSOLUTE_SEPARATE_METRICS_CAVEAT,
+        ABSOLUTE_COMMON_CASE_CAVEAT,
+        ABSOLUTE_JUDGES_CAVEAT,
+        ABSOLUTE_NO_RANK_CAVEAT,
+        f"`{ABSOLUTE_QUALITY_ROOT}/`",
+    ]
+    summary = f"all {stable} aggregate pair directions"
+    sensitivity = f"{changed} of {relations} pair-case score relations"
+    return {
+        "README.md": [(ABSOLUTE_DOC_HEADINGS["README.md"], [*rows, *caveats, summary, sensitivity])],
+        "evals/README.md": [(ABSOLUTE_DOC_HEADINGS["evals/README.md"], caveats)],
+        "evals/RESULTS.md": [
+            (ABSOLUTE_DOC_HEADINGS["evals/RESULTS.md"], [*rows, *caveats, summary, sensitivity])
+        ],
+        "evals/PROMPT_QUALITY_CASES.md": [
+            (ABSOLUTE_DOC_HEADINGS["evals/PROMPT_QUALITY_CASES.md"], caveats)
+        ],
+        "evals/CHANGELOG.md": [
+            (ABSOLUTE_DOC_HEADINGS["evals/CHANGELOG.md"], [*rows, *caveats, summary, sensitivity])
+        ],
+    }
+
+
+def check_absolute_docs(
+    sol: dict[str, Any], terra: dict[str, Any], audit: dict[str, Any], docs: list[Path]
+) -> list[str]:
+    expectations = expected_absolute_doc_sections(sol, terra, audit)
+    problems: list[str] = []
+    for path in docs:
+        key = doc_expectation_key(path, expectations)
+        if key is None:
+            continue
+        try:
+            raw_text = path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            problems.append(f"missing doc: {path}")
+            continue
+        for heading, snippets in expectations[key]:
+            ranges = markdown_section_ranges(raw_text, heading)
+            if len(ranges) != 1:
+                problems.append(
+                    f"{path}: expected one absolute-quality publication section {heading}, found {len(ranges)}"
+                )
+                continue
+            section = normalize_text(raw_text[ranges[0][0] : ranges[0][1]])
+            for snippet in snippets:
+                if normalize_text(snippet) not in section:
+                    problems.append(
+                        f"{path}: missing absolute-quality metric snippet in {heading}: {snippet}"
+                    )
+    return problems
+
+
 def doc_expectation_key(path: Path, snippets: dict[str, list[str]]) -> str | None:
     raw = path.as_posix()
     matches = [key for key in snippets if raw == key or raw.endswith(f"/{key}")]
@@ -1663,6 +1795,18 @@ def check_svg_scope(svg_dir: Path, required_names: list[str] | None = None) -> l
         )
         if expected_scope is not None and expected_scope not in text:
             problems.append(f"{path}: missing SVG scope footer: {expected_scope}")
+        if required_names is None:
+            normalized_svg = normalize_text(text).casefold()
+            ambiguous_labels = (
+                "current instructions",
+                "current-vs-empty",
+                "current vs empty",
+                "empty -> current",
+                "empty -&gt; current",
+            )
+            for label in ambiguous_labels:
+                if label in normalized_svg:
+                    problems.append(f"{path}: ambiguous public label in blinded SVG: {label}")
         for claim in forbidden_publication_overclaims(text):
             problems.append(f"{path}: forbidden 50-case publication overclaim/stale caveat: {claim}")
     return problems
@@ -1730,6 +1874,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         snapshot = load_snapshot_metrics(repo_root)
         blinded = load_blinded_snapshot_metrics(repo_root)
+        absolute_sol, absolute_terra, absolute_audit = load_absolute_publication(repo_root)
         if blinded.case_count != snapshot.case_count:
             raise ValueError(
                 "blinded six-model case count does not match the published 50-case contract: "
@@ -1748,6 +1893,7 @@ def main(argv: list[str] | None = None) -> int:
     social_image = Path(args.social_image)
     problems = check_docs(snapshot, docs)
     problems.extend(check_blinded_docs(blinded, docs))
+    problems.extend(check_absolute_docs(absolute_sol, absolute_terra, absolute_audit, docs))
     problems.extend(check_svg_scope(svg_dir))
     problems.extend(check_social_png(social_image))
     if problems:
@@ -1760,7 +1906,8 @@ def main(argv: list[str] | None = None) -> int:
         "published 50-case eval publication guard ok: "
         f"cases={snapshot.case_count}, "
         f"docs={len(docs)} models={len(blinded.model_rows)} svgs={svg_count} "
-        "social=checked scope=checked judge=gpt-5.6-sol-medium dual_order=checked"
+        "social=checked scope=checked judge=gpt-5.6-sol-medium dual_order=checked "
+        "absolute=157x2 common_pairs=15 terra_audit=checked"
     )
     return 0
 

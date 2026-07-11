@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1360" height="744" viewBox="0 0 1360 744" role="img" aria-labelledby="title desc">
 <title id="title">Blinded instruction lift across six model rows</title>
-<desc id="desc">Hard-gate passes and five dual-order quality verdict buckets for current versus empty instructions.</desc>
+<desc id="desc">Hard-gate passes and five dual-order quality verdict buckets for With instructions v4.13 versus Empty instructions.</desc>
 <style>
 text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
 .title{font-size:30px;font-weight:700;fill:#111827}
@@ -17,7 +17,7 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <rect x="40.0" y="110.0" width="1280.0" height="456.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
 <text x="72.0" y="144.0" class="axis">Model</text>
 <text x="330.0" y="144.0" class="axis">Hard-gate passes out of 50</text>
-<text x="570.0" y="144.0" class="axis">empty -&gt; current</text>
+<text x="570.0" y="144.0" class="axis">Empty -&gt; v4.13</text>
 <text x="760.0" y="144.0" class="axis">Dual-order quality verdicts</text>
 <line x1="330.0" y1="166.0" x2="330.0" y2="532.0" stroke="#e5e7eb" stroke-width="1"/>
 <text x="330.0" y="166.0" class="axis" text-anchor="middle">0</text>
@@ -32,29 +32,29 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <line x1="550.0" y1="166.0" x2="550.0" y2="532.0" stroke="#e5e7eb" stroke-width="1"/>
 <text x="550.0" y="166.0" class="axis" text-anchor="middle">50</text>
 <rect x="64.0" y="166.0" width="1230.0" height="46.0" rx="0.0" fill="#f8fafc"/>
-<text x="72.0" y="198.0" class="label">GPT-5.5</text>
+<text x="72.0" y="198.0" class="label">GPT-5.6 Sol medium</text>
 <rect x="330.0" y="180.0" width="220.0" height="11.0" rx="6.0" fill="#eef2f7"/>
-<rect x="330.0" y="180.0" width="110.0" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="330.0" y="180.0" width="92.4" height="11.0" rx="6.0" fill="#94a3b8"/>
 <rect x="330.0" y="198.0" width="220.0" height="13.0" rx="7.0" fill="#eef2f7"/>
-<rect x="330.0" y="198.0" width="154.0" height="13.0" rx="7.0" fill="#2563eb"/>
-<text x="570.0" y="196.0" class="value">25 -&gt; 35 (+10)</text>
+<rect x="330.0" y="198.0" width="136.4" height="13.0" rx="7.0" fill="#4f46e5"/>
+<text x="570.0" y="196.0" class="value">21 -&gt; 31 (+10)</text>
 <rect x="760.0" y="182.0" width="201.6" height="20.0" rx="4.0" fill="#2563eb"/>
-<rect x="961.6" y="182.0" width="19.2" height="20.0" rx="4.0" fill="#be123c"/>
-<rect x="980.8" y="182.0" width="48.0" height="20.0" rx="4.0" fill="#f59e0b"/>
-<rect x="1028.8" y="182.0" width="76.8" height="20.0" rx="4.0" fill="#7c3aed"/>
-<rect x="1105.6" y="182.0" width="134.4" height="20.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="961.6" y="182.0" width="28.8" height="20.0" rx="4.0" fill="#be123c"/>
+<rect x="990.4" y="182.0" width="28.8" height="20.0" rx="4.0" fill="#f59e0b"/>
+<rect x="1019.2" y="182.0" width="57.6" height="20.0" rx="4.0" fill="#7c3aed"/>
+<rect x="1076.8" y="182.0" width="163.2" height="20.0" rx="4.0" fill="#cbd5e1"/>
 <rect x="760.0" y="182.0" width="480.0" height="20.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
-<text x="72.0" y="250.0" class="label">GPT-5.6 Sol medium</text>
+<text x="72.0" y="250.0" class="label">GPT-5.5</text>
 <rect x="330.0" y="232.0" width="220.0" height="11.0" rx="6.0" fill="#eef2f7"/>
-<rect x="330.0" y="232.0" width="92.4" height="11.0" rx="6.0" fill="#94a3b8"/>
+<rect x="330.0" y="232.0" width="110.0" height="11.0" rx="6.0" fill="#94a3b8"/>
 <rect x="330.0" y="250.0" width="220.0" height="13.0" rx="7.0" fill="#eef2f7"/>
-<rect x="330.0" y="250.0" width="136.4" height="13.0" rx="7.0" fill="#4f46e5"/>
-<text x="570.0" y="248.0" class="value">21 -&gt; 31 (+10)</text>
+<rect x="330.0" y="250.0" width="154.0" height="13.0" rx="7.0" fill="#2563eb"/>
+<text x="570.0" y="248.0" class="value">25 -&gt; 35 (+10)</text>
 <rect x="760.0" y="234.0" width="201.6" height="20.0" rx="4.0" fill="#2563eb"/>
-<rect x="961.6" y="234.0" width="28.8" height="20.0" rx="4.0" fill="#be123c"/>
-<rect x="990.4" y="234.0" width="28.8" height="20.0" rx="4.0" fill="#f59e0b"/>
-<rect x="1019.2" y="234.0" width="57.6" height="20.0" rx="4.0" fill="#7c3aed"/>
-<rect x="1076.8" y="234.0" width="163.2" height="20.0" rx="4.0" fill="#cbd5e1"/>
+<rect x="961.6" y="234.0" width="19.2" height="20.0" rx="4.0" fill="#be123c"/>
+<rect x="980.8" y="234.0" width="48.0" height="20.0" rx="4.0" fill="#f59e0b"/>
+<rect x="1028.8" y="234.0" width="76.8" height="20.0" rx="4.0" fill="#7c3aed"/>
+<rect x="1105.6" y="234.0" width="134.4" height="20.0" rx="4.0" fill="#cbd5e1"/>
 <rect x="760.0" y="234.0" width="480.0" height="20.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
 <rect x="64.0" y="270.0" width="1230.0" height="46.0" rx="0.0" fill="#f8fafc"/>
 <text x="72.0" y="302.0" class="label">GLM-5.2</text>
@@ -102,19 +102,19 @@ text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-s
 <rect x="961.6" y="442.0" width="278.4" height="20.0" rx="4.0" fill="#cbd5e1"/>
 <rect x="760.0" y="442.0" width="480.0" height="20.0" rx="4.0" fill="none" stroke="#e5e7eb"/>
 <circle cx="72.0" cy="600.0" r="7.0" fill="#2563eb" stroke="#ffffff" stroke-width="2.0"/>
-<text x="88.0" y="604.0" class="axis">current</text>
-<circle cx="190.0" cy="600.0" r="7.0" fill="#be123c" stroke="#ffffff" stroke-width="2.0"/>
-<text x="206.0" y="604.0" class="axis">empty</text>
-<circle cx="292.0" cy="600.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
-<text x="308.0" y="604.0" class="axis">tie</text>
-<circle cx="368.0" cy="600.0" r="7.0" fill="#7c3aed" stroke="#ffffff" stroke-width="2.0"/>
-<text x="384.0" y="604.0" class="axis">order-sensitive</text>
-<circle cx="542.0" cy="600.0" r="7.0" fill="#cbd5e1" stroke="#ffffff" stroke-width="2.0"/>
-<text x="558.0" y="604.0" class="axis">inconclusive</text>
+<text x="88.0" y="604.0" class="axis">With instructions v4.13</text>
+<circle cx="260.0" cy="600.0" r="7.0" fill="#be123c" stroke="#ffffff" stroke-width="2.0"/>
+<text x="276.0" y="604.0" class="axis">Empty instructions</text>
+<circle cx="410.0" cy="600.0" r="7.0" fill="#f59e0b" stroke="#ffffff" stroke-width="2.0"/>
+<text x="426.0" y="604.0" class="axis">tie</text>
+<circle cx="486.0" cy="600.0" r="7.0" fill="#7c3aed" stroke="#ffffff" stroke-width="2.0"/>
+<text x="502.0" y="604.0" class="axis">order-sensitive</text>
+<circle cx="660.0" cy="600.0" r="7.0" fill="#cbd5e1" stroke="#ffffff" stroke-width="2.0"/>
+<text x="676.0" y="604.0" class="axis">inconclusive</text>
 <text x="72.0" y="640.0" class="small">The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.</text>
 <text x="72.0" y="662.0" class="small">Grok Build is excluded because repeated transport failures prevented a clean primary pair.</text>
 <line x1="32.0" y1="694.0" x2="1328.0" y2="694.0" stroke="#e5e7eb" stroke-width="1"/>
-<text x="32.0" y="712.0" class="small">Scope: blinded current-vs-empty dual-order quality, 50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; order-sensitive verdicts are separate; no reference rows.</text>
+<text x="32.0" y="712.0" class="small">Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, 50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; order-sensitive verdicts are separate; no reference rows.</text>
 <text x="32.0" y="724.0" class="small">Source: blinded primary summaries plus per-model dual-order-summary.json aggregates.</text>
 <text x="1328.0" y="724.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
 </svg>

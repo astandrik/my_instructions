@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "snapshots": {
+    "instructions": {
+      "commit": "519e17bf5046e17655cf4b5928d662ca994a195a",
+      "sha256": "8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980"
+    },
+    "cases": {
+      "path": "evals/cases.jsonl",
+      "count": 50,
+      "sha256": "aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6"
+    }
+  },
+  "public_labels": {
+    "instructed": "With instructions v4.13",
+    "empty": "Empty instructions"
+  },
+  "models": [
+    {
+      "id": "gpt-5.6-sol",
+      "label": "GPT-5.6 Sol medium",
+      "role": "primary",
+      "source_summary": {
+        "path": ".eval-results/blinded-50-case-v1/current-sol56-medium-v1/current/summary.json",
+        "sha256": "ba0e37c89ae74416e1493a02389364cade2860b24ed459b9e9f9ddd92b9b0962"
+      }
+    },
+    {
+      "id": "gpt-5.5",
+      "label": "GPT-5.5",
+      "role": "historical",
+      "source_summary": {
+        "path": ".eval-results/blinded-50-case-v1/current-gpt55/current/summary.json",
+        "sha256": "5b76ad1edb3a0ddb026339b501a3cd6c8855c68223abe5e5b92b51af951eab54"
+      }
+    },
+    {
+      "id": "glm-5.2",
+      "label": "GLM-5.2",
+      "role": "external",
+      "source_summary": {
+        "path": ".eval-results/blinded-all-models-50-case-v1/current-glm-5.2/current/summary.json",
+        "sha256": "7173007137bacae47332928cb891f55dc185e41b5529a8b85db20dafe60ca9d3"
+      }
+    },
+    {
+      "id": "grok-4.3",
+      "label": "Grok 4.3",
+      "role": "external",
+      "source_summary": {
+        "path": ".eval-results/blinded-all-models-50-case-v1/current-grok-4.3/current/summary.json",
+        "sha256": "55845cd5937edf13cab05627ca15ef2f47b52668b98ee05f71c992a78404ad6d"
+      }
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash",
+      "role": "external",
+      "source_summary": {
+        "path": ".eval-results/blinded-all-models-50-case-v1/current-deepseek-v4-flash/current/summary.json",
+        "sha256": "f63e7fd0272e83885ce672eb4ce74422aabbf2535a5a8fce6796753b4944b33a"
+      }
+    },
+    {
+      "id": "deepseek-v4-flash-thinking",
+      "label": "DeepSeek V4 Flash thinking",
+      "role": "external",
+      "source_summary": {
+        "path": ".eval-results/blinded-all-models-50-case-v1/current-deepseek-v4-flash-thinking/current/summary.json",
+        "sha256": "480ffcc6a81f5773cd0164c78c3e4a92296596c0c0d90606838aa05882b11700"
+      }
+    }
+  ],
+  "judges": {
+    "sol": {
+      "preset": "gpt-5.6-sol-medium",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "service_tier": "fast",
+      "coverage": "all_hard_gate_passed_responses",
+      "model_passed_counts": {
+        "gpt-5.6-sol": 31,
+        "gpt-5.5": 35,
+        "glm-5.2": 29,
+        "grok-4.3": 22,
+        "deepseek-v4-flash": 19,
+        "deepseek-v4-flash-thinking": 21
+      },
+      "budget": {
+        "model_jobs": 6,
+        "judge_calls": 157
+      }
+    },
+    "terra": {
+      "preset": "gpt-5.6-terra-high",
+      "model": "gpt-5.6-terra",
+      "reasoning_effort": "high",
+      "service_tier": "fast",
+      "coverage": "all_hard_gate_passed_responses",
+      "model_passed_counts": {
+        "gpt-5.6-sol": 31,
+        "gpt-5.5": 35,
+        "glm-5.2": 29,
+        "grok-4.3": 22,
+        "deepseek-v4-flash": 19,
+        "deepseek-v4-flash-thinking": 21
+      },
+      "budget": {
+        "model_jobs": 6,
+        "judge_calls": 157
+      }
+    }
+  },
+  "execution": {
+    "jobs": 1,
+    "per_case_timeout_seconds": 900,
+    "automatic_retries": 0
+  }
+}

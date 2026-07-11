@@ -24,8 +24,8 @@ LEGACY_SCOPE = (
     "all-model reference rows included."
 )
 SIX_MODEL_IDS = [
-    "gpt-5.5",
     "gpt-5.6-sol",
+    "gpt-5.5",
     "glm-5.2",
     "grok-4.3",
     "deepseek-v4-flash",
@@ -52,19 +52,35 @@ EXPECTED_BLINDED_SVGS = [
     "empty-current-lift.svg",
     "hard-gates-50.svg",
     "quality-only-comparisons.svg",
+    "model-quality-absolute.svg",
+    "model-quality-common-cases.svg",
+    "model-quality-judge-audit.svg",
 ]
 BLINDED_HARD_GATE_SCOPE = (
-    "Scope: blinded current-vs-empty hard gates, 50 cases, 6 model/runner rows; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
+    "50 cases, 6 model/runner rows; no reference rows."
 )
 BLINDED_DUAL_ORDER_SCOPE = (
-    "Scope: blinded current-vs-empty dual-order quality, 50 cases, 6 model/runner rows; "
-    "fixed gpt-5.6-sol-medium judge; order-sensitive verdicts are separate; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
+    "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
+    "order-sensitive verdicts are separate; no reference rows."
+)
+ABSOLUTE_QUALITY_SCOPE = (
+    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+)
+ABSOLUTE_JUDGE_AUDIT_SCOPE = (
+    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
+    "judge scores are shown separately and are not averaged."
 )
 EXPECTED_BLINDED_SVG_SCOPES = {
     "coverage-watchlist.svg": BLINDED_HARD_GATE_SCOPE,
     "empty-current-lift.svg": BLINDED_DUAL_ORDER_SCOPE,
     "hard-gates-50.svg": BLINDED_HARD_GATE_SCOPE,
     "quality-only-comparisons.svg": BLINDED_DUAL_ORDER_SCOPE,
+    "model-quality-absolute.svg": ABSOLUTE_QUALITY_SCOPE,
+    "model-quality-common-cases.svg": ABSOLUTE_QUALITY_SCOPE,
+    "model-quality-judge-audit.svg": ABSOLUTE_JUDGE_AUDIT_SCOPE,
 }
 EXPECTED_BLINDED_DOC_HEADINGS = {
     "README.md": "## Blinded Six-Model Evidence",
@@ -73,13 +89,20 @@ EXPECTED_BLINDED_DOC_HEADINGS = {
     "evals/PROMPT_QUALITY_CASES.md": "## Blinded Six-Model Publication Scope",
     "evals/CHANGELOG.md": "## 2026-07-10 - Blinded Six-Model Refresh",
 }
+EXPECTED_ABSOLUTE_DOC_HEADINGS = {
+    "README.md": "## Absolute Cross-Model Quality",
+    "evals/README.md": "## Absolute Cross-Model Quality",
+    "evals/RESULTS.md": "## Absolute Cross-Model Quality Snapshot",
+    "evals/PROMPT_QUALITY_CASES.md": "## Absolute Cross-Model Quality Scope",
+    "evals/CHANGELOG.md": "## 2026-07-10 - Absolute Cross-Model Quality",
+}
 FIXED_JUDGE_CAVEAT = "Fixed dual-order quality judge: `gpt-5.6-sol-medium`."
 SAME_MODEL_JUDGE_CAVEAT = (
     "The GPT-5.6 Sol row uses the same model family as the fixed quality judge; "
     "this is instruction-lift evidence, not a cross-model leaderboard."
 )
 WITHIN_RUNNER_CAVEAT = (
-    "These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard."
+    "These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard."
 )
 NO_REFERENCE_CAVEAT = "No OpenHands, Claude/Fable, or other reference rows are included."
 GROK_BUILD_EXCLUSION_CAVEAT = (
@@ -876,6 +899,14 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         module = load_script()
 
         self.assertEqual(module.BLINDED_DOC_HEADINGS, EXPECTED_BLINDED_DOC_HEADINGS)
+
+    def test_absolute_publication_contract_uses_exact_headings_and_scopes(self):
+        module = load_script()
+
+        self.assertEqual(module.ABSOLUTE_DOC_HEADINGS, EXPECTED_ABSOLUTE_DOC_HEADINGS)
+        self.assertEqual(module.ABSOLUTE_QUALITY_SCOPE, ABSOLUTE_QUALITY_SCOPE)
+        self.assertEqual(module.ABSOLUTE_JUDGE_AUDIT_SCOPE, ABSOLUTE_JUDGE_AUDIT_SCOPE)
+        self.assertEqual(module.ABSOLUTE_QUALITY_ROOT, Path(".eval-results/blinded-model-absolute-v1/canonical"))
         self.assertEqual(module.GROK_BUILD_EXCLUSION_CAVEAT, GROK_BUILD_EXCLUSION_CAVEAT)
         self.assertEqual(module.EXPECTED_SOCIAL_PNG_METADATA["instruction_snapshot_models"], "6")
 
@@ -1775,6 +1806,21 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
             problems = module.check_svg_scope(svg_dir, ["chart.svg"])
 
         self.assertTrue(any("missing SVG scope footer" in problem for problem in problems))
+
+    def test_check_svg_scope_rejects_ambiguous_current_labels_in_blinded_assets(self):
+        module = load_script()
+        with tempfile.TemporaryDirectory() as tmp:
+            svg_dir = Path(tmp)
+            for name, scope in module.EXPECTED_BLINDED_SVG_SCOPES.items():
+                extra = "<text>current instructions</text>" if name == "hard-gates-50.svg" else ""
+                (svg_dir / name).write_text(
+                    f"<svg><text>{scope}</text>{extra}</svg>\n",
+                    encoding="utf-8",
+                )
+
+            problems = module.check_svg_scope(svg_dir)
+
+        self.assertTrue(any("ambiguous public label" in problem for problem in problems), problems)
         self.assertEqual(module.EXPECTED_SVG_SCOPE, LEGACY_SCOPE)
 
     def test_check_svg_scope_reports_forbidden_publication_overclaim(self):
@@ -1869,6 +1915,12 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
                 with (
                     redirect_stdout(stdout),
                     mock.patch.object(module, "BLINDED_MODEL_ARTIFACTS", specs, create=True),
+                    mock.patch.object(
+                        module,
+                        "load_absolute_publication",
+                        return_value=({}, {}, {}),
+                    ),
+                    mock.patch.object(module, "check_absolute_docs", return_value=[]),
                 ):
                     rc = module.main(["--svg-dir", str(svg_dir)])
             finally:
@@ -1880,11 +1932,14 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
         self.assertIn("cases=50", output)
         self.assertIn("docs=5", output)
         self.assertIn("models=6", output)
-        self.assertIn("svgs=4", output)
+        self.assertIn("svgs=7", output)
         self.assertIn("social=checked", output)
         self.assertIn("scope=checked", output)
         self.assertIn("judge=gpt-5.6-sol-medium", output)
         self.assertIn("dual_order=checked", output)
+        self.assertIn("absolute=157x2", output)
+        self.assertIn("common_pairs=15", output)
+        self.assertIn("terra_audit=checked", output)
 
     def test_main_failure_output_mentions_publication_guard(self):
         module = load_script()
@@ -1909,6 +1964,12 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
                 with (
                     redirect_stderr(stderr),
                     mock.patch.object(module, "BLINDED_MODEL_ARTIFACTS", specs, create=True),
+                    mock.patch.object(
+                        module,
+                        "load_absolute_publication",
+                        return_value=({}, {}, {}),
+                    ),
+                    mock.patch.object(module, "check_absolute_docs", return_value=[]),
                 ):
                     rc = module.main(["--svg-dir", str(svg_dir)])
             finally:

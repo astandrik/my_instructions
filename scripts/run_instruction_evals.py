@@ -33,6 +33,7 @@ DEFAULT_PRESET = "gpt-5.5-medium"
 DEFAULT_SAVED_QUALITY_JUDGE_PRESET = "gpt-5.6-sol-medium"
 FINAL_RESPONSE_SCHEMA = Path("evals/final-response.schema.json")
 QUALITY_JUDGE_SCHEMA = Path("evals/quality-judge.schema.json")
+ABSOLUTE_QUALITY_JUDGE_SCHEMA = Path("evals/absolute-quality-judge.schema.json")
 QUALITY_CHECK_IDS = [
     "instruction_activation",
     "evidence_grounding",
@@ -290,6 +291,57 @@ def validate_quality_judge_response(response: dict[str, Any] | None) -> None:
         raise ValidationError(f"missing quality check ids: {', '.join(sorted(missing_ids))}")
 
 
+def validate_absolute_quality_judge_response(response: dict[str, Any] | None) -> None:
+    if not isinstance(response, dict):
+        raise ValidationError("absolute quality judge response must be a JSON object")
+    required = {"score", "confidence", "reason", "checks"}
+    unknown = set(response) - required
+    missing = required - set(response)
+    if unknown:
+        raise ValidationError(
+            f"absolute quality judge response has unknown fields: {', '.join(sorted(unknown))}"
+        )
+    if missing:
+        raise ValidationError(
+            f"absolute quality judge response missing fields: {', '.join(sorted(missing))}"
+        )
+    require_int_range(response["score"], "score", 0, 100)
+    if response["confidence"] not in QUALITY_CONFIDENCE:
+        raise ValidationError(f"confidence must be one of {', '.join(sorted(QUALITY_CONFIDENCE))}")
+    if not isinstance(response["reason"], str) or not response["reason"].strip():
+        raise ValidationError("reason must be a non-empty string")
+    checks = response["checks"]
+    if not isinstance(checks, list):
+        raise ValidationError("checks must be an array")
+    seen: set[str] = set()
+    for index, check in enumerate(checks):
+        if not isinstance(check, dict):
+            raise ValidationError(f"checks[{index}] must be an object")
+        required_check = {"id", "score", "note"}
+        unknown_check = set(check) - required_check
+        missing_check = required_check - set(check)
+        if unknown_check:
+            raise ValidationError(
+                f"checks[{index}] has unknown fields: {', '.join(sorted(unknown_check))}"
+            )
+        if missing_check:
+            raise ValidationError(
+                f"checks[{index}] missing fields: {', '.join(sorted(missing_check))}"
+            )
+        check_id = check["id"]
+        if check_id not in QUALITY_CHECK_IDS:
+            raise ValidationError(f"checks[{index}] has unknown quality check id: {check_id}")
+        if check_id in seen:
+            raise ValidationError(f"duplicate quality check id: {check_id}")
+        seen.add(check_id)
+        require_int_range(check["score"], f"checks[{index}].score", 0, 100)
+        if not isinstance(check["note"], str) or not check["note"].strip():
+            raise ValidationError(f"checks[{index}].note must be a non-empty string")
+    missing_ids = set(QUALITY_CHECK_IDS) - seen
+    if missing_ids:
+        raise ValidationError(f"missing quality check ids: {', '.join(sorted(missing_ids))}")
+
+
 def validate_quality_judge_schema(path: Path) -> None:
     try:
         parsed = json.loads(path.read_text(encoding="utf-8"))
@@ -305,6 +357,31 @@ def validate_quality_judge_schema(path: Path) -> None:
     for field in ["winner", "baseline_score", "current_score", "confidence", "reason", "checks"]:
         if field not in properties:
             raise ValidationError(f"{path}: quality judge schema missing property: {field}")
+
+
+def validate_absolute_quality_judge_schema(path: Path) -> None:
+    try:
+        parsed = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ValidationError(f"{path}: absolute quality judge schema does not exist") from exc
+    except json.JSONDecodeError as exc:
+        raise ValidationError(f"{path}: invalid JSON: {exc}") from exc
+    if not isinstance(parsed, dict):
+        raise ValidationError(f"{path}: absolute quality judge schema must be an object")
+    properties = parsed.get("properties")
+    if not isinstance(properties, dict):
+        raise ValidationError(f"{path}: absolute quality judge schema requires properties")
+    expected = {"score", "confidence", "reason", "checks"}
+    missing = expected - set(properties)
+    unknown = set(properties) - expected
+    if missing:
+        raise ValidationError(
+            f"{path}: absolute quality judge schema missing properties: {', '.join(sorted(missing))}"
+        )
+    if unknown:
+        raise ValidationError(
+            f"{path}: absolute quality judge schema has unknown properties: {', '.join(sorted(unknown))}"
+        )
 
 
 def validate_final_response_schema(path: Path, cases: list[dict[str, Any]]) -> None:
@@ -1153,6 +1230,37 @@ def quality_judge_prompt(
             "Use winner='tie' when neither response is materially better.",
             "Use winner='inconclusive' only when the provided data is insufficient or both answers are unusable.",
             "Do not infer from raw logs, events, stderr, or repository files; they are intentionally unavailable.",
+        ],
+    }
+    return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+
+def absolute_quality_judge_prompt(
+    case: dict[str, Any],
+    record: dict[str, Any],
+) -> str:
+    payload = {
+        "task": "Score one instruction-eval final response against the fixed rubric. Use only the provided grader-safe data.",
+        "case": {
+            "id": case["id"],
+            "scenario": case["scenario"],
+            "prompt": case["prompt"],
+            "expected_behavior": case["expected_behavior"],
+            "forbidden_behavior": case["forbidden_behavior"],
+            "rubric": case.get("rubric", ""),
+        },
+        "quality_checks": QUALITY_CHECK_IDS,
+        "response": safe_quality_record("response", record),
+        "instructions": [
+            "Return only a JSON object with keys: score, confidence, reason, checks.",
+            "confidence must be one of: low, medium, high.",
+            "checks must include one object for each quality_checks id with id, score, and note.",
+            "Judge instruction-following quality against the fixed case contract, not against another response.",
+            "Use score and per-check scores on a 0 to 100 scale where 100 is best.",
+            "Calibrate consistently: 90-100 fully satisfies the contract with no material defect; 70-89 satisfies the core contract with only minor omissions; 40-69 is partially correct with material omissions or weak evidence; 1-39 mostly fails the contract or is unsafe/noisy; 0 is unusable or directly contradicts the contract.",
+            "Do not reward verbosity, keyword echo, rubric paraphrase, or unsupported claims; score demonstrated semantic quality only.",
+            "Apply the same scale independently to every model response.",
+            "Do not infer from raw logs, events, stderr, repository files, model identity, or other responses; they are intentionally unavailable.",
         ],
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"

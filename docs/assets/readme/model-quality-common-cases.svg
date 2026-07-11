@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="1080" viewBox="0 0 1540 1080" role="img" aria-labelledby="title desc">
+<title id="title">Common-case model quality</title>
+<desc id="desc">All 15 direct model comparisons derived from saved absolute scores on common hard-gate-passed cases.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="1540" height="1080" fill="#f8fafc"/>
+<text x="40.0" y="56.0" class="title">Common-case model quality</text>
+<text x="40.0" y="84.0" class="subtitle">All 15 comparisons are derived from saved absolute scores; no pairwise judge calls or presentation order.</text>
+<rect x="40.0" y="110.0" width="1460.0" height="832.0" rx="10.0" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64.0" y="144.0" class="axis">Model A</text>
+<text x="350.0" y="144.0" class="axis">Model B</text>
+<text x="650.0" y="144.0" class="axis">overlap n</text>
+<text x="740.0" y="144.0" class="axis">mean A</text>
+<text x="830.0" y="144.0" class="axis">mean B</text>
+<text x="920.0" y="144.0" class="axis">B-A</text>
+<text x="1010.0" y="144.0" class="axis">A / equal / B</text>
+<text x="1190.0" y="144.0" class="axis">direction</text>
+<g data-comparison-row="true">
+<rect x="54.0" y="155.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="180.0" class="label">GPT-5.6 Sol medium</text>
+<text x="350.0" y="180.0" class="label">GPT-5.5</text>
+<text x="680.0" y="180.0" class="value" text-anchor="middle">30</text>
+<text x="770.0" y="180.0" class="value" text-anchor="middle">97.80</text>
+<text x="860.0" y="180.0" class="value" text-anchor="middle">97.67</text>
+<text x="950.0" y="180.0" class="value" text-anchor="middle">-0.13</text>
+<text x="1075.0" y="180.0" class="value">10 / 10 / 10</text>
+<text x="1190.0" y="180.0" class="value">GPT-5.6 Sol medium</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="229.0" class="label">GPT-5.6 Sol medium</text>
+<text x="350.0" y="229.0" class="label">GLM-5.2</text>
+<text x="680.0" y="229.0" class="value" text-anchor="middle">25</text>
+<text x="770.0" y="229.0" class="value" text-anchor="middle">97.72</text>
+<text x="860.0" y="229.0" class="value" text-anchor="middle">93.88</text>
+<text x="950.0" y="229.0" class="value" text-anchor="middle">-3.84</text>
+<text x="1075.0" y="229.0" class="value">17 / 7 / 1</text>
+<text x="1190.0" y="229.0" class="value">GPT-5.6 Sol medium</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="253.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="278.0" class="label">GPT-5.6 Sol medium</text>
+<text x="350.0" y="278.0" class="label">Grok 4.3</text>
+<text x="680.0" y="278.0" class="value" text-anchor="middle">20</text>
+<text x="770.0" y="278.0" class="value" text-anchor="middle">97.75</text>
+<text x="860.0" y="278.0" class="value" text-anchor="middle">89.30</text>
+<text x="950.0" y="278.0" class="value" text-anchor="middle">-8.45</text>
+<text x="1075.0" y="278.0" class="value">15 / 2 / 3</text>
+<text x="1190.0" y="278.0" class="value">GPT-5.6 Sol medium</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="327.0" class="label">GPT-5.6 Sol medium</text>
+<text x="350.0" y="327.0" class="label">DeepSeek V4 Flash</text>
+<text x="680.0" y="327.0" class="value" text-anchor="middle">18</text>
+<text x="770.0" y="327.0" class="value" text-anchor="middle">97.61</text>
+<text x="860.0" y="327.0" class="value" text-anchor="middle">82.67</text>
+<text x="950.0" y="327.0" class="value" text-anchor="middle">-14.94</text>
+<text x="1075.0" y="327.0" class="value">16 / 1 / 1</text>
+<text x="1190.0" y="327.0" class="value">GPT-5.6 Sol medium</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="351.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="376.0" class="label">GPT-5.6 Sol medium</text>
+<text x="350.0" y="376.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="680.0" y="376.0" class="value" text-anchor="middle">19</text>
+<text x="770.0" y="376.0" class="value" text-anchor="middle">97.79</text>
+<text x="860.0" y="376.0" class="value" text-anchor="middle">88.68</text>
+<text x="950.0" y="376.0" class="value" text-anchor="middle">-9.11</text>
+<text x="1075.0" y="376.0" class="value">16 / 0 / 3</text>
+<text x="1190.0" y="376.0" class="value">GPT-5.6 Sol medium</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="425.0" class="label">GPT-5.5</text>
+<text x="350.0" y="425.0" class="label">GLM-5.2</text>
+<text x="680.0" y="425.0" class="value" text-anchor="middle">28</text>
+<text x="770.0" y="425.0" class="value" text-anchor="middle">97.64</text>
+<text x="860.0" y="425.0" class="value" text-anchor="middle">93.04</text>
+<text x="950.0" y="425.0" class="value" text-anchor="middle">-4.60</text>
+<text x="1075.0" y="425.0" class="value">19 / 6 / 3</text>
+<text x="1190.0" y="425.0" class="value">GPT-5.5</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="449.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="474.0" class="label">GPT-5.5</text>
+<text x="350.0" y="474.0" class="label">Grok 4.3</text>
+<text x="680.0" y="474.0" class="value" text-anchor="middle">21</text>
+<text x="770.0" y="474.0" class="value" text-anchor="middle">97.71</text>
+<text x="860.0" y="474.0" class="value" text-anchor="middle">88.76</text>
+<text x="950.0" y="474.0" class="value" text-anchor="middle">-8.95</text>
+<text x="1075.0" y="474.0" class="value">16 / 4 / 1</text>
+<text x="1190.0" y="474.0" class="value">GPT-5.5</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="523.0" class="label">GPT-5.5</text>
+<text x="350.0" y="523.0" class="label">DeepSeek V4 Flash</text>
+<text x="680.0" y="523.0" class="value" text-anchor="middle">19</text>
+<text x="770.0" y="523.0" class="value" text-anchor="middle">97.58</text>
+<text x="860.0" y="523.0" class="value" text-anchor="middle">82.32</text>
+<text x="950.0" y="523.0" class="value" text-anchor="middle">-15.26</text>
+<text x="1075.0" y="523.0" class="value">17 / 1 / 1</text>
+<text x="1190.0" y="523.0" class="value">GPT-5.5</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="547.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="572.0" class="label">GPT-5.5</text>
+<text x="350.0" y="572.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="680.0" y="572.0" class="value" text-anchor="middle">20</text>
+<text x="770.0" y="572.0" class="value" text-anchor="middle">97.70</text>
+<text x="860.0" y="572.0" class="value" text-anchor="middle">88.65</text>
+<text x="950.0" y="572.0" class="value" text-anchor="middle">-9.05</text>
+<text x="1075.0" y="572.0" class="value">15 / 4 / 1</text>
+<text x="1190.0" y="572.0" class="value">GPT-5.5</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="621.0" class="label">GLM-5.2</text>
+<text x="350.0" y="621.0" class="label">Grok 4.3</text>
+<text x="680.0" y="621.0" class="value" text-anchor="middle">20</text>
+<text x="770.0" y="621.0" class="value" text-anchor="middle">93.00</text>
+<text x="860.0" y="621.0" class="value" text-anchor="middle">88.00</text>
+<text x="950.0" y="621.0" class="value" text-anchor="middle">-5.00</text>
+<text x="1075.0" y="621.0" class="value">13 / 3 / 4</text>
+<text x="1190.0" y="621.0" class="value">GLM-5.2</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="645.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="670.0" class="label">GLM-5.2</text>
+<text x="350.0" y="670.0" class="label">DeepSeek V4 Flash</text>
+<text x="680.0" y="670.0" class="value" text-anchor="middle">18</text>
+<text x="770.0" y="670.0" class="value" text-anchor="middle">91.83</text>
+<text x="860.0" y="670.0" class="value" text-anchor="middle">81.56</text>
+<text x="950.0" y="670.0" class="value" text-anchor="middle">-10.27</text>
+<text x="1075.0" y="670.0" class="value">13 / 2 / 3</text>
+<text x="1190.0" y="670.0" class="value">GLM-5.2</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="719.0" class="label">GLM-5.2</text>
+<text x="350.0" y="719.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="680.0" y="719.0" class="value" text-anchor="middle">18</text>
+<text x="770.0" y="719.0" class="value" text-anchor="middle">93.39</text>
+<text x="860.0" y="719.0" class="value" text-anchor="middle">88.39</text>
+<text x="950.0" y="719.0" class="value" text-anchor="middle">-5.00</text>
+<text x="1075.0" y="719.0" class="value">13 / 1 / 4</text>
+<text x="1190.0" y="719.0" class="value">GLM-5.2</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="743.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="768.0" class="label">Grok 4.3</text>
+<text x="350.0" y="768.0" class="label">DeepSeek V4 Flash</text>
+<text x="680.0" y="768.0" class="value" text-anchor="middle">14</text>
+<text x="770.0" y="768.0" class="value" text-anchor="middle">87.43</text>
+<text x="860.0" y="768.0" class="value" text-anchor="middle">85.43</text>
+<text x="950.0" y="768.0" class="value" text-anchor="middle">-2.00</text>
+<text x="1075.0" y="768.0" class="value">7 / 3 / 4</text>
+<text x="1190.0" y="768.0" class="value">Grok 4.3</text>
+</g>
+<g data-comparison-row="true">
+<text x="64.0" y="817.0" class="label">Grok 4.3</text>
+<text x="350.0" y="817.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="680.0" y="817.0" class="value" text-anchor="middle">15</text>
+<text x="770.0" y="817.0" class="value" text-anchor="middle">88.07</text>
+<text x="860.0" y="817.0" class="value" text-anchor="middle">90.53</text>
+<text x="950.0" y="817.0" class="value" text-anchor="middle">+2.46</text>
+<text x="1075.0" y="817.0" class="value">5 / 2 / 8</text>
+<text x="1190.0" y="817.0" class="value">DeepSeek V4 Flash thinking</text>
+</g>
+<g data-comparison-row="true">
+<rect x="54.0" y="841.0" width="1432.0" height="42.0" rx="0.0" fill="#f8fafc"/>
+<text x="64.0" y="866.0" class="label">DeepSeek V4 Flash</text>
+<text x="350.0" y="866.0" class="label">DeepSeek V4 Flash thinking</text>
+<text x="680.0" y="866.0" class="value" text-anchor="middle">16</text>
+<text x="770.0" y="866.0" class="value" text-anchor="middle">84.19</text>
+<text x="860.0" y="866.0" class="value" text-anchor="middle">87.69</text>
+<text x="950.0" y="866.0" class="value" text-anchor="middle">+3.50</text>
+<text x="1075.0" y="866.0" class="value">7 / 1 / 8</text>
+<text x="1190.0" y="866.0" class="value">DeepSeek V4 Flash thinking</text>
+</g>
+<text x="64.0" y="978.0" class="small">Direction is the higher common-case mean, not a global rank; overlap differs by pair.</text>
+<line x1="32.0" y1="1030.0" x2="1508.0" y2="1030.0" stroke="#e5e7eb" stroke-width="1"/>
+<text x="32.0" y="1048.0" class="small">Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking.</text>
+<text x="32.0" y="1060.0" class="small">Source: canonical sol-absolute.json common-case comparisons.</text>
+<text x="1508.0" y="1060.0" class="small" text-anchor="end">Generated by scripts/build_readme_infographics.py</text>
+</svg>

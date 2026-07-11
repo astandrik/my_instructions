@@ -28,11 +28,29 @@ Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
 
 The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
 
-These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard.
 
 No OpenHands, Claude/Fable, or other reference rows are included.
 
 Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
+## Absolute Cross-Model Quality Scope
+
+The newer direct model-quality view does not use the pairwise/reference marks
+tracked below. It judges each of the 157 hard-gate-passed saved responses
+independently with Sol medium, then repeats the identical set with Terra high
+as a judge audit. Model identity and competitor responses are absent from the
+judge prompt.
+
+Hard-gate pass rate and quality among passed responses are separate metrics.
+Direct model comparisons use only common hard-gate-passed cases and are
+derived from saved absolute scores. Sol medium is the primary judge; Terra
+high is an audit judge. Their scores are shown separately and are not averaged.
+No global leaderboard or rank is computed.
+
+Canonical artifacts live under
+`.eval-results/blinded-model-absolute-v1/canonical/`; the full aggregate and
+15 common-case rows are published in `RESULTS.md`.
 
 ## Snapshot Sources
 

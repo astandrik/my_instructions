@@ -65,29 +65,62 @@ as uniform improvement:
 `question-only-readonly-answer`, `repo-wide-migration-plan`, and
 `select-implementation-proposal`.
 
+## 2026-07-10 - Absolute Cross-Model Quality
+
+- Replaced the unexecuted 826-call all-pairs judge plan with independent
+  single-response scoring: 157 Sol medium calls plus the identical 157 Terra
+  high audit calls.
+- Kept hard-gate pass rate and quality among passed responses separate.
+- Derived all 15 direct comparisons from common passed-case intersections;
+  no pairwise judge calls, presentation-order runs, or global ranking remain.
+- Sol and Terra agree on all 15 aggregate pair directions. They differ on 96
+  of 301 pair-case score relations, so judge-specific scores remain separate
+  and are not averaged.
+
+Hard-gate pass rate and quality among passed responses are separate metrics.
+Direct model comparisons use only common hard-gate-passed cases and are
+derived from saved absolute scores. Sol medium is the primary judge; Terra
+high is an audit judge. Their scores are shown separately and are not averaged.
+No global leaderboard or rank is computed.
+
+| Model | Role | Hard gate | Sol absolute | Terra audit | Terra - Sol |
+|---|---|---:|---:|---:|---:|
+| GPT-5.6 Sol medium | Primary | 31 / 50 | 97.87 | 97.45 | -0.42 |
+| GPT-5.5 | Historical | 35 / 50 | 97.74 | 97.03 | -0.71 |
+| GLM-5.2 | External | 29 / 50 | 93.17 | 93.34 | +0.17 |
+| Grok 4.3 | External | 22 / 50 | 88.91 | 87.73 | -1.18 |
+| DeepSeek V4 Flash | External | 19 / 50 | 82.32 | 76.05 | -6.27 |
+| DeepSeek V4 Flash thinking | External | 21 / 50 | 89.00 | 84.43 | -4.57 |
+
+Canonical artifacts live under
+`.eval-results/blinded-model-absolute-v1/canonical/`. Frozen instructions:
+`8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
+frozen 50-case catalog:
+`aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
+
 ## 2026-07-10 - Blinded Six-Model Refresh
 
-- Published six clean blinded current-vs-empty model/runner pairs and executable
-  dual-order consensus from
+- Published six clean blinded `With instructions v4.13` versus
+  `Empty instructions` model/runner pairs and executable dual-order consensus from
   `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
 
 Primary hard-gate rows:
 
-| Model | Current | Empty | Lift |
+| Model | With instructions v4.13 | Empty instructions | Lift |
 |---|---:|---:|---:|
-| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
 | GPT-5.6 Sol medium | 31 / 50 | 21 / 50 | +10 |
+| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
 | GLM-5.2 | 29 / 50 | 10 / 50 | +19 |
 | Grok 4.3 | 22 / 50 | 4 / 50 | +18 |
 | DeepSeek V4 Flash | 19 / 50 | 6 / 50 | +13 |
 | DeepSeek V4 Flash thinking | 21 / 50 | 6 / 50 | +15 |
 
-Dual-order rows (`current / empty / tie / order-sensitive / inconclusive`):
+Dual-order rows (`with instructions / empty / tie / order-sensitive / inconclusive`):
 
-| Model | Current | Empty | Tie | Order-sensitive | Inconclusive |
+| Model | With instructions v4.13 | Empty instructions | Tie | Order-sensitive | Inconclusive |
 |---|---:|---:|---:|---:|---:|
-| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
 | GPT-5.6 Sol medium | 21 | 3 | 3 | 6 | 17 |
+| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
 | GLM-5.2 | 27 | 1 | 0 | 2 | 20 |
 | Grok 4.3 | 21 | 0 | 1 | 0 | 28 |
 | DeepSeek V4 Flash | 16 | 2 | 0 | 1 | 31 |
@@ -97,7 +130,7 @@ Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
 
 The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
 
-These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard.
 
 No OpenHands, Claude/Fable, or other reference rows are included.
 

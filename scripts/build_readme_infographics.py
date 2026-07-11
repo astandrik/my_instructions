@@ -31,6 +31,9 @@ QUALITY_ROOT = Path(".eval-results/refresh-2026-07-08-50-case-quality-v1")
 BLINDED_ROOT = Path(".eval-results/blinded-50-case-v1")
 BLINDED_EXTERNAL_ROOT = Path(".eval-results/blinded-all-models-50-case-v1")
 BLINDED_QUALITY_ROOT = BLINDED_ROOT / "dual-order-quality-v2"
+ABSOLUTE_QUALITY_ROOT = Path(".eval-results/blinded-model-absolute-v1/canonical")
+ABSOLUTE_SOL_QUALITY = ABSOLUTE_QUALITY_ROOT / "sol-absolute.json"
+ABSOLUTE_JUDGE_AUDIT = ABSOLUTE_QUALITY_ROOT / "sol-terra-audit.json"
 LEGACY_SNAPSHOT_CAVEAT = (
     "Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata "
     "(prompt contamination)."
@@ -40,11 +43,21 @@ SNAPSHOT_SCOPE = (
     "all-model reference rows included."
 )
 BLINDED_HARD_GATE_SCOPE = (
-    "Scope: blinded current-vs-empty hard gates, 50 cases, 6 model/runner rows; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions hard gates, "
+    "50 cases, 6 model/runner rows; no reference rows."
 )
 BLINDED_DUAL_ORDER_SCOPE = (
-    "Scope: blinded current-vs-empty dual-order quality, 50 cases, 6 model/runner rows; "
-    "fixed gpt-5.6-sol-medium judge; order-sensitive verdicts are separate; no reference rows."
+    "Scope: blinded With instructions v4.13 vs Empty instructions dual-order quality, "
+    "50 cases, 6 model/runner rows; fixed gpt-5.6-sol-medium judge; "
+    "order-sensitive verdicts are separate; no reference rows."
+)
+ABSOLUTE_QUALITY_SCOPE = (
+    "Scope: blinded absolute quality, 157 hard-gate-passed responses across 6 models; "
+    "single-response gpt-5.6-sol-medium judge; comparisons use common passed cases; no global ranking."
+)
+ABSOLUTE_JUDGE_AUDIT_SCOPE = (
+    "Scope: Sol medium vs Terra high audit on the same 157 blinded responses; "
+    "judge scores are shown separately and are not averaged."
 )
 SAME_MODEL_JUDGE_CAVEAT = (
     "The GPT-5.6 Sol row uses the same model family as the fixed quality judge; "
@@ -84,17 +97,6 @@ INCONCLUSIVE_FILL = "#f1f5f9"
 
 BLINDED_MODELS = [
     {
-        "model_id": "gpt-5.5",
-        "label": "GPT-5.5",
-        "short": "GPT",
-        "color": "#2563eb",
-        "current": BLINDED_ROOT / "current-gpt55/current/summary.json",
-        "empty": BLINDED_ROOT / "empty-gpt55/empty/summary.json",
-        "quality": BLINDED_QUALITY_ROOT / "gpt-5.5/dual-order-summary.json",
-        "note": "Codex CLI",
-        "same_model_judge": False,
-    },
-    {
         "model_id": "gpt-5.6-sol",
         "label": "GPT-5.6 Sol medium",
         "short": "Sol",
@@ -104,6 +106,17 @@ BLINDED_MODELS = [
         "quality": BLINDED_QUALITY_ROOT / "gpt-5.6-sol/dual-order-summary.json",
         "note": "Codex CLI; same-family judge",
         "same_model_judge": True,
+    },
+    {
+        "model_id": "gpt-5.5",
+        "label": "GPT-5.5",
+        "short": "GPT",
+        "color": "#2563eb",
+        "current": BLINDED_ROOT / "current-gpt55/current/summary.json",
+        "empty": BLINDED_ROOT / "empty-gpt55/empty/summary.json",
+        "quality": BLINDED_QUALITY_ROOT / "gpt-5.5/dual-order-summary.json",
+        "note": "Codex CLI",
+        "same_model_judge": False,
     },
     {
         "model_id": "glm-5.2",
@@ -251,6 +264,36 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_absolute_quality(repo_root: Path) -> dict[str, Any]:
+    data = read_json(resolve_path(repo_root, ABSOLUTE_SOL_QUALITY))
+    if data.get("methodology") != "single_response_absolute_scoring":
+        raise SystemExit("invalid absolute-quality methodology")
+    if data.get("total_judgments") != 157:
+        raise SystemExit("absolute-quality coverage must contain 157 judgments")
+    models = data.get("models")
+    comparisons = data.get("common_case_comparisons")
+    expected_ids = [row["model_id"] for row in BLINDED_MODELS]
+    if not isinstance(models, list) or [row.get("model_id") for row in models] != expected_ids:
+        raise SystemExit("absolute-quality model order drift")
+    if not isinstance(comparisons, list) or len(comparisons) != 15:
+        raise SystemExit("absolute-quality comparison coverage drift")
+    return data
+
+
+def load_absolute_judge_audit(repo_root: Path) -> dict[str, Any]:
+    data = read_json(resolve_path(repo_root, ABSOLUTE_JUDGE_AUDIT))
+    if data.get("methodology") != "single_response_absolute_scoring_judge_audit":
+        raise SystemExit("invalid absolute judge-audit methodology")
+    expected_ids = [row["model_id"] for row in BLINDED_MODELS]
+    models = data.get("models")
+    comparisons = data.get("common_case_comparisons")
+    if not isinstance(models, list) or [row.get("model_id") for row in models] != expected_ids:
+        raise SystemExit("absolute judge-audit model order drift")
+    if not isinstance(comparisons, list) or len(comparisons) != 15:
+        raise SystemExit("absolute judge-audit comparison coverage drift")
+    return data
+
+
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         raise SystemExit(f"missing case file: {path}")
@@ -382,20 +425,20 @@ def render_social_card_png(repo_root: Path, path: Path) -> None:
     draw.text((80, 112), title, font=fit_font(draw, title, 58, 1440, bold=True), fill=rgb(INK))
     draw.text(
         (80, 184),
-        "Current versus empty bundle; fixed GPT-5.6 Sol medium judge in both presentation orders.",
+        "With instructions v4.13 versus Empty instructions; fixed GPT-5.6 Sol medium judge in both presentation orders.",
         font=load_font(28),
         fill=rgb("#475569"),
     )
 
-    social_metric_card(draw, 80, 250, 360, "Hard gates", f"{hard_gate_lift:+d}", "net current pass lift", "#fef3c7")
-    social_metric_card(draw, 475, 250, 360, "Dual-order consensus", f"{current_wins} vs {empty_wins}", "current wins vs empty wins", "#dbeafe")
+    social_metric_card(draw, 80, 250, 360, "Hard gates", f"{hard_gate_lift:+d}", "net v4.13 pass lift", "#fef3c7")
+    social_metric_card(draw, 475, 250, 360, "Dual-order consensus", f"{current_wins} vs {empty_wins}", "v4.13 wins vs Empty wins", "#dbeafe")
     social_metric_card(draw, 870, 250, 360, "Order-sensitive", str(order_sensitive), "kept out of directional wins", "#ede9fe")
 
     panel_x, panel_y, panel_w, panel_h = 80, 408, 1440, 344
     draw.rounded_rectangle((panel_x, panel_y, panel_x + panel_w, panel_y + panel_h), radius=20, fill=rgb("#ffffff"), outline=rgb("#dbe3ef"), width=1)
     draw.text((108, 424), "Model / runner", font=load_font(22, bold=True), fill=rgb(INK))
-    draw.text((500, 424), "Hard gates: empty -> current", font=load_font(18, bold=True), fill=rgb(MUTED))
-    draw.text((820, 424), "Dual-order consensus: current / empty / tie / order-sensitive / inconclusive", font=load_font(17, bold=True), fill=rgb(MUTED))
+    draw.text((500, 424), "Hard gates: Empty -> v4.13", font=load_font(18, bold=True), fill=rgb(MUTED))
+    draw.text((820, 424), "Consensus: v4.13 / Empty / tie / order-sensitive / inconclusive", font=load_font(15, bold=True), fill=rgb(MUTED))
 
     for index, row in enumerate(rows):
         y = 472 + index * 46
@@ -730,15 +773,15 @@ def render_hard_gates_50(repo_root: Path, output_dir: Path) -> None:
         width,
         height,
         "Blinded 50-case hard-gate snapshot",
-        "Blinded current and empty hard-gate pass counts across six model and runner rows.",
+        "Blinded With instructions v4.13 and Empty instructions hard-gate pass counts across six model and runner rows.",
     )
     lines.extend(panel(40, 28, 1200, 500 + extra_height))
     lines.append(text(72, 68, "Blinded 50-case hard-gate snapshot", "title"))
-    lines.append(text(72, 94, "Primary current-vs-empty results only; dual-order quality is not loaded by this graphic.", "subtitle"))
+    lines.append(text(72, 94, "With instructions v4.13 versus Empty instructions; dual-order quality is not loaded by this graphic.", "subtitle"))
     lines.append(text(72, 136, "Model / runner", "axis"))
     lines.append(text(axis_x, 136, "Hard-gate passes out of 50", "axis"))
-    lines.append(text(836, 136, "current", "axis"))
-    lines.append(text(918, 136, "empty", "axis"))
+    lines.append(text(836, 136, "v4.13", "axis"))
+    lines.append(text(918, 136, "Empty", "axis"))
     lines.append(text(1002, 136, "lift", "axis"))
     lines.append(text(1090, 136, "note", "axis"))
     for tick in [0, 10, 20, 30, 40, 50]:
@@ -761,16 +804,16 @@ def render_hard_gates_50(repo_root: Path, output_dir: Path) -> None:
         lines.append(text(1090, y + 5, row["note"], "small"))
     legend_y = 488 + extra_height
     lines.append(circle(78, legend_y, 7, "#94a3b8"))
-    lines.append(text(94, legend_y + 4, "empty bundle", "axis"))
+    lines.append(text(94, legend_y + 4, "Empty instructions", "axis"))
     lines.append(circle(204, legend_y, 7, CURRENT))
-    lines.append(text(220, legend_y + 4, "current instructions", "axis"))
-    lines.append(text(430, legend_y + 4, "Lift is current hard-gate passes minus empty-bundle passes.", "axis"))
+    lines.append(text(220, legend_y + 4, "With instructions v4.13", "axis"))
+    lines.append(text(430, legend_y + 4, "Lift is v4.13 hard-gate passes minus Empty-instructions passes.", "axis"))
     lines.append(text(72, 520 + extra_height, GROK_BUILD_EXCLUSION_CAVEAT, "small"))
     lines.extend(
         footer(
             width,
             588 + extra_height,
-            "Source: blinded current/empty primary summary artifacts.",
+            "Source: blinded v4.13/Empty primary summary artifacts.",
             scope=BLINDED_HARD_GATE_SCOPE,
         )
     )
@@ -854,14 +897,14 @@ def render_empty_current_lift(repo_root: Path, output_dir: Path) -> None:
         width,
         height,
         "Blinded instruction lift across six model rows",
-        "Hard-gate passes and five dual-order quality verdict buckets for current versus empty instructions.",
+        "Hard-gate passes and five dual-order quality verdict buckets for With instructions v4.13 versus Empty instructions.",
     )
     lines.append(text(40, 56, "Blinded instruction lift across six model rows", "title"))
     lines.append(text(40, 84, "50 cases. Dual-order consensus keeps order-sensitive verdicts separate from directional wins.", "subtitle"))
     lines.extend(panel(40, 110, 1280, 456))
     lines.append(text(72, 144, "Model", "axis"))
     lines.append(text(axis_x, 144, "Hard-gate passes out of 50", "axis"))
-    lines.append(text(pass_x, 144, "empty -> current", "axis"))
+    lines.append(text(pass_x, 144, "Empty -> v4.13", "axis"))
     lines.append(text(quality_x, 144, "Dual-order quality verdicts", "axis"))
     for tick in [0, 10, 20, 30, 40, 50]:
         x = axis_x + axis_w * pct(tick, 50)
@@ -897,11 +940,11 @@ def render_empty_current_lift(repo_root: Path, output_dir: Path) -> None:
         )
     legend_y = 600
     legend = [
-        (72, "current", CURRENT),
-        (190, "empty", BASELINE),
-        (292, "tie", TIE),
-        (368, "order-sensitive", ORDER_SENSITIVE),
-        (542, "inconclusive", INCONCLUSIVE),
+        (72, "With instructions v4.13", CURRENT),
+        (260, "Empty instructions", BASELINE),
+        (410, "tie", TIE),
+        (486, "order-sensitive", ORDER_SENSITIVE),
+        (660, "inconclusive", INCONCLUSIVE),
     ]
     for x, label, color in legend:
         lines.append(circle(x, legend_y, 7, color))
@@ -1089,22 +1132,22 @@ def render_quality_only_comparisons(repo_root: Path, output_dir: Path) -> None:
     lines = svg_start(
         width,
         height,
-        "Dual-order quality scores: current vs empty",
+        "Dual-order quality scores: With instructions v4.13 vs Empty instructions",
         "Paired all-case quality scores balanced across both presentation orders for six blinded model rows.",
     )
-    lines.append(text(40, 56, "Dual-order quality scores: current vs empty", "title"))
+    lines.append(text(40, 56, "Dual-order quality scores: With instructions v4.13 vs Empty instructions", "title"))
     lines.append(
         text(
             40,
             84,
-            "All 50 cases, balanced across both presentation orders. Compare current vs empty within each row only.",
+            "All 50 cases, balanced across both presentation orders. Compare v4.13 vs Empty within each row only.",
             "subtitle",
         )
     )
     lines.extend(panel(40, 110, 1280, 456))
     lines.append(text(72, 144, "Model / runner", "axis"))
     lines.append(text(axis_x, 144, "Balanced all-case quality score (0-100)", "axis"))
-    lines.append(text(value_x, 144, "empty -> current (delta)", "axis"))
+    lines.append(text(value_x, 144, "Empty -> v4.13 (delta)", "axis"))
     for tick in [0, 20, 40, 60, 80, 100]:
         x = axis_x + axis_w * pct(tick, 100)
         lines.append(line(x, 166, x, 532, "#e5e7eb"))
@@ -1150,8 +1193,8 @@ def render_quality_only_comparisons(repo_root: Path, output_dir: Path) -> None:
         )
     legend_y = 600
     for x, label, color in (
-        (72, "empty instructions", BASELINE),
-        (248, "current instructions", CURRENT),
+        (72, "Empty instructions", BASELINE),
+        (248, "With instructions v4.13", CURRENT),
     ):
         lines.append(circle(x, legend_y, 7, color))
         lines.append(text(x + 16, legend_y + 4, label, "axis"))
@@ -1167,6 +1210,185 @@ def render_quality_only_comparisons(repo_root: Path, output_dir: Path) -> None:
     )
     lines.append("</svg>")
     write_svg(output_dir / "quality-only-comparisons.svg", lines)
+
+
+def render_model_absolute_quality(repo_root: Path, output_dir: Path) -> None:
+    data = load_absolute_quality(repo_root)
+    width = 1360
+    height = 748
+    gate_x = 430
+    gate_w = 250
+    quality_x = 790
+    quality_w = 430
+    lines = svg_start(
+        width,
+        height,
+        "Absolute response quality",
+        "Hard-gate coverage and independent Sol medium scores for six blinded instructed model outputs.",
+    )
+    lines.append(text(40, 56, "Absolute response quality", "title"))
+    lines.append(
+        text(
+            40,
+            84,
+            "Hard gate and Sol absolute score; quality among hard-gate-passed responses only.",
+            "subtitle",
+        )
+    )
+    lines.extend(panel(40, 110, 1280, 458))
+    lines.append(text(72, 144, "Model / role", "axis"))
+    lines.append(text(gate_x, 144, "Hard gate (0-50)", "axis"))
+    lines.append(text(quality_x, 144, "Sol absolute quality (0-100)", "axis"))
+    for index, row in enumerate(data["models"]):
+        passed = row["hard_gate_passed"]
+        total = row["hard_gate_total"]
+        score = row["mean_absolute_score"]
+        if total != 50 or not 0 <= passed <= total or not 0 <= score <= 100:
+            raise SystemExit(f"invalid absolute-quality row: {row.get('model_id')}")
+        y = 194 + index * 60
+        if index % 2 == 0:
+            lines.append(rect(64, y - 30, 1230, 50, "#f8fafc", rx=0))
+        lines.append(text(72, y - 2, row["model_label"], "label"))
+        lines.append(text(72, y + 16, row["role"], "small"))
+        lines.append(rect(gate_x, y - 13, gate_w, 14, TRACK, rx=7))
+        lines.append(rect(gate_x, y - 13, gate_w * pct(passed, total), 14, CURRENT, rx=7))
+        lines.append(text(gate_x + gate_w + 12, y - 2, f"{passed}/{total}", "value"))
+        lines.append(rect(quality_x, y - 13, quality_w, 14, TRACK, rx=7))
+        lines.append(rect(quality_x, y - 13, quality_w * pct(score, 100), 14, GOOD, rx=7))
+        lines.append(text(quality_x + quality_w + 12, y - 2, f"{score:.2f}", "value"))
+    lines.append(text(72, 610, "Rows are ordered Primary, Historical, then External; this is not a global ranking.", "label"))
+    lines.append(text(72, 634, "Different pass counts mean absolute row averages use different case subsets.", "small"))
+    lines.extend(
+        footer(
+            width,
+            728,
+            "Source: canonical sol-absolute.json; 157 independent single-response judgments.",
+            scope=ABSOLUTE_QUALITY_SCOPE,
+        )
+    )
+    lines.append("</svg>")
+    write_svg(output_dir / "model-quality-absolute.svg", lines)
+
+
+def render_model_common_case_quality(repo_root: Path, output_dir: Path) -> None:
+    data = load_absolute_quality(repo_root)
+    labels = {row["model_id"]: row["model_label"] for row in data["models"]}
+    width = 1540
+    height = 1080
+    lines = svg_start(
+        width,
+        height,
+        "Common-case model quality",
+        "All 15 direct model comparisons derived from saved absolute scores on common hard-gate-passed cases.",
+    )
+    lines.append(text(40, 56, "Common-case model quality", "title"))
+    lines.append(
+        text(
+            40,
+            84,
+            "All 15 comparisons are derived from saved absolute scores; no pairwise judge calls or presentation order.",
+            "subtitle",
+        )
+    )
+    lines.extend(panel(40, 110, 1460, 832))
+    headers = (
+        (64, "Model A"),
+        (350, "Model B"),
+        (650, "overlap n"),
+        (740, "mean A"),
+        (830, "mean B"),
+        (920, "B-A"),
+        (1010, "A / equal / B"),
+        (1190, "direction"),
+    )
+    for x, label in headers:
+        lines.append(text(x, 144, label, "axis"))
+    for index, row in enumerate(data["common_case_comparisons"]):
+        if row["a_higher"] + row["equal"] + row["b_higher"] != row["overlap"]:
+            raise SystemExit("invalid common-case comparison counts")
+        y = 180 + index * 49
+        lines.append(f'<g data-comparison-row="true">')
+        if index % 2 == 0:
+            lines.append(rect(54, y - 25, 1432, 42, "#f8fafc", rx=0))
+        lines.append(text(64, y, labels[row["model_a_id"]], "label"))
+        lines.append(text(350, y, labels[row["model_b_id"]], "label"))
+        lines.append(text(680, y, row["overlap"], "value", anchor="middle"))
+        lines.append(text(770, y, f"{row['mean_model_a_score']:.2f}", "value", anchor="middle"))
+        lines.append(text(860, y, f"{row['mean_model_b_score']:.2f}", "value", anchor="middle"))
+        lines.append(text(950, y, f"{row['mean_delta_b_minus_a']:+.2f}", "value", anchor="middle"))
+        lines.append(text(1075, y, f"{row['a_higher']} / {row['equal']} / {row['b_higher']}", "value"))
+        lines.append(text(1190, y, labels.get(row["direction"], "equal"), "value"))
+        lines.append("</g>")
+    lines.append(text(64, 978, "Direction is the higher common-case mean, not a global rank; overlap differs by pair.", "small"))
+    lines.extend(
+        footer(
+            width,
+            1060,
+            "Source: canonical sol-absolute.json common-case comparisons.",
+            scope=ABSOLUTE_QUALITY_SCOPE,
+        )
+    )
+    lines.append("</svg>")
+    write_svg(output_dir / "model-quality-common-cases.svg", lines)
+
+
+def render_model_quality_judge_audit(repo_root: Path, output_dir: Path) -> None:
+    data = load_absolute_judge_audit(repo_root)
+    width = 1360
+    height = 760
+    axis_x = 420
+    axis_w = 650
+    value_x = 1100
+    sol_color = "#4f46e5"
+    terra_color = "#ea580c"
+    lines = svg_start(
+        width,
+        height,
+        "Sol vs Terra judge audit",
+        "Independent absolute-score audit on the same 157 blinded hard-gate-passed responses.",
+    )
+    lines.append(text(40, 56, "Sol vs Terra judge audit", "title"))
+    lines.append(text(40, 84, "Same 157 responses, same rubric, separate scores; judge outputs are not averaged.", "subtitle"))
+    lines.extend(panel(40, 110, 1280, 456))
+    lines.append(text(72, 144, "Model / role", "axis"))
+    lines.append(text(axis_x, 144, "Absolute quality score (0-100)", "axis"))
+    lines.append(text(value_x, 144, "Sol -> Terra (delta)", "axis"))
+    for index, row in enumerate(data["models"]):
+        sol_score = row["sol_mean_score"]
+        terra_score = row["terra_mean_score"]
+        delta = row["terra_minus_sol_mean_score"]
+        if not 0 <= sol_score <= 100 or not 0 <= terra_score <= 100:
+            raise SystemExit(f"invalid judge-audit score: {row.get('model_id')}")
+        y = 194 + index * 60
+        if index % 2 == 0:
+            lines.append(rect(64, y - 30, 1230, 50, "#f8fafc", rx=0))
+        lines.append(text(72, y - 2, row["model_label"], "label"))
+        lines.append(text(72, y + 16, row["role"], "small"))
+        lines.append(rect(axis_x, y - 15, axis_w, 11, TRACK, rx=6))
+        lines.append(rect(axis_x, y - 15, axis_w * pct(sol_score, 100), 11, sol_color, rx=6))
+        lines.append(rect(axis_x, y + 4, axis_w, 11, TRACK, rx=6))
+        lines.append(rect(axis_x, y + 4, axis_w * pct(terra_score, 100), 11, terra_color, rx=6))
+        lines.append(text(value_x, y + 2, f"{sol_score:.2f} -> {terra_score:.2f} ({delta:+.2f})", "value"))
+    comparisons = data["common_case_comparisons"]
+    stable = sum(not row["judge_sensitive"] for row in comparisons)
+    changed = sum(row["changed_case_directions"] for row in comparisons)
+    relations = sum(row["overlap"] for row in comparisons)
+    lines.append(circle(72, 612, 7, sol_color))
+    lines.append(text(88, 616, "Sol medium (primary judge)", "axis"))
+    lines.append(circle(274, 612, 7, terra_color))
+    lines.append(text(290, 616, "Terra high (audit judge)", "axis"))
+    lines.append(text(72, 648, f"{stable}/{len(comparisons)} aggregate pair directions stable", "label"))
+    lines.append(text(450, 648, f"{changed}/{relations} pair-case directions changed", "label"))
+    lines.extend(
+        footer(
+            width,
+            740,
+            "Source: canonical sol-terra-audit.json; scores remain judge-specific.",
+            scope=ABSOLUTE_JUDGE_AUDIT_SCOPE,
+        )
+    )
+    lines.append("</svg>")
+    write_svg(output_dir / "model-quality-judge-audit.svg", lines)
 
 
 def winner_fill(winner: str) -> str:
@@ -1362,14 +1584,14 @@ def render_coverage_watchlist(repo_root: Path, output_dir: Path) -> None:
     lines = svg_start(
         width,
         height,
-        "Current instruction weak spots by concrete case",
-        "Cases with the fewest current-model hard-gate passes across the six blinded model and runner rows.",
+        "With instructions v4.13 weak spots by concrete case",
+        "Cases with the fewest v4.13 hard-gate passes across the six blinded model and runner rows.",
     )
-    lines.append(text(40, 56, "Current weak spots by case", "title"))
-    lines.append(text(40, 84, "The weakest 50-case rows are where model transfer is still limited, even with current instructions.", "subtitle"))
+    lines.append(text(40, 56, "With instructions v4.13 weak spots by case", "title"))
+    lines.append(text(40, 84, "The weakest rows show where model transfer remains limited with v4.13 instructions.", "subtitle"))
     lines.extend(panel(40, 116, 1040, 500))
     lines.append(text(72, 152, "Case", "axis"))
-    lines.append(text(590, 152, f"Current model rows passing out of {model_count}", "axis"))
+    lines.append(text(590, 152, f"v4.13 model rows passing out of {model_count}", "axis"))
     for index, row in enumerate(rows):
         y = 188 + index * 24
         if index % 2 == 0:
@@ -1386,7 +1608,7 @@ def render_coverage_watchlist(repo_root: Path, output_dir: Path) -> None:
         footer(
             width,
             710,
-            "Source: blinded current primary summaries across six model and runner rows.",
+            "Source: blinded v4.13 primary summaries across six model and runner rows.",
             scope=BLINDED_HARD_GATE_SCOPE,
         )
     )
@@ -1403,6 +1625,9 @@ def build_all(repo_root: Path, output_dir: Path, social_image: Path = DEFAULT_SO
     render_hard_gates_50(repo_root, output_dir)
     render_empty_current_lift(repo_root, output_dir)
     render_quality_only_comparisons(repo_root, output_dir)
+    render_model_absolute_quality(repo_root, output_dir)
+    render_model_common_case_quality(repo_root, output_dir)
+    render_model_quality_judge_audit(repo_root, output_dir)
     render_coverage_watchlist(repo_root, output_dir)
     render_social_card_png(repo_root, social_image)
 

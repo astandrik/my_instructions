@@ -19,24 +19,24 @@ when cases, instruction files, model presets, or reference bundles change.
 
 ## Blinded Six-Model Snapshot
 
-The 2026-07-10 snapshot uses clean blinded current and empty runs for six
-model/runner rows. Primary hard-gate results:
+The 2026-07-10 snapshot uses clean blinded `With instructions v4.13` and
+`Empty instructions` runs for six model/runner rows. Primary hard-gate results:
 
-| Model | Current | Empty | Lift |
+| Model | With instructions v4.13 | Empty instructions | Lift |
 |---|---:|---:|---:|
-| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
 | GPT-5.6 Sol medium | 31 / 50 | 21 / 50 | +10 |
+| GPT-5.5 | 35 / 50 | 25 / 50 | +10 |
 | GLM-5.2 | 29 / 50 | 10 / 50 | +19 |
 | Grok 4.3 | 22 / 50 | 4 / 50 | +18 |
 | DeepSeek V4 Flash | 19 / 50 | 6 / 50 | +13 |
 | DeepSeek V4 Flash thinking | 21 / 50 | 6 / 50 | +15 |
 
-Dual-order quality consensus reports `current / empty / tie / order-sensitive / inconclusive`:
+Dual-order quality consensus reports `with instructions / empty / tie / order-sensitive / inconclusive`:
 
-| Model | Current | Empty | Tie | Order-sensitive | Inconclusive |
+| Model | With instructions v4.13 | Empty instructions | Tie | Order-sensitive | Inconclusive |
 |---|---:|---:|---:|---:|---:|
-| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
 | GPT-5.6 Sol medium | 21 | 3 | 3 | 6 | 17 |
+| GPT-5.5 | 21 | 2 | 5 | 8 | 14 |
 | GLM-5.2 | 27 | 1 | 0 | 2 | 20 |
 | Grok 4.3 | 21 | 0 | 1 | 0 | 28 |
 | DeepSeek V4 Flash | 16 | 2 | 0 | 1 | 31 |
@@ -46,7 +46,7 @@ Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
 
 The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
 
-These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard.
 
 No OpenHands, Claude/Fable, or other reference rows are included.
 
@@ -54,6 +54,56 @@ Grok Build is excluded because repeated transport failures prevented a clean pri
 
 Canonical dual-order artifacts live under
 `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
+
+## Absolute Cross-Model Quality Snapshot
+
+Absolute scores judge one saved response at a time against the fixed rubric;
+the judge sees neither a competitor nor model identity. Hard-gate pass rate
+and quality among passed responses are separate metrics. Sol medium is the
+primary judge; Terra high is an audit judge. Their scores are shown separately
+and are not averaged.
+
+| Model | Role | Hard gate | Sol absolute | Terra audit | Terra - Sol |
+|---|---|---:|---:|---:|---:|
+| GPT-5.6 Sol medium | Primary | 31 / 50 | 97.87 | 97.45 | -0.42 |
+| GPT-5.5 | Historical | 35 / 50 | 97.74 | 97.03 | -0.71 |
+| GLM-5.2 | External | 29 / 50 | 93.17 | 93.34 | +0.17 |
+| Grok 4.3 | External | 22 / 50 | 88.91 | 87.73 | -1.18 |
+| DeepSeek V4 Flash | External | 19 / 50 | 82.32 | 76.05 | -6.27 |
+| DeepSeek V4 Flash thinking | External | 21 / 50 | 89.00 | 84.43 | -4.57 |
+
+Row averages use different passed-case subsets and therefore are not a model
+ranking. Direct model comparisons use only common hard-gate-passed cases and
+are derived from saved absolute scores. They require no additional judge calls:
+
+| Model A | Model B | n | Mean A | Mean B | B - A | A higher / equal / B higher | Direction |
+|---|---|---:|---:|---:|---:|---:|---|
+| GPT-5.6 Sol medium | GPT-5.5 | 30 | 97.80 | 97.67 | -0.13 | 10 / 10 / 10 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | GLM-5.2 | 25 | 97.72 | 93.88 | -3.84 | 17 / 7 / 1 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | Grok 4.3 | 20 | 97.75 | 89.30 | -8.45 | 15 / 2 / 3 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | DeepSeek V4 Flash | 18 | 97.61 | 82.67 | -14.94 | 16 / 1 / 1 | GPT-5.6 Sol medium |
+| GPT-5.6 Sol medium | DeepSeek V4 Flash thinking | 19 | 97.79 | 88.68 | -9.11 | 16 / 0 / 3 | GPT-5.6 Sol medium |
+| GPT-5.5 | GLM-5.2 | 28 | 97.64 | 93.04 | -4.60 | 19 / 6 / 3 | GPT-5.5 |
+| GPT-5.5 | Grok 4.3 | 21 | 97.71 | 88.76 | -8.95 | 16 / 4 / 1 | GPT-5.5 |
+| GPT-5.5 | DeepSeek V4 Flash | 19 | 97.58 | 82.32 | -15.26 | 17 / 1 / 1 | GPT-5.5 |
+| GPT-5.5 | DeepSeek V4 Flash thinking | 20 | 97.70 | 88.65 | -9.05 | 15 / 4 / 1 | GPT-5.5 |
+| GLM-5.2 | Grok 4.3 | 20 | 93.00 | 88.00 | -5.00 | 13 / 3 / 4 | GLM-5.2 |
+| GLM-5.2 | DeepSeek V4 Flash | 18 | 91.83 | 81.56 | -10.27 | 13 / 2 / 3 | GLM-5.2 |
+| GLM-5.2 | DeepSeek V4 Flash thinking | 18 | 93.39 | 88.39 | -5.00 | 13 / 1 / 4 | GLM-5.2 |
+| Grok 4.3 | DeepSeek V4 Flash | 14 | 87.43 | 85.43 | -2.00 | 7 / 3 / 4 | Grok 4.3 |
+| Grok 4.3 | DeepSeek V4 Flash thinking | 15 | 88.07 | 90.53 | +2.46 | 5 / 2 / 8 | DeepSeek V4 Flash thinking |
+| DeepSeek V4 Flash | DeepSeek V4 Flash thinking | 16 | 84.19 | 87.69 | +3.50 | 7 / 1 / 8 | DeepSeek V4 Flash thinking |
+
+Sol and Terra agree on all 15 aggregate pair directions. They differ on 96 of
+301 pair-case score relations. This is reported as judge sensitivity, not
+combined into one score. No global leaderboard or rank is computed.
+
+Canonical JSON and Markdown artifacts live under
+`.eval-results/blinded-model-absolute-v1/canonical/`. Frozen provenance:
+instructions SHA-256
+`8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
+cases SHA-256
+`aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
 
 ## 50-Case Refresh Snapshot
 

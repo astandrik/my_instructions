@@ -12,19 +12,51 @@ metric deltas, conclusions, and caveats.
 
 ## Blinded Six-Model Publication
 
-The current publication covers six clean blinded current-vs-empty model/runner
-pairs and dual-order consensus from
+The current publication covers six clean blinded `With instructions v4.13`
+versus `Empty instructions` model/runner pairs and dual-order consensus from
 `.eval-results/blinded-50-case-v1/dual-order-quality-v2/`.
 
 Fixed dual-order quality judge: `gpt-5.6-sol-medium`.
 
 The GPT-5.6 Sol row uses the same model family as the fixed quality judge; this is instruction-lift evidence, not a cross-model leaderboard.
 
-These are within-runner current-vs-empty instruction comparisons, not a cross-model leaderboard.
+These are within-runner With instructions v4.13 versus Empty instructions comparisons, not a cross-model leaderboard.
 
 No OpenHands, Claude/Fable, or other reference rows are included.
 
 Grok Build is excluded because repeated transport failures prevented a clean primary pair.
+
+## Absolute Cross-Model Quality
+
+The direct model-quality publication uses independent single-response scoring,
+not pairwise judge prompts. Only the 157 saved responses that passed their
+deterministic hard gates are judged. Hard-gate pass rate and quality among
+passed responses are separate metrics.
+
+Sol medium is the primary judge; Terra high is an audit judge. Their scores
+are shown separately and are not averaged. Direct model comparisons use only
+common hard-gate-passed cases and are derived from saved absolute scores. They
+require no additional model calls. No global leaderboard or rank is computed.
+
+Canonical artifacts live under
+`.eval-results/blinded-model-absolute-v1/canonical/`:
+
+- `.eval-results/blinded-model-absolute-v1/canonical/sol-absolute.json`
+- `.eval-results/blinded-model-absolute-v1/canonical/terra-absolute.json`
+- `.eval-results/blinded-model-absolute-v1/canonical/sol-terra-audit.json`
+
+Reproduce or validate the ignored artifacts with:
+
+```bash
+python3 -B scripts/run_model_absolute_quality.py plan --judge sol
+python3 -B scripts/run_model_absolute_quality.py plan --judge terra
+python3 -B scripts/aggregate_model_absolute_quality.py --check
+```
+
+The frozen instruction SHA-256 is
+`8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
+the cases SHA-256 is
+`aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
 
 ## Static gate
 
