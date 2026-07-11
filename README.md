@@ -66,6 +66,10 @@ among passed responses are separate metrics. Sol medium is the primary judge;
 Terra high is an audit judge. Their scores are shown separately and are not
 averaged.
 
+![Absolute model quality](docs/assets/readme/model-quality-absolute.svg)
+![Common-case model quality](docs/assets/readme/model-quality-common-cases.svg)
+![Sol versus Terra judge audit](docs/assets/readme/model-quality-judge-audit.svg)
+
 | Model | Role | Hard gate | Sol absolute | Terra audit | Terra - Sol |
 |---|---|---:|---:|---:|---:|
 | GPT-5.6 Sol medium | Primary | 31 / 50 | 97.87 | 97.45 | -0.42 |
@@ -107,10 +111,6 @@ SHA-256 is
 `8231accdef06c98b97468981b8c494a6f361e5f59188b8a4371521f77334f980`;
 the 50-case catalog SHA-256 is
 `aadd849f038d5dbc733a2b715b72a4c3f844df49e0d37c6df8bb0bb6c31fbdb6`.
-
-![Absolute model quality](docs/assets/readme/model-quality-absolute.svg)
-![Common-case model quality](docs/assets/readme/model-quality-common-cases.svg)
-![Sol versus Terra judge audit](docs/assets/readme/model-quality-judge-audit.svg)
 
 ## Historical Evidence
 

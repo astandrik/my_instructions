@@ -1725,6 +1725,21 @@ class CheckPublishedEvalMetricsTests(unittest.TestCase):
 
         self.assertEqual(missing, ["model-transfer.svg"])
 
+    def test_readme_places_absolute_quality_graphs_before_the_first_table(self):
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        section_start = readme.index("## Absolute Cross-Model Quality")
+        section_end = readme.index("\n## ", section_start + 1)
+        section = readme[section_start:section_end]
+        first_table = section.index("| Model | Role |")
+
+        for name in (
+            "model-quality-absolute.svg",
+            "model-quality-common-cases.svg",
+            "model-quality-judge-audit.svg",
+        ):
+            with self.subTest(name=name):
+                self.assertLess(section.index(f"docs/assets/readme/{name}"), first_table)
+
     def test_forbidden_publication_overclaims_reports_variant_phrases(self):
         module = load_script()
 
