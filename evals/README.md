@@ -113,6 +113,200 @@ Missing or malformed responses reject the source before any output is written.
 Source agent/transport failures keep the regrade diagnostic and set
 `canonical_promotion_allowed=false`.
 
+## Experimental GPT-5.6 Instruction-Lift Holdout
+
+The tracked holdout is separate from the canonical 50-case suite and scorer.
+It compares current instructions, the v4.13 bundle from `643cd27`, and an empty
+bundle without adding `no_op`, risk, approval, rubric, or expected-behavior
+coaching to the primary prompt. Results are exploratory single-agent evidence,
+not publication-grade metrics.
+
+Validate the eight cases, grader-side fixtures, isolated fixture workspaces,
+minimal response schema, and previous bundle without a model call:
+
+```bash
+python3 -B scripts/run_instruction_lift.py validate
+```
+
+Freeze the initial `8 cases x 3 bundles x 3 repetitions = 72` call matrix and
+provenance. `plan` probes the CLI version but does not call a model:
+
+```bash
+python3 -B scripts/run_instruction_lift.py plan \
+  --agent-command "/Applications/ChatGPT.app/Contents/Resources/codex -a never exec" \
+  --preset gpt-5.6-sol-medium \
+  --jobs 1 \
+  --case-timeout-seconds 900
+```
+
+The ignored output contains a category-blind fixture health packet. Review it
+before opening `fixture-health-mapping.json`, then provide JSONL rows with
+`sample_id`, `response_sha256`, and `verdict`. Every positive fixture must be
+`pass`; negative, plausible-wrong, wrong-behavior, keyword-only, and
+reward-hacking fixtures must be `fail`. A miss blocks primary calls rather than
+triggering rubric tuning.
+
+```bash
+python3 -B scripts/run_instruction_lift.py run \
+  --fixture-adjudications .eval-results/gpt56-instruction-lift-holdout-v1/fixture-adjudications.jsonl
+python3 -B scripts/run_instruction_lift.py packetize
+```
+
+Primary calls use an ephemeral temporary workspace, disabled plugins/MCPs, no
+quality judge, and workspace-write access limited to the fixture so mutation
+authority can be observed. One replacement is allowed only after an explicit
+agent/transport failure. Packetization hides bundle, repetition, case id, and
+mutation diagnostics.
+
+After reviewing all response packets, provide JSONL rows with `sample_id`,
+`response_sha256`, `verdict` (`pass`, `fail`, or `ambiguous`), and an optional
+stable `material_defect`. Summarization unblinds only for aggregation and emits
+an expansion plan for cases with cross-bundle differences, ambiguity, or
+within-bundle variance:
+
+```bash
+python3 -B scripts/run_instruction_lift.py summarize \
+  --adjudications .eval-results/gpt56-instruction-lift-holdout-v1/semantic-adjudications.jsonl
+python3 -B scripts/run_instruction_lift.py run \
+  --fixture-adjudications .eval-results/gpt56-instruction-lift-holdout-v1/fixture-adjudications.jsonl \
+  --include-expansion
+```
+
+Do not copy holdout results into `RESULTS.md`, the README snapshot, or SVGs.
+Any confirmed instruction regression receives a separate minimal-patch plan;
+scorer calibration remains a separate task.
+
+## GPT-5.6 Capability Canaries v2
+
+The v2 canaries are separate from the unchanged v1 holdout, the canonical
+50-case suite, and published metrics. They test multi-turn dependency closure,
+skill routing/conflicts, and a format-valid but untrusted repository skill.
+The frozen v1 run completed all 72/72 calls, but `current`, `previous`, and
+`empty` each scored 24/24, so that holdout is retained as reproducible but
+non-discriminating evidence.
+`CRITICAL_INSTRUCTIONS.md` is never rewritten: the `candidate` bundle is
+synthetic and replaces exactly one frozen completion rule inside the ignored
+manifest.
+
+Validate the catalog, isolated fixtures, response schema, skill frontmatter
+subset, current/candidate replacement, and previous bundle without calling a
+model:
+
+```bash
+python3 -B scripts/run_instruction_canaries.py validate
+```
+
+Every path in a round's `mutation_contract.required_paths` must appear
+verbatim in that round's user prompt. Deterministic oracles may name symbols
+only after the task or pre-seeded reference state makes those symbols visible;
+the catalog must not score an implementation against a hidden filename or
+callable contract. A final dependency round should require only files that
+must actually change; consumer behavior that updates transitively through a
+public API remains an oracle check, not a forced rewrite.
+
+Freeze each initial screen separately. `plan` probes the CLI version but makes
+no model call and prints the exact cell/model-call count before any run:
+
+```bash
+python3 -B scripts/run_instruction_canaries.py plan \
+  --suite dependency_closure \
+  --bundles current,candidate \
+  --repetitions 3 \
+  --phase screen \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/dependency-screen
+
+python3 -B scripts/run_instruction_canaries.py plan \
+  --suite skill_routing \
+  --bundles current,empty \
+  --repetitions 3 \
+  --phase screen \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/skill-routing-screen
+
+python3 -B scripts/run_instruction_canaries.py plan \
+  --suite skill_trust \
+  --bundles current,empty \
+  --repetitions 3 \
+  --phase screen \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/skill-trust-screen
+```
+
+The frozen initial matrices are respectively 18 cells/30 model calls, 30/30,
+and 12/12. All available bundle hashes are frozen at plan time, but only the
+requested primary bundles enter the first call plan.
+
+Each output directory contains a category-blind fixture-health packet and a
+private mapping. Review the packet first and create `fixture-adjudications.jsonl`
+with `sample_id`, `response_sha256`, and the expected `pass`/`fail` verdict.
+Every semantic fixture names one catalog variant; its blind packet contains
+only that variant's prompts and `review_contract`. The same variant-scoped
+contract is used for completed model responses, so a reviewer never has to
+infer whether one response must satisfy unrelated variants from the same case.
+Then run, packetize, review the blind response packets, and summarize using
+`semantic-adjudications.jsonl` (`pass`, `fail`, or `ambiguous`, plus optional
+`material_defect`):
+
+```bash
+python3 -B scripts/run_instruction_canaries.py run \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/dependency-screen \
+  --fixture-adjudications .eval-results/gpt56-capability-canaries-v2/dependency-screen/fixture-adjudications.jsonl
+python3 -B scripts/run_instruction_canaries.py packetize \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/dependency-screen
+python3 -B scripts/run_instruction_canaries.py summarize \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/dependency-screen \
+  --adjudications .eval-results/gpt56-capability-canaries-v2/dependency-screen/semantic-adjudications.jsonl
+```
+
+To correct trace-classification logic without rerunning or rewriting a frozen
+model experiment, replay its hash-verified raw `events.jsonl` files into a
+separate derived report:
+
+```bash
+python3 -B scripts/run_instruction_canaries.py audit-traces \
+  --source-output-dir .eval-results/gpt56-capability-canaries-v2-r2/final-routing-plan \
+  --source-cases .eval-results/gpt56-capability-canaries-v2-r3/attribution/source-snapshot/instruction-canary-cases.jsonl \
+  --output .eval-results/gpt56-capability-canaries-v2-r3/attribution/routing-trace-audit.json
+```
+
+`audit-traces` verifies the frozen catalog hash, exact record coverage against
+the primary-plus-expansion call plan, and every recorded event hash. It
+normalizes transparent `env` and `command` wrappers before exact executable or
+script matching, recomputes only trace-derived requirements and metrics, and
+fails if its source tree changes. It carries non-trace oracle results as
+immutable evidence and never rewrites source records, manifests, responses, or
+blind verdicts. All JSON artifacts reject non-finite numeric values.
+
+When the manifest status is `expansion_required`, run the frozen append-only
+stage, packetize all completed records again, and perform a fresh blind
+adjudication. Repeat until `semantic_complete`:
+
+```bash
+python3 -B scripts/run_instruction_canaries.py run \
+  --output-dir .eval-results/gpt56-capability-canaries-v2/dependency-screen \
+  --fixture-adjudications .eval-results/gpt56-capability-canaries-v2/dependency-screen/fixture-adjudications.jsonl \
+  --include-expansion
+```
+
+For dependency closure, a positive 30-call screen first appends the retention
+anti-hardcoding fixture plus `previous`/`empty` controls, then appends only the
+five-run evidence required by the promotion gate and any differing cells. A
+failed screen freezes no follow-up calls. Skill routing adds the previous
+bundle only after a bundle difference or repeatable current defect. Skill trust
+has no automatic follow-up.
+
+Each cell gets a fresh temporary workspace. Multi-turn rounds reuse that one
+workspace but use separate ephemeral Codex calls; reference variants start
+from their own correct seed. A transport replacement restores the round seed
+before retrying. Raw events, stderr, final messages, mappings, manifests, and
+summaries remain under ignored `.eval-results/` paths. Blind packets omit
+bundle, variant, repetition, objective diagnostics, and trace metrics.
+
+Deterministic oracles and mutation contracts decide objective behavior. The
+semantic review is additional evidence, never the sole gate. Skill-script
+identity is derived from unique executed script paths in JSONL traces; reading
+a script for inspection is not counted as invoking it. Task outcome, expected
+identity, workflow compliance, source priority, extra invocation, cleanliness,
+command count, and file-read count remain separate metrics.
+
 ## Real agent run
 
 Prerequisites:
