@@ -144,6 +144,29 @@ class InstructionLiftRunnerTests(unittest.TestCase):
         with self.assertRaises(runner.ValidationError):
             runner.validate_manifest_integrity(manifest)
 
+    def test_manifest_progress_marks_completed_expansion_plan(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            manifest_path = output_dir / "manifest.json"
+            manifest = {
+                "status": "expansion_planned",
+                "call_plan": {
+                    "primary": [{"cell_id": "primary-cell"}],
+                    "expansion": [{"cell_id": "expansion-cell"}],
+                },
+            }
+            for cell_id in ["primary-cell", "expansion-cell"]:
+                runner.write_json(
+                    output_dir / "primary" / cell_id / "record.json",
+                    {"status": "complete", "attempts": []},
+                )
+
+            runner.update_manifest_progress(manifest_path, manifest, output_dir)
+
+            self.assertEqual(manifest["status"], "expansion_complete")
+
     def test_artifact_hash_verification_rejects_drift(self):
         runner = load_runner()
 

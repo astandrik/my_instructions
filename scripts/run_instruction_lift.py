@@ -925,7 +925,7 @@ def update_manifest_progress(manifest_path: Path, manifest: dict[str, Any], outp
     }
     planned_total = len(manifest["call_plan"]["primary"]) + len(manifest["call_plan"].get("expansion", []))
     if manifest["progress"]["complete"] == planned_total:
-        manifest["status"] = "primary_complete"
+        manifest["status"] = "expansion_complete" if manifest["call_plan"].get("expansion") else "primary_complete"
     write_json(manifest_path, manifest)
 
 
