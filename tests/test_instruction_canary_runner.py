@@ -869,6 +869,15 @@ class InstructionCanaryRunnerTests(unittest.TestCase):
                 runner.write_json(output, {"value": float("inf")})
             self.assertFalse(output.exists())
 
+    def test_file_hashing_reports_missing_inputs_as_validation_errors(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "missing.json"
+
+            with self.assertRaisesRegex(runner.ValidationError, "cannot hash file"):
+                runner.file_sha256(path)
+
     def test_response_schema_and_neutral_prompt_do_not_coach_the_agent(self):
         runner = load_runner()
         schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))

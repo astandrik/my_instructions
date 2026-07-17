@@ -166,6 +166,32 @@ class InstructionLiftRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(runner.ValidationError, "cannot hash file"):
                 runner.file_sha256(path)
 
+    def test_plan_freezes_only_instruction_lift_dependencies(self):
+        runner = load_runner()
+        parser = runner.build_parser()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "lift"
+            args = parser.parse_args(
+                [
+                    "--repo-root",
+                    str(REPO_ROOT),
+                    "plan",
+                    "--repetitions",
+                    "1",
+                    "--agent-command",
+                    sys.executable,
+                    "--output-dir",
+                    str(output_dir),
+                ]
+            )
+
+            result = runner.command_plan(args)
+            manifest = json.loads((output_dir / "manifest.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(result, 0)
+            self.assertEqual(set(manifest["inputs"]["frozen_files"]), {"instructions", "presets"})
+
     def test_write_json_rejects_non_finite_values(self):
         runner = load_runner()
 

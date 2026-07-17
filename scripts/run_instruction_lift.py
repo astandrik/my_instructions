@@ -789,8 +789,6 @@ def command_plan(args: argparse.Namespace) -> int:
         "inputs": {
             "frozen_files": {
                 "instructions": {"path": str(INSTRUCTION_PATH), "sha256": file_sha256(repo_root / INSTRUCTION_PATH)},
-                "canonical_cases": {"path": "evals/cases.jsonl", "sha256": file_sha256(repo_root / "evals/cases.jsonl")},
-                "canonical_scorer": {"path": "scripts/run_instruction_evals.py", "sha256": file_sha256(repo_root / "scripts/run_instruction_evals.py")},
                 "presets": {"path": str(presets_path.relative_to(repo_root)), "sha256": file_sha256(presets_path)},
             },
             "holdout_cases": {"path": str(cases_path.relative_to(repo_root)), "sha256": file_sha256(cases_path)},

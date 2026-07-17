@@ -1426,7 +1426,11 @@ def resolve_repo_path(repo_root: Path, path: Path) -> Path:
 
 
 def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        raise ValidationError(f"cannot hash file {path}: {exc}") from exc
+    return hashlib.sha256(raw).hexdigest()
 
 
 def tree_sha256(root: Path) -> str:
