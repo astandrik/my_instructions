@@ -82,7 +82,11 @@ def sha256_text(value: str) -> str:
 
 
 def file_sha256(path: Path) -> str:
-    return sha256_bytes(path.read_bytes())
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        raise ValidationError(f"cannot hash file {path}: {exc}") from exc
+    return sha256_bytes(raw)
 
 
 def canonical_json(value: Any) -> str:
@@ -101,9 +105,19 @@ def verify_artifact_hash(path: Path, expected_sha256: str, label: str) -> None:
 
 
 def write_json(path: Path, value: Any) -> None:
+    try:
+        serialized = json.dumps(
+            value,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            allow_nan=False,
+        ) + "\n"
+    except (TypeError, ValueError) as exc:
+        raise ValidationError(f"cannot write strict JSON {path}: {exc}") from exc
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    temporary.write_text(serialized, encoding="utf-8")
     temporary.replace(path)
 
 
@@ -134,11 +148,14 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+    try:
+        serialized = "".join(
+            json.dumps(row, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n" for row in rows
+        )
+    except (TypeError, ValueError) as exc:
+        raise ValidationError(f"cannot write strict JSONL {path}: {exc}") from exc
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows),
-        encoding="utf-8",
-    )
+    path.write_text(serialized, encoding="utf-8")
 
 
 def require_string(value: Any, label: str) -> str:
@@ -361,7 +378,7 @@ def snapshot_tree(root: Path, ignored_paths: set[str] | None = None) -> dict[str
         if not path.is_file() or path.is_symlink():
             continue
         relative = path.relative_to(root).as_posix()
-        if relative in ignored or relative.startswith(".git/"):
+        if relative in ignored or relative.startswith(".git/") or "__pycache__" in path.parts:
             continue
         raw = path.read_bytes()
         try:

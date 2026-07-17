@@ -157,6 +157,37 @@ class InstructionLiftRunnerTests(unittest.TestCase):
             with self.assertRaises(runner.ValidationError):
                 runner.verify_artifact_hash(path, expected, "mapping")
 
+    def test_file_hashing_reports_missing_inputs_as_validation_errors(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "missing.json"
+
+            with self.assertRaisesRegex(runner.ValidationError, "cannot hash file"):
+                runner.file_sha256(path)
+
+    def test_write_json_rejects_non_finite_values(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "strict.json"
+
+            with self.assertRaises(runner.ValidationError):
+                runner.write_json(output, {"value": float("inf")})
+
+            self.assertFalse(output.exists())
+
+    def test_write_jsonl_rejects_non_finite_values(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "strict.jsonl"
+
+            with self.assertRaises(runner.ValidationError):
+                runner.write_jsonl(output, [{"value": float("nan")}])
+
+            self.assertFalse(output.exists())
+
     def test_tree_diff_reports_created_changed_and_deleted_files(self):
         runner = load_runner()
 
@@ -175,6 +206,27 @@ class InstructionLiftRunnerTests(unittest.TestCase):
             self.assertEqual(delta["created"], ["created.txt"])
             self.assertEqual(delta["changed"], ["changed.txt"])
             self.assertEqual(delta["deleted"], ["deleted.txt"])
+
+    def test_snapshot_tree_ignores_python_bytecode_cache(self):
+        runner = load_runner()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "module.py").write_text("VALUE = 1\n", encoding="utf-8")
+            before = runner.snapshot_tree(root)
+            cache = root / "__pycache__"
+            cache.mkdir()
+            (cache / "module.cpython-314.pyc").write_bytes(b"bytecode")
+            after = runner.snapshot_tree(root)
+
+            delta = runner.diff_tree_snapshots(before, after)
+            diagnostic = runner.mutation_diagnostic(
+                {"mode": "forbidden", "required_paths": [], "forbidden_paths": []},
+                delta,
+            )
+
+            self.assertEqual(delta, {"created": [], "changed": [], "deleted": []})
+            self.assertTrue(diagnostic["passed"])
 
     def test_transport_failure_gets_one_replacement(self):
         runner = load_runner()
