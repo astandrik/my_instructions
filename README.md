@@ -294,3 +294,10 @@ for benchmark evidence.
   approved.
 - For meaningful instruction changes, update eval cases and rerun the smallest
   evidence chain that proves the intended behavior.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Files under `evals/references/` are third-party
+reference material and are not covered by this license; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
+`evals/reference-instructions.json` for their sources and licenses.
