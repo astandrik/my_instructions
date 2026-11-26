@@ -307,6 +307,28 @@ a script for inspection is not counted as invoking it. Task outcome, expected
 identity, workflow compliance, source priority, extra invocation, cleanliness,
 command count, and file-read count remain separate metrics.
 
+## Record-packet fixture
+
+The [packet server](fixture-mcp/records_tool.py) advertises the evaluated
+`read_record` description by default. Configure the eval client's stdio MCP
+server to launch the following command from the repository root.
+
+```bash
+python3 -I -B evals/fixture-mcp/records_tool.py .eval-results/record-demo --case operation-read
+```
+
+`--case` loads only the records from one of the [nine acceptance tasks](read-record-cases.json)
+or the two `read_record` cases in the [control catalog](section4-read-record-controls.json).
+Supply the case's `prompt` to the model in an isolated workspace. A separate
+packet directory per session keeps the observation logs independent.
+
+For a custom packet, run `python3 -I -B evals/fixture-mcp/records_tool.py PACKET_DIR`.
+Provide `PACKET_DIR/packet.json` as an object mapping each reference to a
+non-empty list of checkpoints. Successive reads advance that reference and
+repeat its last checkpoint once the list is exhausted. Tool discovery appends
+the advertised schema hash to `schema.jsonl`. Calls append their observed
+value, error flag, and argument and result hashes to `observations.jsonl`.
+
 ## Real agent run
 
 Prerequisites:

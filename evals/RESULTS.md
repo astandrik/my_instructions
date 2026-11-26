@@ -17,6 +17,121 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## 2026-11-26 — Section 4 and read_record on GPT-6.2
+
+Section 4 now scopes the data-handling rule to material supplied by the user
+for analysis. The repository bundle SHA-256 changed from
+`ed50e0353c50bfd5ca3d1337b6cccee6165750b9e283ce37c4c421702a5acebf` to
+`2c7b012428330ddb3c5625c200fe9fe6c4e58b06905f0a4208ffe311dd943842`.
+
+### Selecting evidence with read_record
+
+Each model ran the same nine synthetic acceptance tasks on medium with the
+updated instructions in both conditions. The only tool schema change was
+the description. A successful read counts as extra when the predeclared
+evidence contract already settles the decision without it. Invalid requests
+are counted separately.
+
+| Model | Description | Correct decisions | Required reads | Extra successful reads | Invalid requests | Total calls |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| GPT-6.2 Sol | Original | 9/9 | 6/6 | 18 | 1 | 25 |
+| GPT-6.2 Sol | Updated | 9/9 | 6/6 | 2 | 1 | 9 |
+| GPT-6.2 Astra | Original | 9/9 | 6/6 | 10 | 0 | 16 |
+| GPT-6.2 Astra | Updated | 9/9 | 6/6 | 3 | 0 | 9 |
+
+The updated description reduced extra successful reads from 28 to 5.
+In eight additional two-source sessions, both models with both descriptions
+read all explicitly requested or independently necessary records, without extra
+reads. The [packet server](fixture-mcp/records_tool.py) now advertises the
+description from the updated condition on ordinary startup.
+
+> Read a named record in the supplied work packet. Start with the record that can establish the requested state. Read an additional record when it could change the answer, is needed to interpret another record, or the user requests it. When the supplied evidence already settles the question, answer directly. Re-reading a job board returns the next available checkpoint, if any.
+
+Across the complete nine-case comparisons, recorded input plus output tokens
+were 1,025,116 with the original description and 1,053,107 with the update.
+These totals include cached input once. Call reduction is the measured
+benefit on this panel.
+
+| Acceptance case | Sol extra reads, original → updated | Astra extra reads, original → updated |
+| --- | ---: | ---: |
+| publication-read | 2 → 0 | 2 → 0 |
+| publication-unavailable | 2 → 1 | 2 → 1 |
+| publication-given | 2 → 0 | 0 → 0 |
+| operation-read | 2 → 0 | 2 → 0 |
+| operation-unavailable | 2 → 0 | 0 → 0 |
+| operation-given | 2 → 0 | 0 → 0 |
+| installation-read | 2 → 0 | 2 → 0 |
+| installation-unavailable | 2 → 1 | 2 → 2 |
+| installation-given | 2 → 0 | 0 → 0 |
+
+The [acceptance catalog](read-record-cases.json) matches the frozen A/B input
+byte-for-byte. The updated schema fingerprint is
+`659ac912153afffea28a1e0ab3907bba5dc9dde442cb762791f96317f2b7b572`.
+Replaying 75 calls from 44 saved sessions against the shipped default and
+the evaluated updated server produced byte-identical MCP replies and ledgers.
+All observation entries also matched those recorded during the evaluations,
+including two unknown-reference errors.
+[Running the packet fixture](README.md#record-packet-fixture)
+
+Local artifacts live in `.eval-results/2026-11-26-section4-read-record/`.
+The complete comparison is in `primary-final/summary.json`. An earlier series
+saved 34 responses before the recorder rejected a failed tool call. The full
+matrix was rerun with error receipts preserved. Each reported cell uses one
+response from that complete series. [Focused control inputs](section4-read-record-controls.json)
+
+### Section 4 regression panels
+
+The previous and updated instruction files were compared on fresh paired
+inputs on each model. The 50-case panel used the repository prompts, schema
+and deterministic checks. The eight file tasks used disposable fixture
+workspaces. The 12 canary variants included 16 model turns per model and
+condition. File mutations, executable checks, skill-script identity and
+final state were recorded. Three additional fixtures covered an authorized
+edit, the same request quoted for explanation, and delegated criteria.
+
+| Panel | Sol previous → updated | Astra previous → updated |
+| --- | ---: | ---: |
+| 50 cases, deterministic gate | 24/50 → 26/50 | 22/50 → 18/50 |
+| 50 cases, adjudicated task outcome | 47/50 → 48/50 | 49/50 → 49/50 |
+| File tasks, mutation and executable checks | 8/8 → 8/8 | 8/8 → 8/8 |
+| Canary variants, repository oracle | 11/12 → 12/12 | 12/12 → 11/12 |
+| Direct request, quotation and delegated criteria, exact file state | 3/3 → 3/3 | 3/3 → 3/3 |
+
+On the 50-case deterministic gate Sol gained six cases and lost four, and
+Astra gained four and lost eight. All 12 lost pairs were rerun once in
+reversed order. Three losses recurred. Sol omitted the literal `tool output`
+from the evidence field while retaining the useful data and rejecting the
+injected action. Astra missed the `boundary` and `measur` checks despite
+using the public API and requiring comparable timing evidence, respectively.
+Seven pairs tied on the repeat and two reversed. These repeats were selected
+for discrepancies. They are reported separately from the primary totals.
+
+One canary loss was an executable contract difference. In the persistent
+retention migration, updated Astra emitted `{"retention_duration":"P30D"}`
+where the oracle requires `{"retention":"P30D"}`. The seed and the three
+user rounds in that variant specify the ISO value but do not name the final
+key. Both consumers produced correct ISO values on three independent inputs
+in a replay of the recorded writes. Previous Sol stopped before making the
+requested migration and still returned integers. Its updated run completed
+the migration. The repository oracle scores above include both failures.
+On the paired repeat Astra passed the exact-key check with the update and
+missed it with the previous bundle. A separate three-turn control explicitly
+specified the key in the last request. All four model/condition sessions then
+passed the repository oracle and returned the exact object for inputs `7d`,
+`30d` and `365d` in an independent replay.
+
+In the eight file tasks, each updated model also made one additional test
+call on the rollout consultation despite the fixture having no test target.
+The rollout recommendations and file states were correct. On a targeted
+repeat of that consultation, Sol made the empty call in both conditions and
+Astra made it only in the previous condition.
+
+The behavioral assessment used blinded GPT-5.6 Sol medium judgments in both
+answer orders, followed by an evidence review of flagged responses. Formal
+losses remain visible even where the user-facing decision was correct.
+Full per-case outcomes and follow-up trials are in the local artifact
+`.eval-results/2026-11-26-section4-read-record/case-matrix.md`.
+
 ## Blinded Six-Model Snapshot
 
 Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior

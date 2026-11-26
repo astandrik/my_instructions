@@ -16,6 +16,26 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-11-26 — Clarify Section 4 and test read_record evidence selection
+
+- Replaced `user input` with `material supplied by the user for analysis`
+  in §4 of the global bundle. Added five [focused control cases](section4-read-record-controls.json).
+- With the updated §4 in both tool conditions, extra successful reads fell
+  from 18 to 2 for GPT-6.2 Sol and from 10 to 3 for GPT-6.2 Astra. Both
+  descriptions preserved all required reads and all nine decisions per model.
+  The [record-packet fixture](README.md#record-packet-fixture) now serves
+  the evaluated description by default.
+- On the paired 50-case panel the deterministic scores moved from 24 to 26
+  for Sol and from 22 to 18 for Astra. Three of 12 primary gate losses
+  repeated. Adjudicated task outcomes moved from 47 to 48 and from 49 to 49.
+  The file-task matrices passed all executable checks. The separate canary
+  suite had a gain for Sol and a loss for Astra on the persistence field name.
+  Astra's exact-key outcome reversed on repeat. Once the key was explicit
+  in the request both models passed in both conditions.
+- The [full results and limitations](RESULTS.md) include both primary and
+  diagnostic comparisons. Paired receipts, the journal and case matrix are under
+  `.eval-results/2026-11-26-section4-read-record/`.
+
 ## Version Metric Ledger
 
 Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
