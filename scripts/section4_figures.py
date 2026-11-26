@@ -13,6 +13,7 @@ DIRECTORY = "section4-read-record"
 CARD = "overview.png"
 MODELS = ("GPT-6.2 Sol", "GPT-6.2 Astra")
 CONDITIONS = ("Original", "Updated")
+STOP_CONDITIONS = ("Prior default", "Stop rule")
 PANELS = {
     "50 cases, deterministic gate": ("Formal gate", "core", "objective"),
     "50 cases, adjudicated task outcome": ("Adjudicated outcome", "core", "semantic"),
@@ -33,6 +34,20 @@ class Reads(NamedTuple):
     tokens: int
 
 
+class StopArm(NamedTuple):
+    correct: tuple[int, int]
+    required: tuple[int, int]
+    requests: int
+    extra: int
+    cached_input: int
+    uncached_input: int
+    output: int
+
+    @property
+    def tokens(self) -> int:
+        return self.cached_input + self.uncached_input + self.output
+
+
 class Score(NamedTuple):
     previous: int
     updated: int
@@ -43,13 +58,14 @@ class Score(NamedTuple):
         return self.updated - self.previous
 
 
-def add_counts(first: tuple[int, int], second: tuple[int, int]) -> tuple[int, int]:
-    return first[0] + second[0], first[1] + second[1]
+def add_counts(*pairs: tuple[int, int]) -> tuple[int, int]:
+    return sum(n for n, _ in pairs), sum(total for _, total in pairs)
 
 
 class Study(NamedTuple):
     reads: dict[tuple[str, str], Reads]
     panels: dict[str, tuple[Score, Score]]
+    stopping: dict[tuple[str, str], StopArm]
 
     def combined(self, condition: str) -> Reads:
         sol, astra = (self.reads[model, condition] for model in MODELS)
@@ -91,6 +107,26 @@ def score(value: str) -> Score:
     return Score(before[0], after[0], before[1])
 
 
+def stopping_arms(section: str) -> dict[tuple[str, str], StopArm]:
+    arms = {}
+    for row in first_table(section, "Stopping after an unavailable check"):
+        key = (row["Model"], row["Description"])
+        cached, uncached, output, total = (
+            int(row[col].replace(",", "")) for col in ("Cached input", "Uncached input", "Output", "Total tokens")
+        )
+        arm = StopArm(fraction(row["Correct decisions"]), fraction(row["Required reads"]),
+                      int(row["Model requests"]), int(row["Extra reads"]), cached, uncached, output)
+        if (key in arms or arm.requests < arm.correct[1] or min(cached, uncached, output, arm.extra) < 0
+                or total <= 0 or arm.tokens != total):
+            raise ValueError(f"inconsistent stopping-rule row: {key}")
+        arms[key] = arm
+    if set(arms) != {(m, c) for m in MODELS for c in STOP_CONDITIONS}:
+        raise ValueError("incomplete stopping-rule comparison")
+    if len({(a.correct[1], a.required[1]) for a in arms.values()}) != 1:
+        raise ValueError("unmatched stopping-rule sessions or required reads")
+    return arms
+
+
 def load_study(repo_root: Path) -> Study:
     report = (repo_root / "evals/RESULTS.md").read_text(encoding="utf-8")
     heading = "\n## 2026-11-26 — Section 4 and read_record on GPT-6.2\n"
@@ -123,7 +159,7 @@ def load_study(repo_root: Path) -> Study:
         panels[label] = (sol, astra)
     if len(panels) != len(PANELS):
         raise ValueError("incomplete Section 4 comparison")
-    return Study(reads, panels)
+    return Study(reads, panels, stopping_arms(section))
 
 
 def verify_archive(study: Study, archive: Path) -> None:
@@ -149,6 +185,19 @@ def verify_archive(study: Study, archive: Path) -> None:
             r = group[measure][model.lower().replace(" ", "-")]
             if (published.previous, published.updated, published.total * len(MODELS)) != (r["old"], r["new"], pairs):
                 raise ValueError(f"Section 4 table differs from the archive for {label}, {model}")
+
+
+def verify_stopping_archive(study: Study, archive: Path) -> None:
+    totals = json.loads((archive / "metrics.json").read_text(encoding="utf-8"))["by_model"]
+    for model in MODELS:
+        for condition, key in zip(STOP_CONDITIONS, ("current", "stop")):
+            row = totals[model.lower().replace(" ", "-")][key]
+            required = row["fixture_reads"] - row["extra_reads"] - row["invalid_attempts"]
+            observed = StopArm((row["supported"], row["sessions"]), (required, required + row["missing_reads"]),
+                               row["model_requests"], row["extra_reads"], row["cachedInputTokens"],
+                               row["uncachedInputTokens"], row["outputTokens"])
+            if observed != study.stopping[model, condition]:
+                raise ValueError(f"stopping-rule table differs from the archive for {model}, {condition}")
 
 
 def canvas(height: int, title: str, description: str) -> list[str]:
@@ -207,6 +256,43 @@ def render_reads(study: Study, path: Path) -> None:
     write_svg(path, lines)
 
 
+def render_stopping(study: Study, path: Path) -> None:
+    rows = study.stopping
+    description = ". ".join(
+        f"{model}: {rows[model, 'Prior default'].requests} to {rows[model, 'Stop rule'].requests} model requests, "
+        f"{rows[model, 'Prior default'].extra} to {rows[model, 'Stop rule'].extra} extra reads"
+        for model in MODELS
+    )
+    title = "Stopping after an unavailable check"
+    lines = canvas(415, title, description)
+    sessions = rows[MODELS[0], STOP_CONDITIONS[0]].correct[1]
+    lines += [text(40, 61, title, "title"),
+              text(40, 89, f"GPT-6.2 medium  ·  Nine acceptance cases  ·  {sessions} sessions per model and description", "key"),
+              text(40, 135, "Model", "key"), text(114, 135, "Description", "key"),
+              text(250, 135, "Model requests", "model"), text(615, 135, "Extra record reads", "model")]
+    max_requests = max(r.requests for r in rows.values())
+    max_extra = max(1, max(r.extra for r in rows.values()))
+    for index, model in enumerate(MODELS):
+        y0 = 175 + 94 * index
+        lines.append(text(40, y0 + 17, model.split()[-1], "model"))
+        for i, (condition, color) in enumerate(zip(STOP_CONDITIONS, (MUTED, TEAL))):
+            row = rows[model, condition]
+            y = y0 + i * 31
+            lines.append(text(114, y + 5, condition, "key"))
+            for x, value, maximum, width in ((250, row.requests, max_requests, 272), (615, row.extra, max_extra, 240)):
+                end = x + width * value / maximum
+                if value:
+                    lines.append(rect(x, y - 9, end - x, 18, color, rx=3))
+                lines.append(text(end + 9, y + 5, value, "dark"))
+    lines.append(line(40, 331, 920, 331, GRID))
+    for i, model in enumerate(MODELS):
+        prior, stop = (rows[model, c] for c in STOP_CONDITIONS)
+        x = 40 + i * 454
+        lines += [text(x, 358, f"{model.split()[-1]}  ·  Input + output tokens", "key"),
+                  text(x, 387, f"{prior.tokens:,} → {stop.tokens:,}  ({(stop.tokens / prior.tokens - 1) * 100:+.1f}%)", "model")]
+    write_svg(path, lines + ["</svg>"])
+
+
 def render_regression(study: Study, path: Path) -> None:
     descriptions = [
         f"{model} passed {gate.previous} then {gate.updated} formal gates and {outcome.previous} then {outcome.updated} adjudicated tasks out of {gate.total}"
@@ -256,25 +342,22 @@ def render_card(study: Study, path: Path) -> None:
 
     label(48, 37, "GPT-6.2 evaluation results", 42, bold=True)
     label(1152, 50, "26 NOV 2026", 19, color=MUTED, anchor="ra")
-    case_count = study.reads[MODELS[0], "Original"].correct[1]
     label(49, 101, "Paired tests on Sol and Astra at medium reasoning effort", 21, color=MUTED)
     draw.line((48, 153, 1152, 153), fill=GRID, width=2)
     draw.line((566, 183, 566, 531), fill=GRID, width=2)
-    label(48, 181, "read_record description", 28, bold=True)
-    label(48, 226, f"Extra successful reads across {case_count} cases per model", 21, color=MUTED)
-    original, updated = map(study.combined, CONDITIONS)
-    label(48, 263, original.extra, 64, bold=True)
+    label(48, 181, "read_record stopping rule", 28, bold=True)
+    prior, stop = ([study.stopping[m, condition] for m in MODELS] for condition in STOP_CONDITIONS)
+    label(48, 226, f"Extra reads across {prior[0].correct[1]} sessions per model and version", 19, color=MUTED)
+    label(48, 263, sum(r.extra for r in prior), 64, bold=True)
     draw.line((159, 306, 207, 306), fill=MUTED, width=3)
     draw.line([(194, 295), (207, 306), (194, 317)], fill=MUTED, width=3)
-    label(228, 263, updated.extra, 64, color=TEAL, bold=True)
-    label(49, 352, "Original", 19, color=MUTED)
-    label(228, 352, "Updated", 19, color=MUTED)
-    for i, model in enumerate(MODELS):
-        a, b = (study.reads[model, c] for c in CONDITIONS)
+    label(228, 263, sum(r.extra for r in stop), 64, color=TEAL, bold=True)
+    label(49, 352, "Prior default", 19, color=MUTED)
+    label(228, 352, "Stop rule", 19, color=MUTED)
+    for i, (model, a, b) in enumerate(zip(MODELS, prior, stop)):
         label(49, 407 + 37 * i, model, 21)
         label(284, 407 + 37 * i, f"{a.extra} to {b.extra}", 21, color=TEAL, bold=True)
-    delta = (updated.tokens / original.tokens - 1) * 100
-    label(49, 503, f"Input + output tokens   {delta:+.1f}%", 19, color=MUTED)
+    label(49, 503, f"Model requests   {sum(r.requests for r in prior)} to {sum(r.requests for r in stop)}", 19, color=MUTED)
     label(602, 181, "Section 4 wording", 28, bold=True)
     label(602, 226, "Cases passed, previous to updated", 21, color=MUTED)
     label(911, 278, "Sol", 19, bold=True, anchor="ma")
@@ -288,8 +371,10 @@ def render_card(study: Study, path: Path) -> None:
                 color = TEAL if s.delta > 0 else LOSS
             label(x, y, f"{s.previous} to {s.updated}", 21, color=color, anchor="ma")
     draw.line((48, 550, 1152, 550), fill=GRID, width=2)
-    decisions = add_counts(original.correct, updated.correct)
-    label(48, 575, f"Tool comparison   {counts(decisions)} correct decisions   ·   Required reads   {counts(original.required)} original, {counts(updated.required)} updated", 19)
+    decisions = add_counts(*(r.correct for r in prior + stop))
+    required_before = counts(add_counts(*(r.required for r in prior)))
+    required_after = counts(add_counts(*(r.required for r in stop)))
+    label(48, 575, f"Main comparison   {counts(decisions)} correct decisions   ·   Required reads   {required_before} prior, {required_after} with stop rule", 19)
     info = PngImagePlugin.PngInfo()
     info.add_text("Title", "GPT-6.2 evaluation of read_record and Section 4")
     info.add_text("Source", "evals/RESULTS.md, 2026-11-26")
@@ -302,6 +387,10 @@ def build(repo_root: Path, output_dir: Path) -> None:
     archive = repo_root / ".eval-results/2026-11-26-section4-read-record"
     if archive.is_dir():
         verify_archive(study, archive)
-    render_reads(study, output_dir / "record-reads.svg")
+    stop_archive = repo_root / ".eval-results/2026-11-26-read-record-unavailable-full"
+    if stop_archive.is_dir():
+        verify_stopping_archive(study, stop_archive)
+    render_reads(study, output_dir / "initial-selection.svg")
+    render_stopping(study, output_dir / "record-reads.svg")
     render_regression(study, output_dir / "section4-regression.svg")
     render_card(study, output_dir / CARD)

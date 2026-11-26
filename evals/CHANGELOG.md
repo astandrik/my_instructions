@@ -16,6 +16,16 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-11-26 — Stop when an unavailable check leaves no useful follow-up
+
+- Added the stopping sentence to the default `read_record` description. Across
+  nine cases and four paired repeats per model, extra reads fell from 14 to 10
+  on Sol and from 10 to 0 on Astra. All 144 main-panel decisions were correct.
+- Sol waited for the terminal checkpoint without extra reads in all eight
+  fresh `operation-read` pairs, including four additional pairs. Sol still
+  used seven extra reads with either description in `installation-unavailable`.
+  [Full results, token usage and sample sizes](RESULTS.md#stopping-after-an-unavailable-check)
+
 ## 2026-11-26 — Clarify Section 4 and test read_record evidence selection
 
 - Replaced `user input` with `material supplied by the user for analysis`
@@ -23,8 +33,7 @@ tables.
 - With the updated §4 in both tool conditions, extra successful reads fell
   from 18 to 2 for GPT-6.2 Sol and from 10 to 3 for GPT-6.2 Astra. Both
   descriptions preserved all required reads and all nine decisions per model.
-  The [record-packet fixture](README.md#record-packet-fixture) now serves
-  the evaluated description by default.
+  This description became the baseline for the stopping-rule comparison.
 - On the paired 50-case panel the deterministic scores moved from 24 to 26
   for Sol and from 22 to 18 for Astra. Three of 12 primary gate losses
   repeated. Adjudicated task outcomes moved from 47 to 48 and from 49 to 49.

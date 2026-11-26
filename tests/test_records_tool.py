@@ -9,8 +9,8 @@ import unittest
 
 EVALS = Path(__file__).resolve().parents[1] / "evals"
 SERVER = EVALS / "fixture-mcp" / "records_tool.py"
-# Fingerprint advertised by the winning condition in the November 26 evaluation.
-EVALUATED_SCHEMA_SHA = "659ac912153afffea28a1e0ab3907bba5dc9dde442cb762791f96317f2b7b572"
+# Schema served by the stopping-rule arm of the 152-session evaluation.
+EVALUATED_SCHEMA_SHA = "0ff3f5094afcec7332775cda661db7d88286b6864480ed7009a2c4699a21897f"
 
 
 def fingerprint(value):

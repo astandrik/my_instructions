@@ -16,6 +16,8 @@ SCHEMA = {
         "Read an additional record when it could change the answer, is needed "
         "to interpret another record, or the user requests it. "
         "When the supplied evidence already settles the question, answer directly. "
+        "If a required check is unavailable and no remaining record can change "
+        "the conclusion, answer immediately. "
         "Re-reading a job board returns the next available checkpoint, if any."
     ),
     "annotations": {"readOnlyHint": True},

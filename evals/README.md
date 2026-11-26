@@ -310,8 +310,12 @@ command count, and file-read count remain separate metrics.
 ## Record-packet fixture
 
 The [packet server](fixture-mcp/records_tool.py) advertises the evaluated
-`read_record` description by default. Configure the eval client's stdio MCP
-server to launch the following command from the repository root.
+`read_record` description by default. It asks the model to answer immediately
+when a required check is unavailable and no remaining record can change the
+conclusion. [Evaluation on Sol and Astra](RESULTS.md#stopping-after-an-unavailable-check)
+
+Configure the eval client's stdio MCP server to launch the following command
+from the repository root.
 
 ```bash
 python3 -I -B evals/fixture-mcp/records_tool.py .eval-results/record-demo --case operation-read

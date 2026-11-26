@@ -15,9 +15,10 @@ eval harness for checking whether those instructions actually change behavior.
 
 ## GPT-6.2 evidence selection and Section 4
 
-![Extra successful record reads fell from 28 to 5 with 36 of 36 correct decisions. On the Section 4 panel, formal passes rose for Sol and fell for Astra.](docs/assets/readme/section4-read-record/overview.png)
+![The stopping rule reduced extra reads from 14 to 10 on Sol and from 10 to 0 on Astra. All 144 main-panel decisions were correct. The separate Section 4 panel shows mixed formal scores.](docs/assets/readme/section4-read-record/overview.png)
 
-[Tool calls across nine acceptance cases](evals/RESULTS.md#selecting-evidence-with-read_record) ·
+[Stopping-rule results on Sol and Astra](evals/RESULTS.md#stopping-after-an-unavailable-check) ·
+[All nine scenarios and the Sol operation check](evals/RESULTS.md#stopping-rule-by-scenario) ·
 [Section 4 regression results and follow-ups](evals/RESULTS.md#section-4-regression-panels)
 
 ## Blinded Six-Model Evidence

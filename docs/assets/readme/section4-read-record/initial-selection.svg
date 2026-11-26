@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="444" viewBox="0 0 960 444" role="img" aria-labelledby="title desc">
+<title id="title">Extra successful reads fell from 28 to 5</title>
+<desc id="desc">GPT-6.2 Sol extra reads changed from 18 to 2. GPT-6.2 Astra extra reads changed from 10 to 3. Stacked bars also show required reads and invalid requests.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="960" height="444" fill="#f8fafc"/>
+<rect x="12.0" y="12.0" width="936.0" height="420.0" rx="12.0" fill="#ffffff" stroke="#d4dfe5"/>
+<style>.num{font-size:18px;font-weight:700;fill:#162838}.key{font-size:15px;fill:#475d6e}.light{font-size:15px;font-weight:700;fill:white}.dark{font-size:15px;font-weight:700;fill:#162838}.model{font-size:19px;font-weight:700;fill:#162838}</style>
+<text x="40.0" y="61.0" class="title">Extra successful reads fell from 28 to 5</text>
+<text x="40.0" y="89.0" class="key">read_record  ·  GPT-6.2 medium  ·  9 acceptance cases per model  ·  Same Section 4 in both conditions</text>
+<rect x="220.0" y="111.0" width="15.0" height="15.0" rx="3.0" fill="#176e65"/>
+<text x="243.0" y="124.0" class="key">Required</text>
+<rect x="362.0" y="111.0" width="15.0" height="15.0" rx="3.0" fill="#efb665"/>
+<text x="385.0" y="124.0" class="key">Extra successful</text>
+<rect x="571.0" y="111.0" width="15.0" height="15.0" rx="3.0" fill="#73598d"/>
+<text x="594.0" y="124.0" class="key">Invalid request</text>
+<text x="40.0" y="153.0" class="key">Model</text>
+<text x="125.0" y="153.0" class="key">Description</text>
+<text x="220.0" y="153.0" class="key">Tool calls</text>
+<text x="911.0" y="153.0" class="key" text-anchor="end">Total</text>
+<line x1="220.0" y1="164.0" x2="220.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="220.0" y="343.0" class="key" text-anchor="middle">0</text>
+<line x1="341.0" y1="164.0" x2="341.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="341.0" y="343.0" class="key" text-anchor="middle">5</text>
+<line x1="462.0" y1="164.0" x2="462.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="462.0" y="343.0" class="key" text-anchor="middle">10</text>
+<line x1="583.0" y1="164.0" x2="583.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="583.0" y="343.0" class="key" text-anchor="middle">15</text>
+<line x1="704.0" y1="164.0" x2="704.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="704.0" y="343.0" class="key" text-anchor="middle">20</text>
+<line x1="825.0" y1="164.0" x2="825.0" y2="321.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="825.0" y="343.0" class="key" text-anchor="middle">25</text>
+<text x="40.0" y="205.0" class="model">Sol</text>
+<text x="125.0" y="190.0" class="key">Original</text>
+<text x="911.0" y="191.0" class="num" text-anchor="end">25</text>
+<rect x="220.0" y="173.0" width="145.2" height="24.0" rx="0.0" fill="#176e65"/>
+<text x="292.6" y="190.0" class="light" text-anchor="middle">6</text>
+<rect x="365.2" y="173.0" width="435.6" height="24.0" rx="0.0" fill="#efb665"/>
+<text x="583.0" y="190.0" class="dark" text-anchor="middle">18</text>
+<rect x="800.8" y="173.0" width="24.2" height="24.0" rx="0.0" fill="#73598d"/>
+<text x="812.9" y="190.0" class="light" text-anchor="middle">1</text>
+<text x="125.0" y="224.0" class="key">Updated</text>
+<text x="911.0" y="225.0" class="num" text-anchor="end">9</text>
+<rect x="220.0" y="207.0" width="145.2" height="24.0" rx="0.0" fill="#176e65"/>
+<text x="292.6" y="224.0" class="light" text-anchor="middle">6</text>
+<rect x="365.2" y="207.0" width="48.4" height="24.0" rx="0.0" fill="#efb665"/>
+<text x="389.4" y="224.0" class="dark" text-anchor="middle">2</text>
+<rect x="413.6" y="207.0" width="24.2" height="24.0" rx="0.0" fill="#73598d"/>
+<text x="425.7" y="224.0" class="light" text-anchor="middle">1</text>
+<text x="40.0" y="294.0" class="model">Astra</text>
+<text x="125.0" y="279.0" class="key">Original</text>
+<text x="911.0" y="280.0" class="num" text-anchor="end">16</text>
+<rect x="220.0" y="262.0" width="145.2" height="24.0" rx="0.0" fill="#176e65"/>
+<text x="292.6" y="279.0" class="light" text-anchor="middle">6</text>
+<rect x="365.2" y="262.0" width="242.0" height="24.0" rx="0.0" fill="#efb665"/>
+<text x="486.2" y="279.0" class="dark" text-anchor="middle">10</text>
+<text x="125.0" y="313.0" class="key">Updated</text>
+<text x="911.0" y="314.0" class="num" text-anchor="end">9</text>
+<rect x="220.0" y="296.0" width="145.2" height="24.0" rx="0.0" fill="#176e65"/>
+<text x="292.6" y="313.0" class="light" text-anchor="middle">6</text>
+<rect x="365.2" y="296.0" width="72.6" height="24.0" rx="0.0" fill="#efb665"/>
+<text x="401.5" y="313.0" class="dark" text-anchor="middle">3</text>
+<line x1="40.0" y1="360.0" x2="920.0" y2="360.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="40.0" y="387.0" class="dark">36/36 correct decisions. Required reads completed   12/12 original, 12/12 updated.</text>
+<text x="40.0" y="414.0" class="key">Input + output tokens   1,025,116 → 1,053,107  (+2.7%, cached input included once).</text>
+</svg>

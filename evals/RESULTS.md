@@ -24,6 +24,69 @@ for analysis. The repository bundle SHA-256 changed from
 `ed50e0353c50bfd5ca3d1337b6cccee6165750b9e283ce37c4c421702a5acebf` to
 `2c7b012428330ddb3c5625c200fe9fe6c4e58b06905f0a4208ffe311dd943842`.
 
+### Stopping after an unavailable check
+
+The [packet server](fixture-mcp/records_tool.py) adds the following sentence
+to the prior evidence-selection description.
+
+> If a required check is unavailable and no remaining record can change the conclusion, answer immediately.
+
+Sol and Astra ran the same nine acceptance cases on medium, with the same
+Section 4, records and tool implementation. Each model ran four fresh pairs
+per case, with each description going first twice. The table covers 144
+sessions. A model request is one completed model response, including steps
+without tool calls. An extra read is a successful call beyond the case's
+required records or checkpoints.
+
+![Model requests and extra record reads with the prior default and the stopping rule on Sol and Astra](../docs/assets/readme/section4-read-record/record-reads.svg)
+
+| Model | Description | Model requests | Extra reads | Required reads | Correct decisions | Cached input | Uncached input | Output | Total tokens |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| GPT-6.2 Sol | Prior default | 89 | 14 | 24/24 | 36/36 | 1,598,336 | 290,496 | 6,282 | 1,895,114 |
+| GPT-6.2 Sol | Stop rule | 88 | 10 | 24/24 | 36/36 | 1,590,144 | 272,758 | 5,952 | 1,868,854 |
+| GPT-6.2 Astra | Prior default | 88 | 10 | 24/24 | 36/36 | 1,565,696 | 282,056 | 6,143 | 1,853,895 |
+| GPT-6.2 Astra | Stop rule | 82 | 0 | 24/24 | 36/36 | 1,457,920 | 263,846 | 5,768 | 1,727,534 |
+
+Total tokens include cached input once. Token use fell by 1.4% on Sol and
+6.8% on Astra. Across `publication-unavailable` and `installation-unavailable`,
+Astra answered immediately after the single required record in 8/8 sessions
+with the stop rule and 2/8 with the prior default. Sol did so in 2/8 and 0/8
+sessions respectively. In `installation-unavailable`, Sol still read seven
+unnecessary records per description across the four sessions and used one
+additional model request with the stop rule.
+
+### Stopping rule by scenario
+
+Each cell shows the prior default → stop rule over four paired repeats.
+
+| Case | Sol model requests | Sol extra reads | Astra model requests | Astra extra reads |
+| --- | ---: | ---: | ---: | ---: |
+| publication-read | 12 → 12 | 0 → 0 | 14 → 12 | 0 → 0 |
+| publication-unavailable | 17 → 15 | 7 → 3 | 15 → 12 | 4 → 0 |
+| publication-given | 4 → 4 | 0 → 0 | 4 → 4 | 0 → 0 |
+| operation-read | 16 → 16 | 0 → 0 | 16 → 16 | 0 → 0 |
+| operation-unavailable | 4 → 4 | 0 → 0 | 4 → 4 | 0 → 0 |
+| operation-given | 4 → 4 | 0 → 0 | 4 → 4 | 0 → 0 |
+| installation-read | 12 → 12 | 0 → 0 | 12 → 12 | 0 → 0 |
+| installation-unavailable | 16 → 17 | 7 → 7 | 15 → 14 | 6 → 0 |
+| installation-given | 4 → 4 | 0 → 0 | 4 → 4 | 0 → 0 |
+
+In an earlier pilot Sol read `dry-708` and `intake-708` alongside the second
+`live-708` in 2/4 stop-rule sessions. The eight fresh `operation-read` pairs
+include the four in the main panel and four additional pairs. With
+both descriptions Sol read only `live-708`, first `running` and then
+`succeeded`, in all 8/8 sessions per description. The additional eight
+sessions are excluded from the tables above.
+
+All 152 decisions were supported by the available evidence. Grading used
+final answers and observed records with model and description labels hidden.
+The fixture ledger and per-response usage counters account for 146 record
+reads and 379 model requests across the two sample sets. There were no
+missed required reads, invalid calls or overlapping polls for dependent
+checkpoints. The default schema SHA-256 is
+`0ff3f5094afcec7332775cda661db7d88286b6864480ed7009a2c4699a21897f`.
+The local run archive is `.eval-results/2026-11-26-read-record-unavailable-full/`.
+
 ### Selecting evidence with read_record
 
 Each model ran the same nine synthetic acceptance tasks on medium with the
@@ -32,7 +95,7 @@ the description. A successful read counts as extra when the predeclared
 evidence contract already settles the decision without it. Invalid requests
 are counted separately.
 
-![Required reads, extra reads and invalid requests by model and description](../docs/assets/readme/section4-read-record/record-reads.svg)
+![Required, extra and invalid reads in the initial evidence-selection comparison](../docs/assets/readme/section4-read-record/initial-selection.svg)
 
 | Model | Description | Correct decisions | Required reads | Extra successful reads | Invalid requests | Total calls | Input + output tokens |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -44,8 +107,8 @@ are counted separately.
 The updated description reduced extra successful reads from 28 to 5.
 In eight additional two-source sessions, both models with both descriptions
 read all explicitly requested or independently necessary records, without extra
-reads. The [packet server](fixture-mcp/records_tool.py) now advertises the
-description from the updated condition on ordinary startup.
+reads. The updated condition in this first experiment served as the prior
+default in the stopping-rule comparison above.
 
 > Read a named record in the supplied work packet. Start with the record that can establish the requested state. Read an additional record when it could change the answer, is needed to interpret another record, or the user requests it. When the supplied evidence already settles the question, answer directly. Re-reading a job board returns the next available checkpoint, if any.
 
@@ -67,9 +130,9 @@ benefit on this panel.
 | installation-given | 2 → 0 | 0 → 0 |
 
 The [acceptance catalog](read-record-cases.json) matches the frozen A/B input
-byte-for-byte. The updated schema fingerprint is
+byte-for-byte. The evidence-selection schema fingerprint was
 `659ac912153afffea28a1e0ab3907bba5dc9dde442cb762791f96317f2b7b572`.
-Replaying 75 calls from 44 saved sessions against the shipped default and
+Replaying 75 calls from 44 saved sessions against the then-current default and
 the evaluated updated server produced byte-identical MCP replies and ledgers.
 All observation entries also matched those recorded during the evaluations,
 including two unknown-reference errors.
