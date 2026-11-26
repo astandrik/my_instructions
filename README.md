@@ -10,8 +10,15 @@ eval harness for checking whether those instructions actually change behavior.
 - `evals/`: deterministic and model-backed evals for the instruction bundle.
 - `scripts/run_instruction_evals.py`: the main validation, run, and compare
   harness.
-- `scripts/build_readme_infographics.py`: deterministic SVG and social-card
-  PNG generator for the public evidence snapshot.
+- `scripts/build_readme_infographics.py`: generates and checks the published
+  evaluation figures.
+
+## GPT-6.2 evidence selection and Section 4
+
+![Extra successful record reads fell from 28 to 5 with 36 of 36 correct decisions. On the Section 4 panel, formal passes rose for Sol and fell for Astra.](docs/assets/readme/section4-read-record/overview.png)
+
+[Tool calls across nine acceptance cases](evals/RESULTS.md#selecting-evidence-with-read_record) ·
+[Section 4 regression results and follow-ups](evals/RESULTS.md#section-4-regression-panels)
 
 ## Blinded Six-Model Evidence
 
@@ -208,11 +215,16 @@ python3 -B scripts/run_instruction_evals.py validate
 git diff --check
 ```
 
-Check that tracked README SVGs and the social-card PNG are fresh:
+Check the tracked README figures and PNG cards for freshness:
 
 ```bash
 python3 -B scripts/build_readme_infographics.py --check
 ```
+
+To regenerate just the November GPT-6.2 figures from the tracked results
+tables, run `python3 -B scripts/build_readme_infographics.py --section4-only`.
+Add `--check` to verify them in a clean checkout. When the November run archive
+is present, the generator also validates the tables against its summaries.
 
 When `.eval-results/` artifacts are available, check that published 50-case
 numbers still match the saved JSON, docs point to the saved artifact roots,

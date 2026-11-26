@@ -32,12 +32,14 @@ the description. A successful read counts as extra when the predeclared
 evidence contract already settles the decision without it. Invalid requests
 are counted separately.
 
-| Model | Description | Correct decisions | Required reads | Extra successful reads | Invalid requests | Total calls |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| GPT-6.2 Sol | Original | 9/9 | 6/6 | 18 | 1 | 25 |
-| GPT-6.2 Sol | Updated | 9/9 | 6/6 | 2 | 1 | 9 |
-| GPT-6.2 Astra | Original | 9/9 | 6/6 | 10 | 0 | 16 |
-| GPT-6.2 Astra | Updated | 9/9 | 6/6 | 3 | 0 | 9 |
+![Required reads, extra reads and invalid requests by model and description](../docs/assets/readme/section4-read-record/record-reads.svg)
+
+| Model | Description | Correct decisions | Required reads | Extra successful reads | Invalid requests | Total calls | Input + output tokens |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| GPT-6.2 Sol | Original | 9/9 | 6/6 | 18 | 1 | 25 | 603,770 |
+| GPT-6.2 Sol | Updated | 9/9 | 6/6 | 2 | 1 | 9 | 589,442 |
+| GPT-6.2 Astra | Original | 9/9 | 6/6 | 10 | 0 | 16 | 421,346 |
+| GPT-6.2 Astra | Updated | 9/9 | 6/6 | 3 | 0 | 9 | 463,665 |
 
 The updated description reduced extra successful reads from 28 to 5.
 In eight additional two-source sessions, both models with both descriptions
@@ -96,6 +98,8 @@ edit, the same request quoted for explanation, and delegated criteria.
 | File tasks, mutation and executable checks | 8/8 → 8/8 | 8/8 → 8/8 |
 | Canary variants, repository oracle | 11/12 → 12/12 | 12/12 → 11/12 |
 | Direct request, quotation and delegated criteria, exact file state | 3/3 → 3/3 | 3/3 → 3/3 |
+
+![Change in passed cases for each panel and model under the Section 4 update](../docs/assets/readme/section4-read-record/section4-regression.svg)
 
 On the 50-case deterministic gate Sol gained six cases and lost four, and
 Astra gained four and lost eight. All 12 lost pairs were rerun once in
