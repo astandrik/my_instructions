@@ -2,6 +2,7 @@
 
 Compact, project-neutral custom instructions for coding agents, plus a local
 eval harness for checking whether those instructions actually change behavior.
+The current bundle is [Custom Instructions v4.15](CRITICAL_INSTRUCTIONS.md).
 
 ## Contents
 
@@ -10,8 +11,16 @@ eval harness for checking whether those instructions actually change behavior.
 - `evals/`: deterministic and model-backed evals for the instruction bundle.
 - `scripts/run_instruction_evals.py`: the main validation, run, and compare
   harness.
-- `scripts/build_readme_infographics.py`: deterministic SVG and social-card
-  PNG generator for the public evidence snapshot.
+- `scripts/build_readme_infographics.py`: generates and checks the published
+  evaluation figures.
+
+## GPT-6.2 evidence selection and Section 4
+
+![The stopping rule reduced extra reads from 14 to 10 on Sol and from 10 to 0 on Astra. All 144 main-panel decisions were correct. The separate Section 4 panel shows mixed formal scores.](docs/assets/readme/section4-read-record/overview.png)
+
+[Stopping-rule results on Sol and Astra](evals/RESULTS.md#stopping-after-an-unavailable-check) ·
+[All nine scenarios and the Sol operation check](evals/RESULTS.md#stopping-rule-by-scenario) ·
+[Section 4 regression results and follow-ups](evals/RESULTS.md#section-4-regression-panels)
 
 ## Blinded Six-Model Evidence
 
@@ -208,11 +217,16 @@ python3 -B scripts/run_instruction_evals.py validate
 git diff --check
 ```
 
-Check that tracked README SVGs and the social-card PNG are fresh:
+Check the tracked README figures and PNG cards for freshness:
 
 ```bash
 python3 -B scripts/build_readme_infographics.py --check
 ```
+
+To regenerate just the November GPT-6.2 figures from the tracked results
+tables, run `python3 -B scripts/build_readme_infographics.py --section4-only`.
+Add `--check` to verify them in a clean checkout. When the November run archive
+is present, the generator also validates the tables against its summaries.
 
 When `.eval-results/` artifacts are available, check that published 50-case
 numbers still match the saved JSON, docs point to the saved artifact roots,

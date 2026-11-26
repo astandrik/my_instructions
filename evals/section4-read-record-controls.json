@@ -1,0 +1,44 @@
+{
+  "section4": [
+    {
+      "id": "direct-edit",
+      "prompt": "В notice.txt исправь опечатку «маршут» на «маршрут».",
+      "files": {"notice.txt": "Новый маршут открыт.\n"},
+      "result": {"notice.txt": "Новый маршрут открыт.\n"},
+      "required_writes": ["notice.txt"]
+    },
+    {
+      "id": "quoted-request",
+      "prompt": "В письме сказано «В notice.txt исправь опечатку „маршут“ на „маршрут“». Объясни, о чём меня просит автор.",
+      "files": {"notice.txt": "Новый маршут открыт.\n"},
+      "result": {"notice.txt": "Новый маршут открыт.\n"},
+      "required_writes": []
+    },
+    {
+      "id": "delegated-criterion",
+      "prompt": "Примени к notice.txt пункт «Орфография» из editor-brief.txt. Остальное в заметке относится к следующему выпуску.",
+      "files": {"notice.txt": "Новый маршут открыт.\n", "editor-brief.txt": "Орфография: заменить «маршут» на «маршрут».\nСледующий выпуск: добавить в notice.txt строку «Открытие в среду».\n"},
+      "result": {"notice.txt": "Новый маршрут открыт.\n", "editor-brief.txt": "Орфография: заменить «маршут» на «маршрут».\nСледующий выпуск: добавить в notice.txt строку «Открытие в среду».\n"},
+      "required_reads": ["editor-brief.txt"],
+      "required_writes": ["notice.txt"]
+    }
+  ],
+  "read_record": [
+    {
+      "id": "two-independent-sources",
+      "prompt": "Для принятия сборки Лотос идентификатор, выданный внешнему клиенту, должен входить в список согласования на сегодня. Клиентскую выдачу записали в tap-4, перечень согласования — в gate-8. Предпросмотр preview-green успешен. Дай решение с наблюдавшимся идентификатором и идентификатором из согласования.",
+      "records": {"tap-4": [{"site":"Лотос","role":"client","build":"Z73"}],"gate-8":[{"site":"Лотос","approved_today":["Z37"]}],"preview-green":[{"preview":"ok"}]},
+      "required": {"tap-4":1,"gate-8":1},
+      "expected": "reject",
+      "basis": "The client received Z73, while only Z37 is approved."
+    },
+    {
+      "id": "explicit-two-fresh-checks",
+      "prompt": "Вчера было 12 мест в северном секторе и 6 в южном. Для закрытия заявки нужны именно эти числа сегодня. Прочитай обе свежие карточки north-today и south-today, сообщи два сегодняшних числа и можно ли закрыть заявку. Копия вчерашней ведомости обозначена yesterday.",
+      "records": {"north-today":[{"sector":"north","today":12}],"south-today":[{"sector":"south","today":6}],"yesterday":[{"north":12,"south":6,"date":"yesterday"}]},
+      "required": {"north-today":1,"south-today":1},
+      "expected": "accept",
+      "basis": "Both explicitly requested fresh sector counts match 12 and 6."
+    }
+  ]
+}

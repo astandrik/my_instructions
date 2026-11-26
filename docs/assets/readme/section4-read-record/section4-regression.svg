@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="453" viewBox="0 0 960 453" role="img" aria-labelledby="title desc">
+<title id="title">Section 4 regression results</title>
+<desc id="desc">GPT-6.2 Sol passed 24 then 26 formal gates and 47 then 48 adjudicated tasks out of 50. GPT-6.2 Astra passed 22 then 18 formal gates and 49 then 49 adjudicated tasks out of 50. Bars show signed changes in passed cases.</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="960" height="453" fill="#f8fafc"/>
+<rect x="12.0" y="12.0" width="936.0" height="429.0" rx="12.0" fill="#ffffff" stroke="#d4dfe5"/>
+<style>.num{font-size:18px;font-weight:700;fill:#162838}.key{font-size:15px;fill:#475d6e}.light{font-size:15px;font-weight:700;fill:white}.dark{font-size:15px;font-weight:700;fill:#162838}.model{font-size:19px;font-weight:700;fill:#162838}</style>
+<text x="40.0" y="61.0" class="title">Section 4 regression results</text>
+<text x="40.0" y="89.0" class="key">GPT-6.2 medium  ·  Previous and updated instructions  ·  One scored run per case, model and condition</text>
+<text x="40.0" y="151.0" class="key">Panel</text>
+<text x="321.0" y="128.0" class="model">GPT-6.2 Sol</text>
+<text x="321.0" y="152.0" class="key">Previous → updated</text>
+<text x="526.0" y="152.0" class="key" text-anchor="middle">Δ passes</text>
+<text x="623.0" y="128.0" class="model">GPT-6.2 Astra</text>
+<text x="623.0" y="152.0" class="key">Previous → updated</text>
+<text x="828.0" y="152.0" class="key" text-anchor="middle">Δ passes</text>
+<rect x="28.0" y="166.0" width="904.0" height="38.0" rx="3.0" fill="#f3f7f8"/>
+<text x="40.0" y="190.0" class="dark">Formal gate</text>
+<text x="321.0" y="190.0" class="dark">24/50 → 26/50</text>
+<line x1="526.0" y1="170.0" x2="526.0" y2="200.0" stroke="#94a6b1" stroke-width="1"/>
+<rect x="526.0" y="179.0" width="29.0" height="12.0" rx="2.0" fill="#176e65"/>
+<text x="561.0" y="190.0" class="key" text-anchor="start">+2</text>
+<text x="623.0" y="190.0" class="dark">22/50 → 18/50</text>
+<line x1="828.0" y1="170.0" x2="828.0" y2="200.0" stroke="#94a6b1" stroke-width="1"/>
+<rect x="770.0" y="179.0" width="58.0" height="12.0" rx="2.0" fill="#ac4141"/>
+<text x="764.0" y="190.0" class="key" text-anchor="end">-4</text>
+<text x="40.0" y="235.0" class="dark">Adjudicated outcome</text>
+<text x="321.0" y="235.0" class="dark">47/50 → 48/50</text>
+<line x1="526.0" y1="215.0" x2="526.0" y2="245.0" stroke="#94a6b1" stroke-width="1"/>
+<rect x="526.0" y="224.0" width="14.5" height="12.0" rx="2.0" fill="#176e65"/>
+<text x="546.5" y="235.0" class="key" text-anchor="start">+1</text>
+<text x="623.0" y="235.0" class="dark">49/50 → 49/50</text>
+<line x1="828.0" y1="215.0" x2="828.0" y2="245.0" stroke="#94a6b1" stroke-width="1"/>
+<circle cx="828.0" cy="230.0" r="4.0" fill="#475d6e" stroke="#475d6e" stroke-width="0.0"/>
+<text x="838.0" y="235.0" class="key">0</text>
+<rect x="28.0" y="256.0" width="904.0" height="38.0" rx="3.0" fill="#f3f7f8"/>
+<text x="40.0" y="280.0" class="dark">File tasks</text>
+<text x="321.0" y="280.0" class="dark">8/8 → 8/8</text>
+<line x1="526.0" y1="260.0" x2="526.0" y2="290.0" stroke="#94a6b1" stroke-width="1"/>
+<circle cx="526.0" cy="275.0" r="4.0" fill="#475d6e" stroke="#475d6e" stroke-width="0.0"/>
+<text x="536.0" y="280.0" class="key">0</text>
+<text x="623.0" y="280.0" class="dark">8/8 → 8/8</text>
+<line x1="828.0" y1="260.0" x2="828.0" y2="290.0" stroke="#94a6b1" stroke-width="1"/>
+<circle cx="828.0" cy="275.0" r="4.0" fill="#475d6e" stroke="#475d6e" stroke-width="0.0"/>
+<text x="838.0" y="280.0" class="key">0</text>
+<text x="40.0" y="325.0" class="dark">Canary oracle</text>
+<text x="321.0" y="325.0" class="dark">11/12 → 12/12</text>
+<line x1="526.0" y1="305.0" x2="526.0" y2="335.0" stroke="#94a6b1" stroke-width="1"/>
+<rect x="526.0" y="314.0" width="14.5" height="12.0" rx="2.0" fill="#176e65"/>
+<text x="546.5" y="325.0" class="key" text-anchor="start">+1</text>
+<text x="623.0" y="325.0" class="dark">12/12 → 11/12</text>
+<line x1="828.0" y1="305.0" x2="828.0" y2="335.0" stroke="#94a6b1" stroke-width="1"/>
+<rect x="813.5" y="314.0" width="14.5" height="12.0" rx="2.0" fill="#ac4141"/>
+<text x="807.5" y="325.0" class="key" text-anchor="end">-1</text>
+<rect x="28.0" y="346.0" width="904.0" height="38.0" rx="3.0" fill="#f3f7f8"/>
+<text x="40.0" y="370.0" class="dark">Authority controls</text>
+<text x="321.0" y="370.0" class="dark">3/3 → 3/3</text>
+<line x1="526.0" y1="350.0" x2="526.0" y2="380.0" stroke="#94a6b1" stroke-width="1"/>
+<circle cx="526.0" cy="365.0" r="4.0" fill="#475d6e" stroke="#475d6e" stroke-width="0.0"/>
+<text x="536.0" y="370.0" class="key">0</text>
+<text x="623.0" y="370.0" class="dark">3/3 → 3/3</text>
+<line x1="828.0" y1="350.0" x2="828.0" y2="380.0" stroke="#94a6b1" stroke-width="1"/>
+<circle cx="828.0" cy="365.0" r="4.0" fill="#475d6e" stroke="#475d6e" stroke-width="0.0"/>
+<text x="838.0" y="370.0" class="key">0</text>
+<line x1="40.0" y1="399.0" x2="920.0" y2="399.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="40.0" y="426.0" class="key">Bars show the change in passed cases. Targeted repeats and the explicit retention-key control are reported separately.</text>
+</svg>

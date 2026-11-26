@@ -1,0 +1,136 @@
+[
+  {
+    "id": "publication-read",
+    "family": "publication",
+    "evidence": "lookup",
+    "prompt": "Нам нужно понять, можно ли отправить партнёрам ссылку на инструкцию «Поставка без тары» с новой редакцией d41. Сборка d41 зелёная, в журнале выдачи стоит «экспорт создан», редактор уже видит d41. В пакете есть квитанция job-41, редакторский просмотр author-41 и последний свежий запрос от роли внешнего партнёра channel-doc. Ссылку пока не отправляй. Можно ли считать d41 доступной партнёрам?",
+    "records": {
+      "job-41": [{"object": "Поставка без тары", "revision": "d41", "step": "export", "result": "success", "artifact": "tariff-d41"}],
+      "author-41": [{"role": "editor", "revision": "d41", "visible": true}],
+      "channel-doc": [{"role": "external partner", "object": "Поставка без тары", "http_status": 200, "served_revision": "d39", "channel": "partner handbook", "readback": "fresh"}]
+    },
+    "required": {"channel-doc": 1},
+    "expected": "reject",
+    "basis": "Внешний партнёр получает d39. Это опровергает готовность именно d41 даже при HTTP 200, экспорте и авторском просмотре.",
+    "wrong": "Подтвердить ссылку на d41 по готовой сборке, экспорту, HTTP 200 без номера редакции или просмотру автора."
+  },
+  {
+    "id": "publication-unavailable",
+    "family": "publication",
+    "evidence": "unavailable",
+    "prompt": "Готовлю ответ перевозчикам про памятку «Зимний въезд», нужна редакция r18. Черновик r18 собран, предпросмотр у редактора открывается, экспорт получил отметку «отправлен в шлюз». Пакет содержит квитанцию export-r18, предпросмотр draft-r18 и последние данные проверки на стороне внешнего читателя carrier-view. Работаем только с этими записями. Могу ли я считать r18 уже доступной перевозчикам?",
+    "records": {
+      "export-r18": [{"revision": "r18", "stage": "accepted_by_gateway", "body": "export bundle accepted"}],
+      "draft-r18": [{"revision": "r18", "audience": "editors", "result": "preview renders"}],
+      "carrier-view": [{"object": "Зимний въезд", "audience": "external carriers", "probe": "unavailable", "reason": "test account access suspended", "served_revision": null, "last_attempt": "this packet"}]
+    },
+    "required": {"carrier-view": 1},
+    "expected": "unknown",
+    "basis": "Проверка для внешней роли недоступна. Черновик и приём экспорта подтверждают только подготовку и передачу шлюзу. Реальная доступность r18 неизвестна.",
+    "wrong": "Принять публикацию по экспорту или считать её доказанно сломанной из-за недоступности тестового аккаунта."
+  },
+  {
+    "id": "publication-given",
+    "family": "publication",
+    "evidence": "given",
+    "prompt": "Нужно подтвердить, могут ли поставщики открыть редакцию p62 памятки «Маркировка боксов». В свежей проверке только что получен HTTP 200 из внешней сети под обычной ролью поставщика, URL именно тот, который им дадим. В теле редакция p62 и новый пункт о синем штампе, результат для этой роли. В соседней карточке команды последняя сборка черновика p63 красная, а вчерашний предпросмотр p62 жаловался на картинку. В пакете есть editor-build и draft-preview. Достаточно ли текущих данных считать p62 опубликованной для поставщиков?",
+    "records": {
+      "editor-build": [{"channel": "editor draft", "revision": "p63", "result": "failed"}],
+      "draft-preview": [{"channel": "internal preview", "revision": "p62", "result": "image warning", "freshness": "yesterday"}]
+    },
+    "required": {},
+    "expected": "accept",
+    "basis": "Есть прямой свежий ответ внешней роли на нужном URL, редакция p62 и контрольное содержимое. Красная сборка p63 и вчерашний preview о другом объекте проверки.",
+    "wrong": "Отказать в доказанном результате по соседней сборке или считать обязательным чтение старого предпросмотра."
+  },
+  {
+    "id": "operation-read",
+    "family": "operation",
+    "evidence": "lookup",
+    "prompt": "На смене в журнале уже зелёная квитанция «принято» по переносу 48 контейнеров в секцию Маяк, операция mv-708. Репетиция по тем же правилам закончилась успешно. В пакете есть приёмная квитанция intake-708, репетиция dry-708 и журнал хода live-708. Дойди до конечного статуса именно mv-708 по этим записям и скажи, можно ли закрыть перенос.",
+    "records": {
+      "intake-708": [{"operation": "mv-708", "stage": "accepted", "container_count": 48}],
+      "dry-708": [{"operation": "mv-708", "mode": "dry-run", "stage": "succeeded", "planned_count": 48}],
+      "live-708": [
+        {"operation": "mv-708", "mode": "live", "stage": "running", "moved": 25, "terminal": false},
+        {"operation": "mv-708", "mode": "live", "stage": "succeeded", "section": "Маяк", "moved": 48, "terminal": true}
+      ]
+    },
+    "required": {"live-708": 2},
+    "expected": "accept",
+    "basis": "По двум наблюдениям получен терминальный succeeded для live mv-708, фактически перенесено 48 в Маяк.",
+    "wrong": "Закрыть по квитанции или репетиции, остановиться на первом running либо приписать статус другой операции."
+  },
+  {
+    "id": "operation-unavailable",
+    "family": "operation",
+    "evidence": "unavailable",
+    "prompt": "Надо ответить, успел ли закрыться перенос склада №12, операция pack-39. Приёмный шлюз выдал 202 и подписанную квитанцию accepted для pack-39, в ней прямо сказано, что обработка асинхронная. Репетиция того же ввода прошла и насчитала 70 строк. В данном пакете конечный журнал pack-39 отсутствует, доступа к рабочей очереди сейчас нет. Приложены только дубликат квитанции ack-39 и отчёт тестового прогона sim-39. Можно ли подтверждать завершение?",
+    "records": {
+      "ack-39": [{"operation": "pack-39", "record": "intake receipt duplicate", "http_status": 202, "stage": "accepted"}],
+      "sim-39": [{"operation": "pack-39", "mode": "simulation", "stage": "succeeded", "rows": 70}]
+    },
+    "required": {},
+    "expected": "unknown",
+    "basis": "Есть приём конкретной операции и репетиция. Рабочий исход остался неизвестен. Дублирование приёмной квитанции не меняет вывода.",
+    "wrong": "Принять перенос по 202 или симуляции, заявить, что операция точно провалилась, либо запросить несуществующую запись."
+  },
+  {
+    "id": "operation-given",
+    "family": "operation",
+    "evidence": "given",
+    "prompt": "Можно ли закрыть заявку о переносе 12 слотов на карту «Кедр»? В журнале приёма тикет zone-91 зелёный, ожидаемый план для тех же входных данных прошёл в симуляторе. Для самой операции zone-91 служба архивирования прямо сейчас вернула подписанную терминальную запись: mode=live, stage=failed, rollback=done, committed_slots=0. Дополнительно есть старый план plan-91 и квитанция приемки queue-91. Сформулируй решение по заявке.",
+    "records": {
+      "plan-91": [{"operation": "zone-91", "mode": "simulation", "stage": "succeeded", "slots": 12}],
+      "queue-91": [{"operation": "zone-91", "stage": "accepted", "queue": "area migration"}]
+    },
+    "required": {},
+    "expected": "reject",
+    "basis": "Терминальный failed и завершённый откат той же операции, ни один слот не зафиксирован.",
+    "wrong": "Закрыть заявку по принятию или симуляции. Выдать известный отрицательный результат за неизвестный. Повторная квитанция не нужна."
+  },
+  {
+    "id": "installation-read",
+    "family": "installation",
+    "evidence": "lookup",
+    "prompt": "Для рабочих ярлыков склада Ольха нужно подтвердить, что установленный форматер slot-f4 выдаёт четыре знака с ведущими нулями. Вход 7 должен давать 0007. В репозитории профиль выглядит верно, сборка с контрольным примером 7 → 0007 прошла, раскатка отмечена зелёным. В пакете есть пример suite-f4, запись rollout-f4 и свежий контрольный вызов label-call в рабочей секции Ольха. Можно ли принимать формат для этой секции?",
+    "records": {
+      "suite-f4": [{"environment": "test", "profile": "pad4", "slot": "slot-f4", "input": "7", "output": "0007", "test": "passed"}],
+      "rollout-f4": [{"slot": "slot-f4", "site": "Ольха", "service_revision": "v27", "deploy": "healthy"}],
+      "label-call": [{"site": "Ольха", "environment": "live", "slot": "slot-f4", "service_revision": "v27", "input": "7", "output": "7", "http_status": 200}]
+    },
+    "required": {"label-call": 1},
+    "expected": "reject",
+    "basis": "Фактический ответ slot-f4 в Ольхе для 7 — 7. Это нарушает условие 0007, несмотря на успешный запрос и зелёное развёртывание.",
+    "wrong": "Считать контракт выполненным из-за теста, декларации, работающего процесса или HTTP 200."
+  },
+  {
+    "id": "installation-unavailable",
+    "family": "installation",
+    "evidence": "unavailable",
+    "prompt": "Можно ли принять формат ценника K2 в рабочей линии Полог? Вход 9.5 должен выводиться как 9,50. Тестовый процесс версии v17 даёт 9,50, развёрнутый пакет имеет те же байты. Установщик передаёт профиль форматирования независимо от пакета. В пакете наблюдений есть тест fixture-k2, квитанция установки deploy-k2 и сведения о действующем профиле slot-binding. Работаем в режиме чтения и спрашиваем именно про рабочую линию.",
+    "records": {
+      "fixture-k2": [{"environment": "test", "revision": "v17", "profile": "comma", "input": "9.5", "output": "9,50"}],
+      "deploy-k2": [{"station": "Полог", "slot": "K2", "package": "v17", "same_package_as_example": true, "status": "healthy"}],
+      "slot-binding": [{"station": "Полог", "slot": "K2", "package": "v17", "install_time_profile": null, "visibility": "redacted", "live_test": "unavailable", "possible_profiles": ["comma", "point"]}]
+    },
+    "required": {"slot-binding": 1},
+    "expected": "unknown",
+    "basis": "Те же байты пакета и успех в профиле comma доказаны для теста. Действующий профиль Полога скрыт и контрольного вызова нет, возможен point.",
+    "wrong": "Принять рабочую линию по равенству пакета или утверждать, что рабочая линия точно выдаёт неверное значение."
+  },
+  {
+    "id": "installation-given",
+    "family": "installation",
+    "evidence": "given",
+    "prompt": "Можем ли подтвердить установленный профиль выгрузки для слота P-81 на линии Коса? Контракт для входа BX7 — строка BX-007. Только что сняли прямой ответ с рабочей линии Коса: environment=live, slot=P-81, active_revision=rv6, input=BX7, output=BX-007. В чеклисте внедрения зелёная сборка, но предыдущая репетиция версии rv5 ещё выдаёт BX-7. В пакете остались build-log и rehearsal-rv5. Скажи, проходит ли проверка установленного P-81 на этом входе.",
+    "records": {
+      "build-log": [{"environment": "build", "slot": "P-81", "revision": "rv6", "result": "ok"}],
+      "rehearsal-rv5": [{"environment": "rehearsal", "slot": "P-81", "revision": "rv5", "input": "BX7", "output": "BX-7"}]
+    },
+    "required": {},
+    "expected": "accept",
+    "basis": "Есть свежий фактический результат рабочего P-81 rv6 на нужном вводе, BX-007 соответствует контракту. Область доказанности — этот вход и слот.",
+    "wrong": "Переоценить красную репетицию rv5, считать рабочий исход неизвестным или заявить полноценную приёмку на всех входах."
+  }
+]

@@ -430,7 +430,7 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
         self.assertIn("15/345 pair-case directions changed", svg)
         self.assertIn(module.ABSOLUTE_JUDGE_AUDIT_SCOPE, svg)
 
-    def test_build_all_emits_exact_seven_readme_svgs(self):
+    def test_build_all_emits_seven_historical_svgs_and_builds_section4_figures(self):
         module = load_script()
         renderer_outputs = {
             "render_hard_gates_50": "hard-gates-50.svg",
@@ -475,8 +475,10 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
             stack.enter_context(
                 mock.patch.object(module, "render_social_card_png", side_effect=png_writer)
             )
+            study_renderer = stack.enter_context(mock.patch.object(module.section4_figures, "build"))
 
             module.build_all(root, output_dir, social_image)
+            study_renderer.assert_called_once_with(root, output_dir / module.section4_figures.DIRECTORY)
             actual = {path.name for path in output_dir.glob("*.svg")}
 
         self.assertEqual(actual, EXPECTED_README_SVGS)
@@ -533,6 +535,7 @@ class BuildReadmeInfographicsTests(unittest.TestCase):
             stack.enter_context(
                 mock.patch.object(module, "render_social_card_png", side_effect=png_writer)
             )
+            stack.enter_context(mock.patch.object(module.section4_figures, "build"))
 
             module.build_all(root, output_dir, social_image)
 

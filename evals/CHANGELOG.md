@@ -16,6 +16,37 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-11-26 — Custom Instructions v4.15 and the read_record stopping rule
+
+- Released the evaluated Section 4 wording as Custom Instructions v4.15.
+  Only the version/date line changed after the evaluation.
+- Added the stopping sentence to the default `read_record` description. Across
+  nine cases and four paired repeats per model, extra reads fell from 14 to 10
+  on Sol and from 10 to 0 on Astra. All 144 main-panel decisions were correct.
+- Sol waited for the terminal checkpoint without extra reads in all eight
+  fresh `operation-read` pairs, including four additional pairs. Sol still
+  used seven extra reads with either description in `installation-unavailable`.
+  [Full results, token usage and sample sizes](RESULTS.md#stopping-after-an-unavailable-check)
+
+## 2026-11-26 — Clarify Section 4 and test read_record evidence selection
+
+- Replaced `user input` with `material supplied by the user for analysis`
+  in §4 of the global bundle. Added five [focused control cases](section4-read-record-controls.json).
+- With the updated §4 in both tool conditions, extra successful reads fell
+  from 18 to 2 for GPT-6.2 Sol and from 10 to 3 for GPT-6.2 Astra. Both
+  descriptions preserved all required reads and all nine decisions per model.
+  This description became the baseline for the stopping-rule comparison.
+- On the paired 50-case panel the deterministic scores moved from 24 to 26
+  for Sol and from 22 to 18 for Astra. Three of 12 primary gate losses
+  repeated. Adjudicated task outcomes moved from 47 to 48 and from 49 to 49.
+  The file-task matrices passed all executable checks. The separate canary
+  suite had a gain for Sol and a loss for Astra on the persistence field name.
+  Astra's exact-key outcome reversed on repeat. Once the key was explicit
+  in the request both models passed in both conditions.
+- The [full results and limitations](RESULTS.md) include both primary and
+  diagnostic comparisons. Paired receipts, the journal and case matrix are under
+  `.eval-results/2026-11-26-section4-read-record/`.
+
 ## Version Metric Ledger
 
 Legacy pre-blinding snapshot: primary prompts exposed case id/scenario metadata
@@ -29,6 +60,7 @@ below when the question is specifically "v4.11 vs v4.13".
 
 | Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
 |---|---|---|---:|---|---:|---|
+| v4.15 Section 4 | 50 paired cases on GPT-6.2 Sol and Astra | `.eval-results/2026-11-26-section4-read-record/regression/` | Sol 26/50, Astra 18/50 | Adjudicated outcomes passed 48/50 on Sol and 49/50 on Astra | — | v4.14 formal gates 24/50 and 22/50, respectively |
 | v4.14 current-only | 50 semantic-alternative cases, six canonical model rows | `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/` | Sol 33 / 50, GPT-5.5 35 / 50, GLM 29 / 50 | 163 Sol absolute judgments plus 163 Terra audit judgments; all 15 aggregate directions stable | Sol 98.15, GPT-5.5 96.86, GLM 95.45 | evaluated behavior at `762db4f`; no fresh empty baseline |
 | 2026-07-08 legacy pre-blinding snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
 | v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |

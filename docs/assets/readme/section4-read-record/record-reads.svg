@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="415" viewBox="0 0 960 415" role="img" aria-labelledby="title desc">
+<title id="title">Stopping after an unavailable check</title>
+<desc id="desc">GPT-6.2 Sol: 89 to 88 model requests, 14 to 10 extra reads. GPT-6.2 Astra: 88 to 82 model requests, 10 to 0 extra reads</desc>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0}
+.title{font-size:30px;font-weight:700;fill:#111827}
+.subtitle{font-size:15px;fill:#64748b}
+.label{font-size:14px;font-weight:700;fill:#111827}
+.small{font-size:12px;fill:#64748b}
+.value{font-size:13px;font-weight:700;fill:#111827}
+.axis{font-size:11px;fill:#64748b}
+.cell{font-size:11px;font-weight:700;fill:#111827}
+</style>
+<rect x="0" y="0" width="960" height="415" fill="#f8fafc"/>
+<rect x="12.0" y="12.0" width="936.0" height="391.0" rx="12.0" fill="#ffffff" stroke="#d4dfe5"/>
+<style>.num{font-size:18px;font-weight:700;fill:#162838}.key{font-size:15px;fill:#475d6e}.light{font-size:15px;font-weight:700;fill:white}.dark{font-size:15px;font-weight:700;fill:#162838}.model{font-size:19px;font-weight:700;fill:#162838}</style>
+<text x="40.0" y="61.0" class="title">Stopping after an unavailable check</text>
+<text x="40.0" y="89.0" class="key">GPT-6.2 medium  ·  Nine acceptance cases  ·  36 sessions per model and description</text>
+<text x="40.0" y="135.0" class="key">Model</text>
+<text x="114.0" y="135.0" class="key">Description</text>
+<text x="250.0" y="135.0" class="model">Model requests</text>
+<text x="615.0" y="135.0" class="model">Extra record reads</text>
+<text x="40.0" y="192.0" class="model">Sol</text>
+<text x="114.0" y="180.0" class="key">Prior default</text>
+<rect x="250.0" y="166.0" width="272.0" height="18.0" rx="3.0" fill="#475d6e"/>
+<text x="531.0" y="180.0" class="dark">89</text>
+<rect x="615.0" y="166.0" width="240.0" height="18.0" rx="3.0" fill="#475d6e"/>
+<text x="864.0" y="180.0" class="dark">14</text>
+<text x="114.0" y="211.0" class="key">Stop rule</text>
+<rect x="250.0" y="197.0" width="268.9" height="18.0" rx="3.0" fill="#176e65"/>
+<text x="527.9" y="211.0" class="dark">88</text>
+<rect x="615.0" y="197.0" width="171.4" height="18.0" rx="3.0" fill="#176e65"/>
+<text x="795.4" y="211.0" class="dark">10</text>
+<text x="40.0" y="286.0" class="model">Astra</text>
+<text x="114.0" y="274.0" class="key">Prior default</text>
+<rect x="250.0" y="260.0" width="268.9" height="18.0" rx="3.0" fill="#475d6e"/>
+<text x="527.9" y="274.0" class="dark">88</text>
+<rect x="615.0" y="260.0" width="171.4" height="18.0" rx="3.0" fill="#475d6e"/>
+<text x="795.4" y="274.0" class="dark">10</text>
+<text x="114.0" y="305.0" class="key">Stop rule</text>
+<rect x="250.0" y="291.0" width="250.6" height="18.0" rx="3.0" fill="#176e65"/>
+<text x="509.6" y="305.0" class="dark">82</text>
+<text x="624.0" y="305.0" class="dark">0</text>
+<line x1="40.0" y1="331.0" x2="920.0" y2="331.0" stroke="#d4dfe5" stroke-width="1"/>
+<text x="40.0" y="358.0" class="key">Sol  ·  Input + output tokens</text>
+<text x="40.0" y="387.0" class="model">1,895,114 → 1,868,854  (-1.4%)</text>
+<text x="494.0" y="358.0" class="key">Astra  ·  Input + output tokens</text>
+<text x="494.0" y="387.0" class="model">1,853,895 → 1,727,534  (-6.8%)</text>
+</svg>
