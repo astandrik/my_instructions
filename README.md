@@ -2,6 +2,7 @@
 
 Compact, project-neutral custom instructions for coding agents, plus a local
 eval harness for checking whether those instructions actually change behavior.
+The current bundle is [Custom Instructions v4.15](CRITICAL_INSTRUCTIONS.md).
 
 ## Contents
 

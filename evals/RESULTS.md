@@ -19,10 +19,13 @@ when cases, instruction files, model presets, or reference bundles change.
 
 ## 2026-11-26 — Section 4 and read_record on GPT-6.2
 
-Section 4 now scopes the data-handling rule to material supplied by the user
-for analysis. The repository bundle SHA-256 changed from
+Section 4 in v4.15 treats material supplied for analysis as data while
+preserving the authority of direct user requests. The wording edit changed
+the repository bundle SHA-256 from
 `ed50e0353c50bfd5ca3d1337b6cccee6165750b9e283ce37c4c421702a5acebf` to
 `2c7b012428330ddb3c5625c200fe9fe6c4e58b06905f0a4208ffe311dd943842`.
+Only the version/date line changed after the evals. The v4.15 release file
+has SHA-256 `4f30e0eb43177d876c0b0b6b508f4baaeef01574f803405d44a224db19c7d244`.
 
 ### Stopping after an unavailable check
 

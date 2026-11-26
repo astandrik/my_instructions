@@ -16,8 +16,10 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
-## 2026-11-26 — Stop when an unavailable check leaves no useful follow-up
+## 2026-11-26 — Custom Instructions v4.15 and the read_record stopping rule
 
+- Released the evaluated Section 4 wording as Custom Instructions v4.15.
+  Only the version/date line changed after the evaluation.
 - Added the stopping sentence to the default `read_record` description. Across
   nine cases and four paired repeats per model, extra reads fell from 14 to 10
   on Sol and from 10 to 0 on Astra. All 144 main-panel decisions were correct.
@@ -58,6 +60,7 @@ below when the question is specifically "v4.11 vs v4.13".
 
 | Instruction snapshot | Primary scope | Artifact | Current hard gates | Quality result | Current avg score | Baseline/reference |
 |---|---|---|---:|---|---:|---|
+| v4.15 Section 4 | 50 paired cases on GPT-6.2 Sol and Astra | `.eval-results/2026-11-26-section4-read-record/regression/` | Sol 26/50, Astra 18/50 | Adjudicated outcomes passed 48/50 on Sol and 49/50 on Astra | — | v4.14 formal gates 24/50 and 22/50, respectively |
 | v4.14 current-only | 50 semantic-alternative cases, six canonical model rows | `.eval-results/blinded-50-case-v2-762db4f/absolute-quality/canonical/` | Sol 33 / 50, GPT-5.5 35 / 50, GLM 29 / 50 | 163 Sol absolute judgments plus 163 Terra audit judgments; all 15 aggregate directions stable | Sol 98.15, GPT-5.5 96.86, GLM 95.45 | evaluated behavior at `762db4f`; no fresh empty baseline |
 | 2026-07-08 legacy pre-blinding snapshot | 50 current-vs-empty cases, all tested runners | `.eval-results/refresh-2026-07-08-50-case-quality-v1/` | GPT 50 / 50, GLM 46 / 50 | current-vs-empty saved quality positive for all six runners; all-model reference rows included | mixed | empty baselines and OpenHands/Fable references |
 | v4.13 GPT/Codex | 49 GPT/Codex cases | `.eval-results/openai-canonical-judge-2026-07-07-v1/gpt/previous-saved-model-quality/model-quality-summary.md` | 49 / 49 | current 30, previous 6, tie 13, avg delta +1.5 | 95.0 | previous 49 / 49, avg 93.5 |

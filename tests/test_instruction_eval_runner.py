@@ -22,14 +22,13 @@ def load_runner():
 
 
 class InstructionEvalRunnerTests(unittest.TestCase):
-    def test_core_declares_v414_release(self):
+    def test_core_declares_current_release(self):
         instructions = (REPO_ROOT / "CRITICAL_INSTRUCTIONS.md").read_text(encoding="utf-8")
 
-        self.assertIn(
-            "Custom Instructions v4.14 (2026-07-11) for coding and tooling agents.",
-            instructions,
+        self.assertEqual(
+            [line for line in instructions.splitlines() if line.startswith("Custom Instructions ")],
+            ["Custom Instructions v4.15 (2026-11-26) for coding and tooling agents."],
         )
-        self.assertNotIn("Custom Instructions v4.13 (2026-07-06)", instructions)
 
     def test_core_uses_compact_request_authority_matrix_and_preserves_narrow_gates(self):
         instructions = (REPO_ROOT / "CRITICAL_INSTRUCTIONS.md").read_text(encoding="utf-8")
