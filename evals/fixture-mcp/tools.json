@@ -1,0 +1,60 @@
+[
+  {
+    "name": "list_files",
+    "description": "List the files in this checkout.",
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "read_file",
+    "description": "Read a repository-relative text file.",
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "run_tests",
+    "description": "Run the focused repository test suite and return its actual exit status and output. When giving a recommendation, run a check if its result could change the recommendation or the user requested execution. When the available evidence settles the choice, cite it and identify the check for implementation.",
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "run_example",
+    "description": "Run the bundled component example with its recorded profile and revision, returning its output. This entry point runs independently of the installed adapter.",
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+]

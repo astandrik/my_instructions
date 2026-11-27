@@ -10,6 +10,23 @@ Use `RESULTS.md` for full benchmark snapshots and artifact paths. Use
 `CHANGELOG.md` for the chronological summary of instruction/eval changes,
 metric deltas, conclusions, and caveats.
 
+## Read-only Sol/Astra fixture tools
+
+The [stdio server](fixture-mcp/server.py) advertises the
+[adopted tool catalog](fixture-mcp/tools.json) for tool-enabled fixture runs.
+Use this entry point with a prepared checkout and its installation.
+
+```bash
+python3 -I -B evals/fixture-mcp/server.py CHECKOUT INSTALLATION LEDGER
+```
+
+Supply trusted synthetic fixtures. `CHECKOUT` contains the adapter, `suite.json`
+and `sample.json`. `INSTALLATION` holds the installed profile, `probe.json` and
+the standalone example adapter. `LEDGER` is an existing output directory
+outside both. The server advertises the clarified `run_tests` description by
+default. The installed check and the recorded component example each return
+their own exit status and output.
+
 ## Blinded Six-Model Publication
 
 Pre-semantic-alternative scorer snapshot: the unchanged figures use the prior
