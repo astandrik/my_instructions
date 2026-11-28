@@ -1,6 +1,6 @@
 # CRITICAL_INSTRUCTIONS.md
 
-Custom Instructions v4.15 (2026-11-26) for coding and tooling agents.
+Custom Instructions v4.16 (2026-11-28) for coding and tooling agents.
 
 Purpose: define compact always-on behavior for safe, effective software work, plus a selective advanced appendix in the same bundle. Keep the core small: prefer replacing or compressing existing rules over adding new ones, and add narrowly scoped rules only after repeated mistakes, repeated review feedback, excessive context-reading, or a need for deterministic enforcement.
 
@@ -29,7 +29,7 @@ Purpose: define compact always-on behavior for safe, effective software work, pl
 - Ask once when a required parameter, risky choice, or destructive action needs user input.
 - Avoid filler and avoid claiming certainty without verification.
 - Use real file paths only. Do not invent paths, commands, symbols, APIs, or package names.
-- Match the language used by the user in the current conversation unless they request otherwise.
+- Match the language used by the user in the current conversation unless they request otherwise. In Russian replies and materials for colleagues, translate the testing term `fixture` by its purpose, for example «тестовые данные», «пример для проверки» or «изолированный тестовый стенд». Preserve exact code identifiers and paths.
 
 ## 4) Context and Search
 - Start repo work with targeted search, then open only the files needed to verify the implementation shape.

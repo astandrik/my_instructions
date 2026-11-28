@@ -16,6 +16,15 @@ For each entry, record the artifact path, hard-gate result, quality result,
 main conclusion, and caveats. Prefer stable behavior conclusions over long raw
 tables.
 
+## 2026-11-28 — Custom Instructions v4.16 and plain Russian testing language
+
+- Updated Section 3 to describe test data, saved examples, and test environments
+  in plain Russian while preserving exact code identifiers and paths.
+- Added six focused cases. Sol passed 5/6 with v4.15 and 6/6 with v4.16. Astra
+  passed 4/6 and 6/6. The comparison uses the same saved answers after accepting
+  equivalent Russian forms in one check.
+- [Focused results and token counts](RESULTS.md#plain-russian-testing-language)
+
 ## 2026-11-26 — Custom Instructions v4.15 and the read_record stopping rule
 
 - Released the evaluated Section 4 wording as Custom Instructions v4.15.
