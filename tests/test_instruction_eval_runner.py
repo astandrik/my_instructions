@@ -27,7 +27,7 @@ class InstructionEvalRunnerTests(unittest.TestCase):
 
         self.assertEqual(
             [line for line in instructions.splitlines() if line.startswith("Custom Instructions ")],
-            ["Custom Instructions v4.15 (2026-11-26) for coding and tooling agents."],
+            ["Custom Instructions v4.16 (2026-11-28) for coding and tooling agents."],
         )
 
     def test_core_uses_compact_request_authority_matrix_and_preserves_narrow_gates(self):

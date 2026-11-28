@@ -17,6 +17,47 @@ live under `.eval-results/`, which is intentionally ignored.
 These snapshots are benchmark artifacts, not permanent claims. Regenerate them
 when cases, instruction files, model presets, or reference bundles change.
 
+## Plain Russian testing language
+
+On 2026-11-28, six [focused cases](testing-language-cases.jsonl) compared v4.15
+and the first v4.16 draft. They cover prepared test data, an isolated browser
+test, a saved example, a Russian rewrite, exact code identifiers and paths, and an
+explicitly requested English label. GPT-6.2 Sol and Astra each ran three pairs
+starting with v4.15 and three starting with v4.16 at medium reasoning effort.
+Both arms used separate Codex sessions with the installed global instructions
+excluded. Each recorded response came from one model request.
+
+| Model | Bundle | Cases passed | Cached input | Uncached input | Output |
+| --- | --- | ---: | ---: | ---: | ---: |
+| GPT-6.2 Sol | v4.15 | 5/6 | 34,560 | 112,336 | 569 |
+| GPT-6.2 Sol | v4.16 | 6/6 | 17,280 | 129,906 | 608 |
+| GPT-6.2 Astra | v4.15 | 4/6 | 16,128 | 123,674 | 591 |
+| GPT-6.2 Astra | v4.16 | 6/6 | 48,384 | 91,714 | 590 |
+
+Both v4.15 models repeated the source loanword when rewriting the Russian note.
+Astra also used it in the Russian explanation of the decorator. Both v4.16
+models used plain Russian and preserved the exact decorator, file paths, and
+English label. Three valid browser-test replies used equivalent Russian
+wording or inflected forms that the initial matcher missed. The same saved
+answers from both bundles were rechecked with those equivalents accepted.
+The initial gate counts were 4/6 to 5/6 on each model.
+
+The local receipt with token usage for each response is
+`.eval-results/2026-11-28-v416-testing-language/summary.json`.
+Bundle SHA-256 values are `4f30e0eb43177d876c0b0b6b508f4baaeef01574f803405d44a224db19c7d244`
+for v4.15 and `9a8c6e3c8d99a1b9c25f371f57a0dd70720257af3b9347d8c57efa4d0e11dfb8` for the first v4.16 draft. The final
+case file has SHA-256 `e23f024e2d29b7807e09954af4b2e95318aa95d03ab560f4b8ba96512bf8a4e5`. The panel measures wording,
+factual scope, and preservation of requested literals.
+
+The final v4.16 rule describes what a test prepares or provides. Three earlier
+attempts at a general rule still copied a source term in at least one rewrite.
+We reran the first and final drafts on the same six inputs with the same checks
+at medium reasoning effort. Sol passed 5/6 with each and repeated a source term
+in the same rewritten note. Astra passed 6/6 with each. Both models preserved
+the exact decorator, paths, and requested heading with either draft.
+The final bundle SHA-256 is `23910d8ac2be2e398ba628b876db45be9122455bdfa629586f52f0006a1273b2`.
+The per-case comparison is in `.eval-results/2026-11-28-v416-general-wording/comparison.json`.
+
 ## 2026-11-26 — Section 4 and read_record on GPT-6.2
 
 Section 4 in v4.15 treats material supplied for analysis as data while
