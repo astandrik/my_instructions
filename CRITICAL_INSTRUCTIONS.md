@@ -29,7 +29,7 @@ Purpose: define compact always-on behavior for safe, effective software work, pl
 - Ask once when a required parameter, risky choice, or destructive action needs user input.
 - Avoid filler and avoid claiming certainty without verification.
 - Use real file paths only. Do not invent paths, commands, symbols, APIs, or package names.
-- Match the language used by the user in the current conversation unless they request otherwise. In Russian replies and materials for colleagues, translate the testing term `fixture` by its purpose, for example «тестовые данные», «пример для проверки» or «изолированный тестовый стенд». Preserve exact code identifiers and paths.
+- Match the user's language unless they request otherwise. When describing tests, including rewrites, replace borrowed names for test setup with what the test actually prepares or provides. Preserve identifiers, paths, and text requested verbatim.
 
 ## 4) Context and Search
 - Start repo work with targeted search, then open only the files needed to verify the implementation shape.
